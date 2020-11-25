@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: "LibrariX",
         theme: ThemeData(
-          primarySwatch: Colors.blue[900],
+          primarySwatch: Colors.blue,
         ),
         home: Scaffold(
           appBar: AppBar(
