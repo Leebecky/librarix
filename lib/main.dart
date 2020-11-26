@@ -15,14 +15,37 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "LibrariX",
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+        primaryColor: Colors.blueGrey[700],
+        accentColor: Colors.lightBlue,
       ),
       home: Scaffold(
         appBar: AppBar(
           title: Text("LibrariX"),
         ),
-        body: Image.network(
-            'https://user-images.githubusercontent.com/55550611/100253364-f9997a00-2f7b-11eb-9c4a-7f8607d4d248.jpg'),
+        body: GetBook(),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.blueGrey[700],
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white.withOpacity(.50),
+          unselectedFontSize: 14,
+          selectedFontSize: 14,
+          onTap: (value) => {
+            //TODO implement navigation functionality
+          },
+          items: [
+            BottomNavigationBarItem(label: "Menu", icon: Icon(Icons.menu)),
+            BottomNavigationBarItem(
+                label: "Notifications", icon: Icon(Icons.notifications)),
+            BottomNavigationBarItem(
+                label: "Catalogue", icon: Icon(Icons.library_books)),
+            BottomNavigationBarItem(
+                label: "Booking", icon: Icon(Icons.event_available)),
+            BottomNavigationBarItem(
+                label: "History", icon: Icon(Icons.history)),
+          ],
+        ),
       ),
     );
   }

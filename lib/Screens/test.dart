@@ -21,8 +21,8 @@ class GetBook extends StatelessWidget {
         return new ListView(
           children: snapshot.data.docs.map((DocumentSnapshot document) {
             return new ListTile(
-              title: new Text(document.data()['Title']),
-              subtitle: new Text(document.data()['ISBNCode']),
+              title: new Text(document.data()['BookTitle']),
+              subtitle: new Text(document.data()['BookDescription']),
             );
           }).toList(),
         );
