@@ -32,5 +32,39 @@ class GetBook extends StatelessWidget {
 }
 
 //for displaying images
-/* Image.network(
-            'https://user-images.githubusercontent.com/55550611/100253364-f9997a00-2f7b-11eb-9c4a-7f8607d4d248.jpg') */
+class DisplayImage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 100,
+        child: Image.network(
+            'https://www.oxfordfajar.com.my/img_m/cover_2017_secondary/whizz_thru/english_/201805241523278950_Cover-20Whizz-20Thru-20SPM-20Chem-20copy.jpg'));
+  }
+}
+
+class Menu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("Menu page placeholder"),
+    );
+  }
+}
+
+class Notifications extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("Notification page placeholder"),
+    );
+  }
+}
+
+class Booking extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("Booking placeholder"),
+    );
+  }
+}
