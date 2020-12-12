@@ -20,12 +20,12 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.lightBlue,
       ),
       //^ named Navigator routes
-      /* initialRoute: "home",
+      initialRoute: "/",
       routes: {
-        "home": (context) => LibrarixHome(),
-        "testPage": (context) => GetBook(),
-      }, */
-      home: LibrarixHome(),
+        "/": (context) => LibrarixHome(),
+        "/second": (context) => Menu(),
+      },
+      // home: LibrarixHome(),
     );
   }
 }
@@ -48,7 +48,19 @@ class _LibrarixHomeState extends State<LibrarixHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.account_circle),
+          iconSize: 40.0,
+          onPressed: null,
+        ),
         title: Text("LibrariX"),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.qr_code_scanner_rounded),
+              iconSize: 35.0,
+              onPressed: () => Navigator.pushNamed(context, "/second"))
+        ],
       ),
       body: pages[tabIndex],
       bottomNavigationBar: BottomNavigationBar(
