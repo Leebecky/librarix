@@ -47,9 +47,7 @@ class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(children: [
-        Text("Menu page placeholder"),
-      ]),
+      child: Text("Menu page placeholder"),
     );
   }
 }
@@ -72,10 +70,40 @@ class Booking extends StatelessWidget {
   }
 }
 
-class TestActiveUser {
-  final activeUser = getActiveUser();
-  // @override
+class TestProfile extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(future: activeUser, builder: null);
+    return Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        body: FutureBuilder<DocumentSnapshot>(
+          future: getActiveUser(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text("Oops, user does not exist");
+            }
+
+            if (snapshot.connectionState == ConnectionState.done) {
+              final ActiveUser activeUser =
+                  ActiveUser.fromJson(snapshot.data.data());
+              return Center(
+                  child: Column(children: [
+                Padding(
+                  padding: EdgeInsets.all(30),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(30),
+                  child:
+                      Text(activeUser.userId, style: TextStyle(fontSize: 20)),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50.0),
+                  child: Image.network(activeUser.avatar, height: 200,),
+                )
+              ]));
+            }
+            return Text("Loading your details");
+          },
+        ));
   }
 }

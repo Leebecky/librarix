@@ -15,59 +15,62 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Column(
-        children: [
-          Spacer(),
-          Row(
+        backgroundColor: Theme.of(context).primaryColor,
+        body: SingleChildScrollView(
+            child: Expanded(
+          child: Column(
             children: [
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Icon(Icons.circle),
+              // Spacer(),
+              Padding(padding: EdgeInsets.all(40)),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Icon(Icons.circle),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text("LibrariX",
+                        style: TextStyle(fontSize: 50, color: Colors.white)),
+                  )
+                ],
               ),
               Padding(
+                  //^ UserID field
+                  padding: EdgeInsets.all(20),
+                  child: TextField(
+                      controller: userIdCtrl,
+                      decoration: InputDecoration(
+                        labelText: "APU ID",
+                        border: OutlineInputBorder(),
+                      ))),
+              Padding(
+                //^ password field
                 padding: EdgeInsets.all(20),
-                child: Text("LibrariX",
-                    style: TextStyle(fontSize: 50, color: Colors.white)),
-              )
+                child: TextField(
+                    controller: passwordCtrl,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      border: OutlineInputBorder(),
+                    )),
+              ),
+              CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: Text("Remember Me"),
+                  value: false,
+                  onChanged: null),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: RaisedButton(
+                  child: Text("Login"),
+                  onPressed: accountLogin,
+                ),
+              ),
+              // Spacer(),
             ],
           ),
-          Padding(
-              //^ UserID field
-              padding: EdgeInsets.all(20),
-              child: TextField(
-                  controller: userIdCtrl,
-                  decoration: InputDecoration(
-                    labelText: "APU ID",
-                    border: OutlineInputBorder(),
-                  ))),
-          Padding(
-            //^ password field
-            padding: EdgeInsets.all(20),
-            child: TextField(
-                controller: passwordCtrl,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  border: OutlineInputBorder(),
-                )),
-          ),
-          CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
-              title: Text("Remember Me"),
-              value: false,
-              onChanged: null),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: RaisedButton(
-              child: Text("Login"),
-              onPressed: accountLogin,
-            ),
-          ),
-          Spacer(),
-        ],
-      ),
-    );
+        )));
   }
 
   //? Login
@@ -76,7 +79,8 @@ class _LoginState extends State<Login> {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: userIdCtrl.text, password: passwordCtrl.text);
-      print(getActiveUser());
+      final activeUser = await myActiveUser();
+      print(activeUser.userId + " has logged in!");
       Navigator.pushNamed(context, "/home");
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

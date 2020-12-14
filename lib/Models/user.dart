@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -20,6 +21,7 @@ class ActiveUser {
   Map<String, String> toJson() => _activeUserToJson(this);
   @override
   String toString() => "Active User ID <$userId>";
+  String getId(obj) => obj.userId;
 }
 
 //Converts map of values from Firestore into ActiveUser class
@@ -27,7 +29,7 @@ ActiveUser _activeUserFromJson(Map<dynamic, dynamic> json) {
   return ActiveUser(
     json["UserAvatar"] as String,
     json["UserEmail"] as String,
-    json["UserID"] as String,
+    json["UserId"] as String,
     json["UserIntakeCode/School"] as String,
     json["UserName"] as String,
     json["UserRole"] as String,
@@ -38,23 +40,29 @@ ActiveUser _activeUserFromJson(Map<dynamic, dynamic> json) {
 Map<String, String> _activeUserToJson(ActiveUser instance) => <String, String>{
       "UserAvatar": instance.avatar,
       "UserEmail": instance.email,
-      "UserID": instance.userId,
+      "UserId": instance.userId,
       "UserIntakeCode/School": instance.intakeCodeOrSchool,
       "UserName": instance.name,
       "UserRole": instance.role,
     };
 
-//? Retrieve data from Firestore & instantiate an ActiveUser
-Future<String> getActiveUser() async {
+//? Retrieve data from Firestore
+Future<DocumentSnapshot> getActiveUser() async {
   CollectionReference userDb = FirebaseFirestore.instance.collection("User");
   final User currentUser = FirebaseAuth.instance.currentUser;
   final currentId = currentUser.uid;
   final activeUserDetails = await userDb.doc(currentId).get();
-  if (activeUserDetails.exists) {
-    //instantiate an ActiveUser
-    final ActiveUser activeUser = _activeUserFromJson(activeUserDetails.data());
-    return activeUser.toString();
-  } else {
-    return "No user found";
-  }
+  return activeUserDetails;
 }
+
+//? Retrieves data from Firestore and stores in an ActiveUser instance
+Future<ActiveUser> myActiveUser() async {
+  CollectionReference userDb = FirebaseFirestore.instance.collection("User");
+  final User currentUser = FirebaseAuth.instance.currentUser;
+  final currentId = currentUser.uid;
+  final activeUserDetails = await userDb.doc(currentId).get();
+  final ActiveUser activeUser = ActiveUser.fromJson(activeUserDetails.data());
+  return activeUser;
+}
+
+

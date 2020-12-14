@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-// import 'package:librarix/Models/user.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:librarix/Models/user.dart';
 import './Screens/test.dart';
 import './Screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,14 +22,13 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: Colors.blueGrey[700],
         accentColor: Colors.lightBlue,
-        
       ),
       //^ named Navigator routes
       initialRoute: "/",
       routes: {
         "/": (context) => Login(),
         "/home": (context) => LibrarixHome(),
-        "/menu": (context) => Menu(),
+        "/menuPlaceholder": (context) => Menu(),
       },
       // home: LibrarixHome(),
     );
@@ -45,7 +43,7 @@ class LibrarixHome extends StatefulWidget {
 class _LibrarixHomeState extends State<LibrarixHome> {
   int tabIndex = 2;
   List<Widget> pages = [
-    Menu(),
+    TestProfile(),
     Notifications(),
     GetBook(),
     Booking(),
@@ -55,10 +53,37 @@ class _LibrarixHomeState extends State<LibrarixHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.account_circle),
-          iconSize: 40.0,
-          onPressed: logout,
+        leading: FutureBuilder(
+          future: getActiveUser(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasError) {
+              return IconButton(
+                icon: Icon(Icons.account_circle),
+                iconSize: 40.0,
+                onPressed: logout,
+              );
+            }
+
+            if (snapshot.connectionState == ConnectionState.done) {
+              final ActiveUser activeUser =
+                  ActiveUser.fromJson(snapshot.data.data());
+              return IconButton(
+                icon: ClipRRect(
+                  borderRadius: BorderRadius.circular(50.0),
+                  child: Image.network(
+                    activeUser.avatar,
+                  ),
+                ),
+                iconSize: 40.0,
+                onPressed: logout,
+              );
+            }
+            return IconButton(
+              icon: Icon(Icons.account_circle),
+              iconSize: 40.0,
+              onPressed: logout,
+            );
+          },
         ),
         title: Text("LibrariX"),
         centerTitle: true,
@@ -66,7 +91,7 @@ class _LibrarixHomeState extends State<LibrarixHome> {
           IconButton(
               icon: Icon(Icons.qr_code_scanner_rounded),
               iconSize: 35.0,
-              onPressed: () => Navigator.pushNamed(context, "/second"))
+              onPressed: () => Navigator.pushNamed(context, "/menu"))
         ],
       ),
       body: pages[tabIndex],
