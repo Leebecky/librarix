@@ -6,8 +6,8 @@ class ActiveUser {
   //Attributes
   String avatar, email, userId, intakeCodeOrSchool, name, role;
 
-  //Document Reference (Firestore)
-  DocumentReference userRef;
+//  /*  //Document Reference (Firestore)
+//   DocumentReference userRef; */
 
   //Constructor
   ActiveUser(this.avatar, this.email, this.userId, this.intakeCodeOrSchool,
@@ -19,9 +19,8 @@ class ActiveUser {
 
   //! Converts the ActiveUser into a map of key/value pairs
   Map<String, String> toJson() => _activeUserToJson(this);
-  @override
-  String toString() => "Active User ID <$userId>";
-  String getId(obj) => obj.userId;
+  // @override
+  // String toString() => "Active User ID <$userId>";
 }
 
 //Converts map of values from Firestore into ActiveUser class
@@ -30,7 +29,7 @@ ActiveUser _activeUserFromJson(Map<dynamic, dynamic> json) {
     json["UserAvatar"] as String,
     json["UserEmail"] as String,
     json["UserId"] as String,
-    json["UserIntakeCode/School"] as String,
+    json["UserIntakeCodeOrSchool"] as String,
     json["UserName"] as String,
     json["UserRole"] as String,
   );
@@ -41,12 +40,12 @@ Map<String, String> _activeUserToJson(ActiveUser instance) => <String, String>{
       "UserAvatar": instance.avatar,
       "UserEmail": instance.email,
       "UserId": instance.userId,
-      "UserIntakeCode/School": instance.intakeCodeOrSchool,
+      "UserIntakeCodeOrSchool": instance.intakeCodeOrSchool,
       "UserName": instance.name,
       "UserRole": instance.role,
     };
 
-//? Retrieve data from Firestore
+//? Retrieve data from Firestore - Use with FutureBuilder
 Future<DocumentSnapshot> getActiveUser() async {
   CollectionReference userDb = FirebaseFirestore.instance.collection("User");
   final User currentUser = FirebaseAuth.instance.currentUser;
@@ -64,5 +63,3 @@ Future<ActiveUser> myActiveUser() async {
   final ActiveUser activeUser = ActiveUser.fromJson(activeUserDetails.data());
   return activeUser;
 }
-
-

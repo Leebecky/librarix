@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Models/user.dart';
+import '../Models/librarian.dart';
+//TODO implement role selector
 
 class Login extends StatefulWidget {
   @override
@@ -11,6 +14,15 @@ class _LoginState extends State<Login> {
   //Text Editing Controllers
   final userIdCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
+  //Dropdown Button list value
+  String dropdownValue = "Role:";
+  String enteredEmail = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState\
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +32,6 @@ class _LoginState extends State<Login> {
             child: Expanded(
           child: Column(
             children: [
-              // Spacer(),
               Padding(padding: EdgeInsets.all(40)),
               Row(
                 children: [
@@ -39,6 +50,11 @@ class _LoginState extends State<Login> {
                   //^ UserID field
                   padding: EdgeInsets.all(20),
                   child: TextField(
+                      onChanged: (newText) {
+                        setState(() {
+                          enteredEmail = newText;
+                        });
+                      },
                       controller: userIdCtrl,
                       decoration: InputDecoration(
                         labelText: "APU ID",
@@ -55,6 +71,15 @@ class _LoginState extends State<Login> {
                       border: OutlineInputBorder(),
                     )),
               ),
+              //^ Role Selection
+              DropdownButton<String>(
+                  value: dropdownValue,
+                  items: roleList(enteredEmail),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownValue = newValue;
+                    });
+                  }),
               CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,
                   title: Text("Remember Me"),
@@ -67,7 +92,6 @@ class _LoginState extends State<Login> {
                   onPressed: accountLogin,
                 ),
               ),
-              // Spacer(),
             ],
           ),
         )));
@@ -76,11 +100,22 @@ class _LoginState extends State<Login> {
   //? Login
   void accountLogin() async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: userIdCtrl.text, password: passwordCtrl.text);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: userIdCtrl.text, password: passwordCtrl.text);
+
+//! TEsting grounds
       final activeUser = await myActiveUser();
       print(activeUser.userId + " has logged in!");
+
+//! Testing for type of user
+      await getLibrarian().then((DocumentSnapshot snapshot) {
+        if (snapshot.exists) {
+          print("Librarian incoming");
+        } else {
+          print("I assume you are a student");
+        }
+      });
+
       Navigator.pushNamed(context, "/home");
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -89,6 +124,22 @@ class _LoginState extends State<Login> {
         print('Wrong password provided for that user.');
       }
     }
+  }
+
+  //^ Dropdown menu items
+  List<DropdownMenuItem<String>> roleList(String emailEntered) {
+    List<String> roleValues = ["Role:"];
+    if (emailEntered.startsWith("tp")) {
+      roleValues.add("Student");
+      roleValues.add("Librarian");
+    } else if (emailEntered.startsWith("lp")) {
+      roleValues.add("Lecturer");
+      roleValues.add("Admin");
+    }
+    var dropMenuItem = roleValues.map((String value) {
+      return DropdownMenuItem(value: value, child: Text(value));
+    }).toList();
+    return dropMenuItem;
   }
 
   //^ Dispose of the widget once login is completed
