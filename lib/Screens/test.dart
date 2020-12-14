@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../Models/user.dart';
 
 class GetBook extends StatelessWidget {
   @override
@@ -46,7 +47,9 @@ class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("Menu page placeholder"),
+      child: Column(children: [
+        Text("Menu page placeholder"),
+      ]),
     );
   }
 }
@@ -66,5 +69,13 @@ class Booking extends StatelessWidget {
     return Center(
       child: Text("Booking placeholder"),
     );
+  }
+}
+
+class TestActiveUser {
+  final activeUser = getActiveUser();
+  // @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(future: activeUser, builder: null);
   }
 }
