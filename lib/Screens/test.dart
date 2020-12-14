@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../Models/user.dart';
 
 class GetBook extends StatelessWidget {
   @override
@@ -66,5 +67,43 @@ class Booking extends StatelessWidget {
     return Center(
       child: Text("Booking placeholder"),
     );
+  }
+}
+
+class TestProfile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        body: FutureBuilder<DocumentSnapshot>(
+          future: getActiveUser(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text("Oops, user does not exist");
+            }
+
+            if (snapshot.connectionState == ConnectionState.done) {
+              final ActiveUser activeUser =
+                  ActiveUser.fromJson(snapshot.data.data());
+              return Center(
+                  child: Column(children: [
+                Padding(
+                  padding: EdgeInsets.all(30),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(30),
+                  child:
+                      Text(activeUser.userId, style: TextStyle(fontSize: 20)),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50.0),
+                  child: Image.network(activeUser.avatar, height: 200,),
+                )
+              ]));
+            }
+            return Text("Loading your details");
+          },
+        ));
   }
 }
