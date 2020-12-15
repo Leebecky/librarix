@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import './Screens/test.dart';
+import './Screens/catalogue_view.dart';
+//import 'package:librarix/views/BookCatalogue/book_details.dart';
 
 class Home extends StatefulWidget{
   @override
@@ -11,11 +13,11 @@ class Home extends StatefulWidget{
 class _HomeState extends State<Home>{
   int _currentIndex = 2;
   final List<Widget> _pages = [
-    MenuPage(),
-    NotificationsPage(),
-    CataloguePage(),
-    BookingPage(),
-    HistoryPage(),  
+    MenuView(),
+    NotificationsView(),
+    CatalogueView(),
+    BookingView(),
+    HistoryView(),  
   ];
 
   @override

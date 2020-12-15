@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MenuPage extends StatelessWidget{
+class MenuView extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -9,7 +9,7 @@ class MenuPage extends StatelessWidget{
   }
 }
 
-class NotificationsPage extends StatelessWidget{
+class NotificationsView extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,16 +18,7 @@ class NotificationsPage extends StatelessWidget{
   }
 }
 
-class CataloguePage extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.orange,
-    );
-  }
-}
-
-class BookingPage extends StatelessWidget{
+class BookingView extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,7 +27,7 @@ class BookingPage extends StatelessWidget{
   }
 }
 
-class HistoryPage extends StatelessWidget{
+class HistoryView extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
