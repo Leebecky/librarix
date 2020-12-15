@@ -14,6 +14,16 @@ class _LoginState extends State<Login> {
   //Dropdown Button list value
   String dropdownValue = "Role:";
   String enteredEmail = "";
+  bool passwordVisiblity;
+  var iconShowPassword;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    passwordVisiblity = false;
+    iconShowPassword = Icons.visibility_rounded;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,17 +59,38 @@ class _LoginState extends State<Login> {
                       controller: userIdCtrl,
                       decoration: InputDecoration(
                         labelText: "APU ID",
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
                       ))),
               Padding(
-                //^ password field
+                //^ Password field
                 padding: EdgeInsets.all(20),
                 child: TextField(
                     controller: passwordCtrl,
-                    obscureText: true,
+                    obscureText: passwordVisiblity,
                     decoration: InputDecoration(
                       labelText: "Password",
-                      border: OutlineInputBorder(),
+                      labelStyle: TextStyle(color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white)),
+                      suffixIcon: IconButton(
+                        icon: Icon(iconShowPassword),
+                        color: Colors.white,
+                        onPressed: () {
+                          setState(() {
+                            passwordVisiblity = !passwordVisiblity;
+                            (passwordVisiblity)
+                                ? iconShowPassword = Icons.visibility_rounded
+                                : iconShowPassword =
+                                    Icons.visibility_off_rounded;
+                          });
+                        },
+                      ),
                     )),
               ),
               //^ Role Selection
@@ -67,24 +98,23 @@ class _LoginState extends State<Login> {
                   future: roleList(enteredEmail),
                   builder: (context, snapshot) {
                     return DropdownButton<String>(
-                        value: dropdownValue,
-                        items: snapshot.data.map((String value) {
-                          return DropdownMenuItem(
-                              value: value, child: Text(value));
-                        }).toList(),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            dropdownValue = newValue;
-                          });
+                      value: dropdownValue,
+                      items: snapshot.data.map((String value) {
+                        return DropdownMenuItem(
+                            value: value, child: Text(value));
+                      }).toList(),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropdownValue = newValue;
                         });
+                      },
+                      style: TextStyle(color: Colors.white),
+                      iconEnabledColor: Colors.white,
+                      dropdownColor: Theme.of(context).primaryColor,
+                    );
                   }),
-              CheckboxListTile(
-                  controlAffinity: ListTileControlAffinity.leading,
-                  title: Text("Remember Me"),
-                  value: false,
-                  onChanged: null),
               Padding(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(30),
                 child: RaisedButton(
                   child: Text("Login"),
                   onPressed: accountLogin,
