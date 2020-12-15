@@ -1,9 +1,6 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Models/user.dart';
-// import '../Models/librarian.dart';
-//TODO implement role selector
 
 class Login extends StatefulWidget {
   @override
@@ -17,12 +14,6 @@ class _LoginState extends State<Login> {
   //Dropdown Button list value
   String dropdownValue = "Role:";
   String enteredEmail = "";
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
