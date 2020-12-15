@@ -1,30 +1,24 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:librarix/Models/librarian.dart';
 
 class ActiveUser {
-  //Attributes
+  //^ Attributes
   String avatar, email, userId, intakeCodeOrSchool, name, role;
 
-//  /*  //Document Reference (Firestore)
-//   DocumentReference userRef; */
-
-  //Constructor
+  //^ Constructor
   ActiveUser(this.avatar, this.email, this.userId, this.intakeCodeOrSchool,
       this.name, this.role);
 
-  //Factory - creates the ActiveUser instance from the JSON (database storage type)
+  //^ Factory - creates the ActiveUser instance from the JSON (database storage type)
   factory ActiveUser.fromJson(Map<dynamic, dynamic> json) =>
       _activeUserFromJson(json);
 
-  //! Converts the ActiveUser into a map of key/value pairs
+  //^ Converts the ActiveUser into a map of key/value pairs
   Map<String, String> toJson() => _activeUserToJson(this);
-  // @override
-  // String toString() => "Active User ID <$userId>";
 }
 
-//Converts map of values from Firestore into ActiveUser class
+//^ Converts map of values from Firestore into ActiveUser class
 ActiveUser _activeUserFromJson(Map<dynamic, dynamic> json) {
   return ActiveUser(
     json["UserAvatar"] as String,
@@ -36,7 +30,7 @@ ActiveUser _activeUserFromJson(Map<dynamic, dynamic> json) {
   );
 }
 
-//! Converts the ActiveUser class into key/value pairs
+//^ Converts the ActiveUser class into key/value pairs
 Map<String, String> _activeUserToJson(ActiveUser instance) => <String, String>{
       "UserAvatar": instance.avatar,
       "UserEmail": instance.email,
@@ -65,7 +59,7 @@ Future<ActiveUser> myActiveUser() async {
   return activeUser;
 }
 
-//? Checks for subcollections to determine if User is also a Librarian/Admin
+//? Checks if the user email exists in the database
 Future<String> getUserRole(String enteredEmail) async {
   try {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -79,6 +73,7 @@ Future<String> getUserRole(String enteredEmail) async {
   }
 }
 
+//? Checks for subcollections to determine if User is also a Librarian/Admin
 Future<bool> checkRole(String docid, String role) async {
   final checkSubcollection = await FirebaseFirestore.instance
       .collection("User")

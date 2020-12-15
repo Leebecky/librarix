@@ -49,7 +49,7 @@ class DisplayImage extends StatelessWidget {
 class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Text("Menu placeholder");
+    return Center(child: Text("Menu placeholder"));
   }
 }
 

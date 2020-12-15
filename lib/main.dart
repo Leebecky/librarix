@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import './Models/user.dart';
 import './Screens/test.dart';
 import './Screens/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-// TODO implement navigation bars for admin/librarian
+// TODO implement navigation bars for admin/librarian - separate into different fikes
 main() async {
   //initialises firebase instances for authentication and Cloud FireStore
   WidgetsFlutterBinding.ensureInitialized();
@@ -129,7 +129,7 @@ class _LibrarixHomeState extends State<LibrarixHome> {
     //? placeholder logout test
     await FirebaseAuth.instance.signOut();
     // Navigator.pushNamed(context, "/");
-    Navigator.pushReplacementNamed(context, "/");
+    Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
   }
 }
 
