@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.lightBlue,
       ),
       //^ named Navigator routes
-      initialRoute: "/",
+      initialRoute: keepLoggedIn(),
       routes: {
         "/": (context) => Login(),
         "/home": (context) => LibrarixHome(),
@@ -33,6 +33,20 @@ class MyApp extends StatelessWidget {
       },
       // home: LibrarixHome(),
     );
+  }
+
+  String keepLoggedIn() {
+    try {
+      String currentUser = FirebaseAuth.instance.currentUser.uid;
+      String myRoute;
+      if (currentUser != null) {
+        return myRoute = "/home";
+      } else {
+        return myRoute = "/";
+      }
+    } catch (e) {
+      print("$e: User is not logged in");
+    }
   }
 }
 
@@ -128,21 +142,6 @@ class _LibrarixHomeState extends State<LibrarixHome> {
   void logout() async {
     //? placeholder logout test
     await FirebaseAuth.instance.signOut();
-    // Navigator.pushNamed(context, "/");
     Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
   }
 }
-
-//! Currently not in use
-// /* class FirebaseAuthenticator {
-// // final auth = FirebaseAuth.instance();
-//   //? Tracking condition of user
-//   FirebaseAuthenticator.authStateChanges();
-//   FirebaseAuthenticator.listen(User user) {
-//     if (user == null) {
-//       print("User is currently signed out");
-//     } else {
-//       print("User is signed in!");
-//     }
-//   }
-// } */
