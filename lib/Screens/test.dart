@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:librarix/Models/librarian.dart';
 import '../Models/user.dart';
+import '../Screens/BookManagement.dart';
 
 //! This entire page consists of placeholder testers
 //! Will be deleted upon completion of application so don't implement anything here!
@@ -35,7 +36,7 @@ class GetBook extends StatelessWidget {
   }
 }
 
-//^ Test for displaying images
+//^ Test for displaying imasges
 class DisplayImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -65,8 +66,15 @@ class Notifications extends StatelessWidget {
 class Booking extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("Booking placeholder"),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return BookManagement();
+          }));
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
