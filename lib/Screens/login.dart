@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Models/user.dart';
-import '../Models/librarian.dart';
+// import '../Models/librarian.dart';
 //TODO implement role selector
 
 class Login extends StatefulWidget {
@@ -20,7 +20,7 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
-    // TODO: implement initState\
+    // TODO: implement initState
     super.initState();
   }
 
@@ -72,13 +72,20 @@ class _LoginState extends State<Login> {
                     )),
               ),
               //^ Role Selection
-              DropdownButton<String>(
-                  value: dropdownValue,
-                  items: roleList(enteredEmail),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      dropdownValue = newValue;
-                    });
+              FutureBuilder<List<String>>(
+                  future: roleList(enteredEmail),
+                  builder: (context, snapshot) {
+                    return DropdownButton<String>(
+                        value: dropdownValue,
+                        items: snapshot.data.map((String value) {
+                          return DropdownMenuItem(
+                              value: value, child: Text(value));
+                        }).toList(),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            dropdownValue = newValue;
+                          });
+                        });
                   }),
               CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,
@@ -103,21 +110,17 @@ class _LoginState extends State<Login> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: userIdCtrl.text, password: passwordCtrl.text);
 
-//! TEsting grounds
-      final activeUser = await myActiveUser();
-      print(activeUser.userId + " has logged in!");
-
-//! Testing for type of user
-      await getLibrarian().then((DocumentSnapshot snapshot) {
-        if (snapshot.exists) {
-          print("Librarian incoming");
-        } else {
-          print("I assume you are a student");
-        }
-      });
-
-      Navigator.pushNamed(context, "/home");
+//^ Testing for type of user
+      if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
+        Navigator.pushNamed(context, "/home");
+      } else if (dropdownValue == "Librarian" || dropdownValue == "Admin") {
+        Navigator.popAndPushNamed(context, "/menuPlaceholder");
+      } else {
+        //TODO add an alert dialog when role is not selected
+        print("Please select a role");
+      }
     } on FirebaseAuthException catch (e) {
+      //TODO implement notifications when error is triggered
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
@@ -127,19 +130,24 @@ class _LoginState extends State<Login> {
   }
 
   //^ Dropdown menu items
-  List<DropdownMenuItem<String>> roleList(String emailEntered) {
+  Future<List<String>> roleList(String emailEntered) async {
     List<String> roleValues = ["Role:"];
+    String docId = await getUserRole(enteredEmail);
+    bool role;
     if (emailEntered.startsWith("tp")) {
       roleValues.add("Student");
-      roleValues.add("Librarian");
-    } else if (emailEntered.startsWith("lp")) {
+      role = await checkRole(docId, "Librarian");
+      if (role) {
+        roleValues.add("Librarian");
+      }
+    } else if (emailEntered.startsWith("lc")) {
       roleValues.add("Lecturer");
-      roleValues.add("Admin");
+      role = await checkRole(docId, "Admin");
+      if (role) {
+        roleValues.add("Admin");
+      }
     }
-    var dropMenuItem = roleValues.map((String value) {
-      return DropdownMenuItem(value: value, child: Text(value));
-    }).toList();
-    return dropMenuItem;
+    return roleValues;
   }
 
   //^ Dispose of the widget once login is completed

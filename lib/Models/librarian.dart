@@ -8,8 +8,15 @@ class Librarian extends ActiveUser {
   String phoneNum, status;
 
 //Constructor
-  Librarian(String avatar, email, userId, intakeCodeOrSchool, name, role,
-      this.phoneNum, this.status)
+  Librarian(
+      String avatar,
+      String email,
+      String userId,
+      String intakeCodeOrSchool,
+      String name,
+      String role,
+      this.phoneNum,
+      this.status)
       : super(avatar, email, userId, intakeCodeOrSchool, name, role);
 
   @override

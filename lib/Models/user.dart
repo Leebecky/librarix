@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:librarix/Models/librarian.dart';
 
 class ActiveUser {
   //Attributes
@@ -62,4 +63,28 @@ Future<ActiveUser> myActiveUser() async {
   final activeUserDetails = await userDb.doc(currentId).get();
   final ActiveUser activeUser = ActiveUser.fromJson(activeUserDetails.data());
   return activeUser;
+}
+
+//? Checks for subcollections to determine if User is also a Librarian/Admin
+Future<String> getUserRole(String enteredEmail) async {
+  try {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection("User")
+        .where("UserEmail", isEqualTo: enteredEmail)
+        .get();
+
+    return snapshot.docs[0].id;
+  } catch (e) {
+    print("$e : User not found");
+  }
+}
+
+Future<bool> checkRole(String docid, String role) async {
+  final checkSubcollection = await FirebaseFirestore.instance
+      .collection("User")
+      .doc(docid)
+      .collection(role)
+      .doc("${role}Details")
+      .get();
+  return checkSubcollection.exists;
 }
