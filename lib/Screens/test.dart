@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:librarix/Models/librarian.dart';
 import '../Models/user.dart';
 
+//! This entire page consists of placeholder testers
+//! Will be deleted upon completion of application so don't implement anything here!
 class GetBook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,7 @@ class GetBook extends StatelessWidget {
   }
 }
 
-//for displaying images
+//^ Test for displaying images
 class DisplayImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -46,9 +49,7 @@ class DisplayImage extends StatelessWidget {
 class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("Menu page placeholder"),
-    );
+    return Center(child: Text("Menu placeholder"));
   }
 }
 
@@ -98,7 +99,10 @@ class TestProfile extends StatelessWidget {
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(50.0),
-                  child: Image.network(activeUser.avatar, height: 200,),
+                  child: Image.network(
+                    activeUser.avatar,
+                    height: 200,
+                  ),
                 )
               ]));
             }

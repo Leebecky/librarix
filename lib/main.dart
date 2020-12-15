@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:librarix/Models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import './Models/user.dart';
 import './Screens/test.dart';
 import './Screens/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
+// TODO implement navigation bars for admin/librarian - separate into different fikes
 main() async {
   //initialises firebase instances for authentication and Cloud FireStore
   WidgetsFlutterBinding.ensureInitialized();
@@ -97,7 +98,7 @@ class _LibrarixHomeState extends State<LibrarixHome> {
       body: pages[tabIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.blueGrey[700],
+        backgroundColor: Theme.of(context).primaryColor,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white.withOpacity(.50),
         unselectedFontSize: 14,
@@ -125,21 +126,23 @@ class _LibrarixHomeState extends State<LibrarixHome> {
   }
 
   void logout() async {
-    //placeholder logout test
+    //? placeholder logout test
     await FirebaseAuth.instance.signOut();
-    Navigator.pushNamed(context, "/");
+    // Navigator.pushNamed(context, "/");
+    Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
   }
 }
 
-class FirebaseAuthenticator {
-// final auth = FirebaseAuth.instance();
-  //? Tracking condition of user
-  FirebaseAuthenticator.authStateChanges();
-  FirebaseAuthenticator.listen(User user) {
-    if (user == null) {
-      print("User is currently signed out");
-    } else {
-      print("User is signed in!");
-    }
-  }
-}
+//! Currently not in use
+// /* class FirebaseAuthenticator {
+// // final auth = FirebaseAuth.instance();
+//   //? Tracking condition of user
+//   FirebaseAuthenticator.authStateChanges();
+//   FirebaseAuthenticator.listen(User user) {
+//     if (user == null) {
+//       print("User is currently signed out");
+//     } else {
+//       print("User is signed in!");
+//     }
+//   }
+// } */
