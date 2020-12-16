@@ -146,10 +146,8 @@ class _LoginState extends State<Login> {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         loginError(context, "invalidUser");
-        // print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
         loginError(context, "invalidPassword");
-        // print('Wrong password provided for that user.');
       } else if (e.code == "invalid-email") {
         loginError(context, "invalidEmail");
       }
@@ -159,7 +157,6 @@ class _LoginState extends State<Login> {
   //? Dropdown menu items
   Future<List<String>> roleList(
       String emailEntered, List<String> roleValues) async {
-    // List<String> roleValues = ["Role:"];
     bool role;
     String docId = await getUserRole(enteredEmail);
     if (docId == null) {
@@ -185,15 +182,8 @@ class _LoginState extends State<Login> {
   //? AlertDialog notification when login error is triggered
   void loginError(BuildContext context, String errorType) {
     String errorMsg;
-    /* if (errorType == "invalidRole") {
-      errorMsg = "Please select a role";
-    } else if (errorType == "invalidEmail") {
-      errorMsg =
-          "User not found! Please ensure that your email has been entered correctly";
-    } else if (errorType == "invalidPassword") {
-      errorMsg = "Sorry, your password was incorrect";
-    } */
 
+    //^ Determines error type and the appropriate message to return
     switch (errorType) {
       case "invalidRole":
         errorMsg = "Please select a role";
