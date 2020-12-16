@@ -8,22 +8,26 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  //Text Editing Controllers
+  //^ Text Editing Controllers
   final userIdCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
-  //Dropdown Button list value
-  String dropdownValue = "Role:";
-  String enteredEmail = "";
-  bool passwordVisiblity;
+  //^ Dropdown Button list value
+  String dropdownValue, enteredEmail;
+  //^ Password field attributes - password visibility toggle + icon
+  bool passwordHidden;
   var iconShowPassword;
 
+  //? Intialises inital value of variables
   @override
   void initState() {
-    passwordVisiblity = false;
-    iconShowPassword = Icons.visibility_rounded;
+    dropdownValue = "Role:";
+    enteredEmail = "";
+    passwordHidden = true;
+    iconShowPassword = Icons.visibility_off_rounded;
     super.initState();
   }
 
+  //? Build method for Login screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +51,7 @@ class _LoginState extends State<Login> {
                 ],
               ),
               Padding(
-                  //^ UserID field
+                  //~ UserID field
                   padding: EdgeInsets.all(20),
                   child: TextField(
                       onChanged: (newText) {
@@ -65,11 +69,11 @@ class _LoginState extends State<Login> {
                             borderSide: BorderSide(color: Colors.white)),
                       ))),
               Padding(
-                //^ Password field
+                //~ Password field
                 padding: EdgeInsets.all(20),
                 child: TextField(
                     controller: passwordCtrl,
-                    obscureText: passwordVisiblity,
+                    obscureText: passwordHidden,
                     decoration: InputDecoration(
                       labelText: "Password",
                       labelStyle: TextStyle(color: Colors.white),
@@ -82,8 +86,8 @@ class _LoginState extends State<Login> {
                         color: Colors.white,
                         onPressed: () {
                           setState(() {
-                            passwordVisiblity = !passwordVisiblity;
-                            (passwordVisiblity)
+                            passwordHidden = !passwordHidden;
+                            (passwordHidden)
                                 ? iconShowPassword = Icons.visibility_rounded
                                 : iconShowPassword =
                                     Icons.visibility_off_rounded;
@@ -92,9 +96,9 @@ class _LoginState extends State<Login> {
                       ),
                     )),
               ),
-              //^ Role Selection
+              //~ Role Selection
               FutureBuilder<List<String>>(
-                  future: roleList(enteredEmail),
+                  future: roleList(enteredEmail, ["Role:"]),
                   builder: (context, snapshot) {
                     return DropdownButton<String>(
                       value: dropdownValue,
@@ -130,47 +134,98 @@ class _LoginState extends State<Login> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: userIdCtrl.text, password: passwordCtrl.text);
 
-//^ Testing for type of user
+      //^ Testing for type of user
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
-        Navigator.pushNamed(context, "/home");
+        Navigator.popAndPushNamed(context, "/home");
       } else if (dropdownValue == "Librarian" || dropdownValue == "Admin") {
         Navigator.popAndPushNamed(context, "/menuPlaceholder");
       } else {
-        //TODO add an alert dialog when role is not selected
+        loginError(context, "invalidRole");
         print("Please select a role");
       }
     } on FirebaseAuthException catch (e) {
-      //TODO implement notifications when error is triggered
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        loginError(context, "invalidUser");
+        // print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        loginError(context, "invalidPassword");
+        // print('Wrong password provided for that user.');
+      } else if (e.code == "invalid-email") {
+        loginError(context, "invalidEmail");
       }
     }
   }
 
-  //^ Dropdown menu items
-  Future<List<String>> roleList(String emailEntered) async {
-    List<String> roleValues = ["Role:"];
-    String docId = await getUserRole(enteredEmail);
+  //? Dropdown menu items
+  Future<List<String>> roleList(
+      String emailEntered, List<String> roleValues) async {
+    // List<String> roleValues = ["Role:"];
     bool role;
-    if (emailEntered.startsWith("tp")) {
-      roleValues.add("Student");
-      role = await checkRole(docId, "Librarian");
-      if (role) {
-        roleValues.add("Librarian");
-      }
-    } else if (emailEntered.startsWith("lc")) {
-      roleValues.add("Lecturer");
-      role = await checkRole(docId, "Admin");
-      if (role) {
-        roleValues.add("Admin");
+    String docId = await getUserRole(enteredEmail);
+    if (docId == null) {
+      roleValues = ["Role:"];
+    } else {
+      if (emailEntered.startsWith("tp")) {
+        roleValues.add("Student");
+        role = await checkRole(docId, "Librarian");
+        if (role) {
+          roleValues.add("Librarian");
+        }
+      } else if (emailEntered.startsWith("lc")) {
+        roleValues.add("Lecturer");
+        role = await checkRole(docId, "Admin");
+        if (role) {
+          roleValues.add("Admin");
+        }
       }
     }
     return roleValues;
   }
 
-  //^ Dispose of the widget once login is completed
+  //? AlertDialog notification when login error is triggered
+  void loginError(BuildContext context, String errorType) {
+    String errorMsg;
+    /* if (errorType == "invalidRole") {
+      errorMsg = "Please select a role";
+    } else if (errorType == "invalidEmail") {
+      errorMsg =
+          "User not found! Please ensure that your email has been entered correctly";
+    } else if (errorType == "invalidPassword") {
+      errorMsg = "Sorry, your password was incorrect";
+    } */
+
+    switch (errorType) {
+      case "invalidRole":
+        errorMsg = "Please select a role";
+        break;
+      case "invalidUser":
+        errorMsg = "No user with this email has been found";
+        break;
+      case "invalidPassword":
+        errorMsg = "Sorry, your password was incorrect";
+        break;
+      case "invalidEmail":
+        errorMsg = "Please ensure that your email has been entered correctly";
+        break;
+    }
+
+    //^ Build method for AlertDialog
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error logging in"),
+            content: Text(errorMsg),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text("Close"))
+            ],
+          );
+        });
+  }
+
+  //? Disposes of the widget once login is completed
   @override
   void dispose() {
     passwordCtrl.dispose();

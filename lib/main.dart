@@ -34,17 +34,18 @@ class MyApp extends StatelessWidget {
     );
   }
 
+//? Checks if the user is logged in. If yes, skip the login page, else redirect to login
   String keepLoggedIn() {
+    String myRoute;
     try {
-      String currentUser = FirebaseAuth.instance.currentUser.uid;
-      String myRoute;
-      if (currentUser != null) {
-        return myRoute = "/home";
-      } else {
-        return myRoute = "/";
+      User currentUser = FirebaseAuth.instance.currentUser;
+      {
+        (currentUser == null) ? myRoute = "/" : myRoute = "/home";
+        return myRoute;
       }
     } catch (e) {
       print("$e: User is not logged in");
+      return myRoute;
     }
   }
 }
@@ -141,6 +142,6 @@ class _LibrarixHomeState extends State<LibrarixHome> {
   void logout() async {
     //? placeholder logout test
     await FirebaseAuth.instance.signOut();
-    Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+    Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
   }
 }
