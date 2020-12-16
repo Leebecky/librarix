@@ -5,7 +5,6 @@ import './Models/user.dart';
 import './Screens/test.dart';
 import './Screens/login.dart';
 
-// TODO implement navigation bars for admin/librarian - separate into different fikes
 main() async {
   //initialises firebase instances for authentication and Cloud FireStore
   WidgetsFlutterBinding.ensureInitialized();
