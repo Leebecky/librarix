@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'librarix_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import './Models/user.dart';
@@ -21,9 +22,11 @@ class MyApp extends StatelessWidget {
       title: "LibrariX",
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: Colors.blueGrey[700],
-        accentColor: Colors.lightBlue,
+        primarySwatch: Colors.blue,
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
       //^ named Navigator routes
       initialRoute: keepLoggedIn(),
       routes: {
@@ -51,6 +54,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/*      
 class LibrarixHome extends StatefulWidget {
   @override
   _LibrarixHomeState createState() => _LibrarixHomeState();
@@ -131,18 +135,21 @@ class _LibrarixHomeState extends State<LibrarixHome> {
           BottomNavigationBarItem(label: "History", icon: Icon(Icons.history)),
         ],
       ),
+      home: Home(),
     );
   }
 
+      
   void changePage(int i) {
     setState(() {
       tabIndex = i;
     });
   }
-
+*/
   void logout() async {
     //? placeholder logout test
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
   }
 }
+
