@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:librarix/librarix_navigations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import './Models/user.dart';
-import './Screens/test.dart';
 import './Screens/login.dart';
+import './Screens/borrow_book_scanner.dart';
 
 main() async {
-  //initialises firebase instances for authentication and Cloud FireStore
+  //? initialises firebase instances for authentication and Cloud FireStore
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseAuth.instance;
@@ -17,21 +17,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "LibrariX",
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.blueGrey[700],
-        accentColor: Colors.lightBlue,
-      ),
-      //^ named Navigator routes
-      initialRoute: keepLoggedIn(),
-      routes: {
-        "/": (context) => Login(),
-        "/home": (context) => LibrarixHome(),
-        "/menuPlaceholder": (context) => Menu(),
-      },
-      // home: LibrarixHome(),
-    );
+        title: "LibrariX",
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primarySwatch: Colors.blue,
+        ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          primarySwatch: Colors.blue,
+        ),
+        //^ named Navigator routes
+        initialRoute: keepLoggedIn(),
+        routes: {
+          "/": (context) => Login(),
+          "/home": (context) => Home(),
+          "/scanner": (context) => BarcodeScanner(),
+        });
   }
 
 //? Checks if the user is logged in. If yes, skip the login page, else redirect to login
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/*      
 class LibrarixHome extends StatefulWidget {
   @override
   _LibrarixHomeState createState() => _LibrarixHomeState();
@@ -106,7 +108,7 @@ class _LibrarixHomeState extends State<LibrarixHome> {
           IconButton(
               icon: Icon(Icons.qr_code_scanner_rounded),
               iconSize: 35.0,
-              onPressed: () => Navigator.pushNamed(context, "/menu"))
+              onPressed: () => Navigator.pushNamed(context, "/scanner"))
         ],
       ),
       body: pages[tabIndex],
@@ -130,18 +132,14 @@ class _LibrarixHomeState extends State<LibrarixHome> {
           BottomNavigationBarItem(label: "History", icon: Icon(Icons.history)),
         ],
       ),
+      home: Home(),
     );
   }
 
+      
   void changePage(int i) {
     setState(() {
       tabIndex = i;
     });
   }
-
-  void logout() async {
-    //? placeholder logout test
-    await FirebaseAuth.instance.signOut();
-    Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
-  }
-}
+*/
