@@ -26,7 +26,7 @@ dependencies:
   #firebase dependencies
   cloud_firestore: ^0.14.3
   firebase_crashlytics: ^0.2.3
-  firebase_auth: ^0.18.3
+  firebase_auth: ^0.18.4
   #search bar
   flappy_search_bar: 1.4.1
 
