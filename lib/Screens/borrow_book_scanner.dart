@@ -46,6 +46,12 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                       border: OutlineInputBorder(
                           borderSide: BorderSide(
                               color: Theme.of(context).accentColor))),
+                  onChanged: (newText) {
+                    setState(() {
+                      bookCode = newText;
+                      codeType = "BookISBNCode";
+                    });
+                  },
                 ),
               ),
               Padding(

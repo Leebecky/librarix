@@ -45,6 +45,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
         .collection("BookCatalogue")
         .where(codeType, isEqualTo: bookCode)
         .get();
+
     if (int.parse(bookdb.docs.length.toString()) == 1) {
       bookdb.docs.forEach((doc) => {myBook = bookFromJson(doc.data())});
     } else if (int.parse(bookdb.docs.length.toString()) > 1) {
