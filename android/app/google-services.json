@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "637628938446",
+    "firebase_url": "https://librarix.firebaseio.com",
+    "project_id": "librarix",
+    "storage_bucket": "librarix.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637628938446:android:4e2c3faf7be5b6826d789f",
+        "android_client_info": {
+          "package_name": "librarix.SDP.Assigment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "637628938446-deqbdbklrbf3n3cele16fkls6ussr6vq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9FY5jgxIYXUthacG7ZZj-dPqtZPzgwgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "637628938446-deqbdbklrbf3n3cele16fkls6ussr6vq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
