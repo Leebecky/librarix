@@ -24,7 +24,7 @@ class Librarian extends ActiveUser {
       _librarianFromJson(json);
 }
 
-ActiveUser _librarianFromJson(Map<dynamic, dynamic> json) {
+Librarian _librarianFromJson(Map<dynamic, dynamic> json) {
   return Librarian(
     json["UserAvatar"] as String,
     json["UserEmail"] as String,

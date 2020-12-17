@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import './Models/user.dart';
 import './Screens/test.dart';
 import './Screens/login.dart';
+import './Screens/borrow_book_scanner.dart';
 
 main() async {
   //initialises firebase instances for authentication and Cloud FireStore
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) => Login(),
         "/home": (context) => LibrarixHome(),
-        "/menuPlaceholder": (context) => Menu(),
+        "/scanner": (context) => BarcodeScanner(),
       },
       // home: LibrarixHome(),
     );
@@ -106,7 +107,7 @@ class _LibrarixHomeState extends State<LibrarixHome> {
           IconButton(
               icon: Icon(Icons.qr_code_scanner_rounded),
               iconSize: 35.0,
-              onPressed: () => Navigator.pushNamed(context, "/menu"))
+              onPressed: () => Navigator.pushNamed(context, "/scanner"))
         ],
       ),
       body: pages[tabIndex],

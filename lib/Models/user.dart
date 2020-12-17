@@ -10,15 +10,17 @@ class ActiveUser {
   ActiveUser(this.avatar, this.email, this.userId, this.intakeCodeOrSchool,
       this.name, this.role);
 
-  //^ Factory - creates the ActiveUser instance from the JSON (database storage type)
+  //? Factory - creates the ActiveUser instance from the JSON (database storage type) passed
+  //? When Factory is used, implementing a constructor doesn't always create a new instance of its class
   factory ActiveUser.fromJson(Map<dynamic, dynamic> json) =>
       _activeUserFromJson(json);
 
-  //^ Converts the ActiveUser into a map of key/value pairs
+  //? Converts the ActiveUser into a map of key/value pairs
   Map<String, String> toJson() => _activeUserToJson(this);
 }
 
-//^ Converts map of values from Firestore into ActiveUser class
+//? Converts map of values from Firestore into ActiveUser class.
+//! This method is invoked by ActiveUser.fromJson. Don't call this method.
 ActiveUser _activeUserFromJson(Map<dynamic, dynamic> json) {
   return ActiveUser(
     json["UserAvatar"] as String,
@@ -30,7 +32,7 @@ ActiveUser _activeUserFromJson(Map<dynamic, dynamic> json) {
   );
 }
 
-//^ Converts the ActiveUser class into key/value pairs
+//? Converts the ActiveUser class into key/value pairs
 Map<String, String> _activeUserToJson(ActiveUser instance) => <String, String>{
       "UserAvatar": instance.avatar,
       "UserEmail": instance.email,
@@ -49,7 +51,7 @@ Future<DocumentSnapshot> getActiveUser() async {
   return activeUserDetails;
 }
 
-//? Retrieves data from Firestore and stores in an ActiveUser instance
+//? Retrieves data from Firestore and stores in an ActiveUser object
 Future<ActiveUser> myActiveUser() async {
   CollectionReference userDb = FirebaseFirestore.instance.collection("User");
   final User currentUser = FirebaseAuth.instance.currentUser;
@@ -70,6 +72,7 @@ Future<String> getUserRole(String enteredEmail) async {
     return snapshot.docs[0].id;
   } catch (e) {
     print("$e : User not found");
+    return "User not found";
   }
 }
 
