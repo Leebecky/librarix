@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:librarix/librarix_navigations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:librarix/librarix_widget.dart';
 import './Screens/login.dart';
 import './Screens/borrow_book_scanner.dart';
 
