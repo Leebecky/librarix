@@ -22,12 +22,10 @@ class _HomeState extends State<Home>{
     });
   }
 
-  int _currentIndex = 2;
+  int _currentIndex = 1;
   final List<Widget> _pages = [
-    MenuView(),
-    NotificationsView(),
-    CatalogueView(),
     BookingView(),
+    CatalogueView(),
     HistoryView(),  
   ];
 
