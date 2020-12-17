@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:librarix/Models/librarian.dart';
 import '../Models/user.dart';
-import '../Screens/BookManagement.dart';
+// import '../Screens/BookManagement.dart';
 
 //! This entire page consists of placeholder testers
 //! Will be deleted upon completion of application so don't implement anything here!
 
-class MenuView extends StatelessWidget{
+class MenuView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,13 +16,14 @@ class MenuView extends StatelessWidget{
   }
 }
 
-
-class NotificationsView extends StatelessWidget{
+class NotificationsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.yellow,
     );
+  }
+}
 
 class Menu extends StatelessWidget {
   @override
@@ -31,7 +32,7 @@ class Menu extends StatelessWidget {
   }
 }
 
-class BookingView extends StatelessWidget{
+class BookingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,10 +41,9 @@ class BookingView extends StatelessWidget{
   }
 }
 
-class HistoryView extends StatelessWidget{
+class HistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Container(
       color: Colors.purple,
     );

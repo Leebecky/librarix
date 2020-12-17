@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../models/Catalogue.dart';
-//import 'BookCatalogue/book_details.dart';
+import '../models/book.dart';
 
 class CatalogueView extends StatelessWidget {
-  final List<Catalogue> catalogueList = [
-    Catalogue(
+  final List<Book> bookList = [
+    Book(
         "Mary Norton",
         "9780152047320 ",
         "Driven out of their house by the rat catcher, the Clocks find themselves lost and alone in a frightening new world: the outdoors. Cow, moths, mice - even cold - are life threatening dangers to the tiny Borrowers. But they must brave it all to find a new home",
@@ -16,7 +15,7 @@ class CatalogueView extends StatelessWidget {
         "Odyssey",
         2,
         "The Borrowers Afield"),
-    Catalogue(
+    Book(
         "Mary Norton",
         "9780152047320 ",
         "Driven out of their house by the rat catcher, the Clocks find themselves lost and alone in a frightening new world: the outdoors. Cow, moths, mice - even cold - are life threatening dangers to the tiny Borrowers. But they must brave it all to find a new home",
@@ -27,7 +26,7 @@ class CatalogueView extends StatelessWidget {
         "Odyssey",
         2,
         "The Borrowers Afield"),
-    Catalogue(
+    Book(
         "Mary Norton",
         "9780152047320 ",
         "Driven out of their house by the rat catcher, the Clocks find themselves lost and alone in a frightening new world: the outdoors. Cow, moths, mice - even cold - are life threatening dangers to the tiny Borrowers. But they must brave it all to find a new home",
@@ -38,7 +37,7 @@ class CatalogueView extends StatelessWidget {
         "Odyssey",
         2,
         "The Borrowers Afield"),
-    Catalogue(
+    Book(
         "Mary Norton",
         "9780152047320 ",
         "Driven out of their house by the rat catcher, the Clocks find themselves lost and alone in a frightening new world: the outdoors. Cow, moths, mice - even cold - are life threatening dangers to the tiny Borrowers. But they must brave it all to find a new home",
@@ -55,21 +54,21 @@ class CatalogueView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: new GridView.builder(
-          itemCount: catalogueList.length,
-          itemBuilder: (BuildContext context, int index) =>
-              buildTripCard(context, index), 
-          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.8,
-              mainAxisSpacing: 3.0,
-              crossAxisSpacing: 4.0,
-            ),
-          ),
+        itemCount: bookList.length,
+        itemBuilder: (BuildContext context, int index) =>
+            buildTripCard(context, index),
+        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.8,
+          mainAxisSpacing: 3.0,
+          crossAxisSpacing: 4.0,
+        ),
+      ),
     );
   }
 
   Widget buildTripCard(BuildContext context, int index) {
-    final catalogue = catalogueList[index];
+    final book = bookList[index];
     return new Container(
       child: Card(
         child: Padding(
@@ -77,16 +76,17 @@ class CatalogueView extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0, left: 24.0),
+                padding:
+                    const EdgeInsets.only(top: 8.0, bottom: 4.0, left: 24.0),
                 child: Row(children: <Widget>[
-                  Text(catalogue.bookTitle, style: new TextStyle(fontSize: 12.0)),
+                  Text(book.title, style: new TextStyle(fontSize: 12.0)),
                   Spacer(),
                 ]),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 4.0, bottom: 10.0),
                 child: Row(children: <Widget>[
-                  Image.network(catalogue.bookImage, width: 170, fit: BoxFit.fitWidth),
+                  Image.network(book.image, width: 170, fit: BoxFit.fitWidth),
                 ]),
               ),
             ],
@@ -96,5 +96,3 @@ class CatalogueView extends StatelessWidget {
     );
   }
 }
-
-

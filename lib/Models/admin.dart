@@ -15,7 +15,7 @@ class Admin extends ActiveUser {
   factory Admin.fromJson(Map<dynamic, dynamic> json) => _adminFromJson(json);
 }
 
-ActiveUser _adminFromJson(Map<dynamic, dynamic> json) {
+Admin _adminFromJson(Map<dynamic, dynamic> json) {
   return Admin(
     json["UserAvatar"] as String,
     json["UserEmail"] as String,
