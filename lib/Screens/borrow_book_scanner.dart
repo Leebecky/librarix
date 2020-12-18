@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:librarix/Screens/scanned_book_details.dart';
 
@@ -40,10 +41,19 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
               Padding(
                 padding: EdgeInsets.all(20),
                 child: TextField(
+                  //~ locks the keyboard to numerical only
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
                   controller: bookCodeCtrl,
                   decoration: InputDecoration(
                       labelText: "Enter ISBN Code or Scan book barcode",
-                      border: OutlineInputBorder(
+                      labelStyle: TextStyle(color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Theme.of(context).accentColor)),
+                      focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                               color: Theme.of(context).accentColor))),
                   onChanged: (newText) {
@@ -92,5 +102,11 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
     } else {
       return false;
     }
+  }
+
+  @override
+  void dispose() {
+    bookCodeCtrl.dispose();
+    super.dispose();
   }
 }

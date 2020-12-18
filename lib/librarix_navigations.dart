@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'Screens/test.dart';
 import 'Screens/catalogue_view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import './main.dart';
-//import 'package:librarix/views/BookCatalogue/book_details.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -117,7 +115,6 @@ class _HomeState extends State<Home> {
 
 //? Logout function
   void logout() async {
-    //? placeholder logout test
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
   }

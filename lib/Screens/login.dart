@@ -99,10 +99,10 @@ class _LoginState extends State<Login> {
               //~ Role Selection
               FutureBuilder<List<String>>(
                   future: roleList(enteredEmail, ["Role:"]),
-                  builder: (context, snapshot) {
+                  builder: (context, listItems) {
                     return DropdownButton<String>(
                       value: dropdownValue,
-                      items: snapshot.data.map((String value) {
+                      items: listItems.data.map((String value) {
                         return DropdownMenuItem(
                             value: value, child: Text(value));
                       }).toList(),
@@ -139,7 +139,7 @@ class _LoginState extends State<Login> {
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
         Navigator.popAndPushNamed(context, "/home");
       } else if (dropdownValue == "Librarian" || dropdownValue == "Admin") {
-        Navigator.popAndPushNamed(context, "/menuPlaceholder");
+        Navigator.popAndPushNamed(context, "/home");
       } else {
         loginError(context, "invalidRole");
         print("Please select a role");
