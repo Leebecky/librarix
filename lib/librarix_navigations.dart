@@ -11,7 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _currentIndex = 2;
+  int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 

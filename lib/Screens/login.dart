@@ -129,7 +129,6 @@ class _LoginState extends State<Login> {
   }
 
   //? Login
-  //TODO change path for Library Staff
   void accountLogin() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -139,7 +138,7 @@ class _LoginState extends State<Login> {
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
         Navigator.popAndPushNamed(context, "/home");
       } else if (dropdownValue == "Librarian" || dropdownValue == "Admin") {
-        Navigator.popAndPushNamed(context, "/home");
+        Navigator.popAndPushNamed(context, "/staffHome");
       } else {
         loginError(context, "invalidRole");
         print("Please select a role");

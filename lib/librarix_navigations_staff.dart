@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/Screens/borrow_book_scanner.dart';
 import 'Screens/test.dart';
 import 'Screens/catalogue_view.dart';
-import './main.dart';
 //import 'package:librarix/views/BookCatalogue/book_details.dart';
 
-class Home2 extends StatefulWidget {
+class StaffHome extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _Home2State();
+    return _StaffHomeState();
   }
 }
 
-class _Home2State extends State<Home2> {
-  int _currentIndex = 2;
+class _StaffHomeState extends State<StaffHome> {
+  int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 
   final List<Widget> _pages = [
     BookingView(),
     CatalogueView(),
-    HistoryView(),
+    BarcodeScanner(),
   ];
 
   @override
@@ -124,7 +124,6 @@ class _Home2State extends State<Home2> {
 
 //? Logout function
   void logout() async {
-    //? placeholder logout test
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
   }
