@@ -29,13 +29,6 @@ class _StaffHomeState extends State<StaffHome> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("LibrariX"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.chrome_reader_mode_rounded),
-            onPressed: () => Navigator.pushNamed(context, "/scanner"),
-            iconSize: 35.0,
-          ),
-        ],
       ),
       drawer: new Drawer(
         child: new ListView(

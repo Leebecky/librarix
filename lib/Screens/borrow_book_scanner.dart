@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:librarix/Screens/scanned_book_details.dart';
 
+//TODO add textfield/display for user id
+
 class ScannerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -42,15 +44,6 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        /*  appBar: AppBar(
-          title: Text("Book Borrower"),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.qr_code_scanner_rounded),
-              onPressed: () => scanBarcode(),
-            )
-          ],
-        ), */
         body: Center(
       child: Column(
         children: [
