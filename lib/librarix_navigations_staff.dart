@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:librarix/Screens/borrow_book_scanner.dart';
+import './Screens/borrow_book_scanner.dart';
 import 'Screens/test.dart';
 import 'Screens/catalogue_view.dart';
 //import 'package:librarix/views/BookCatalogue/book_details.dart';
@@ -29,6 +29,13 @@ class _StaffHomeState extends State<StaffHome> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("LibrariX"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.auto_stories),
+            onPressed: () => Navigator.pushNamed(context, "/scanner"),
+            iconSize: 35.0,
+          ),
+        ],
       ),
       drawer: new Drawer(
         child: new ListView(
@@ -100,10 +107,10 @@ class _StaffHomeState extends State<StaffHome> {
             icon: new Icon(Icons.library_books),
             label: "Catalogue",
           ),
-          BottomNavigationBarItem(
+          /* BottomNavigationBarItem(
             icon: new Icon(Icons.auto_stories),
             label: "Borrow Book",
-          ),
+          ), */
         ],
       ),
     );

@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
                   "/": (context) => Login(),
                   "/home": (context) => Home(),
                   "/staffHome": (context) => StaffHome(),
-                  "/scanner": (context) => ScannerPage(),
+                  "/scanner": (context) => BarcodeScanner(),
                 });
           }
           return LinearProgressIndicator();
