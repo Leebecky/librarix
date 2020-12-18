@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
         title: Text("LibrariX"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.chrome_reader_mode_rounded),
+            icon: Icon(Icons.auto_stories),
             onPressed: () => Navigator.pushNamed(context, "/scanner"),
             iconSize: 35.0,
           ),
