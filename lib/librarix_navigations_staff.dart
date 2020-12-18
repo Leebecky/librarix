@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/Screens/borrow_book_scanner.dart';
 import 'Screens/test.dart';
 import 'Screens/catalogue_view.dart';
+import 'Screens/Staff/booking_records.dart';
 //import 'package:librarix/views/BookCatalogue/book_details.dart';
 
 class StaffHome extends StatefulWidget {
@@ -60,7 +61,9 @@ class _StaffHomeState extends State<StaffHome> {
                 trailing: new Icon(Icons.book_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookingRecords();
+                  }));
                 }),
             new ListTile(
                 title: new Text("Fines Management"),
