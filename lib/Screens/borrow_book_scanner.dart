@@ -1,6 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:librarix/Screens/scanned_book_details.dart';
+
+//TODO add textfield/display for user id
+
+class ScannerPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Book Borrower"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.qr_code_scanner_rounded),
+            onPressed: () => BarcodeScanner().createState().scanBarcode(),
+          )
+        ],
+      ),
+      body: BarcodeScanner(),
+    );
+  }
+}
 
 class BarcodeScanner extends StatefulWidget {
   @override
@@ -23,53 +44,52 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        appBar: AppBar(
-          title: Text("Book Borrower"),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.qr_code_scanner_rounded),
-              onPressed: () => scanBarcode(),
-            )
-          ],
-        ),
         body: Center(
-          child: Column(
-            children: [
-              //~ Barcode/ISBN display field
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: TextField(
-                  controller: bookCodeCtrl,
-                  decoration: InputDecoration(
-                      labelText: "Enter ISBN Code or Scan book barcode",
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).accentColor))),
-                  onChanged: (newText) {
-                    setState(() {
-                      bookCode = newText;
-                      codeType = "BookISBNCode";
-                    });
-                  },
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Text("Bookcode = $bookCode"),
-              ),
-              FlatButton(
-                color: Theme.of(context).accentColor,
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ScannedBookDetails(bookCode, codeType))),
-                child: Text("Click Me!"),
-              )
-            ],
+      child: Column(
+        children: [
+          //~ Barcode/ISBN display field
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: TextField(
+              //~ locks the keyboard to numerical only
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              controller: bookCodeCtrl,
+              decoration: InputDecoration(
+                  labelText: "Enter ISBN Code or Scan book barcode",
+                  enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor))),
+              onChanged: (newText) {
+                setState(() {
+                  bookCode = newText;
+                  codeType = "BookISBNCode";
+                });
+              },
+            ),
           ),
-        ));
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: Text("Bookcode = $bookCode"),
+          ),
+          FlatButton(
+            color: Theme.of(context).primaryColor,
+            textColor: Theme.of(context).accentColor,
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ScannedBookDetails(bookCode, codeType))),
+            child: Text("Click Me!"),
+          )
+        ],
+      ),
+    ));
   }
 
 //? Barcode scanning
@@ -92,5 +112,11 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
     } else {
       return false;
     }
+  }
+
+  @override
+  void dispose() {
+    bookCodeCtrl.dispose();
+    super.dispose();
   }
 }

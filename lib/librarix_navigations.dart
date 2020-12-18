@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'Screens/test.dart';
 import 'Screens/catalogue_view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import './main.dart';
-//import 'package:librarix/views/BookCatalogue/book_details.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,7 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _currentIndex = 2;
+  int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 
@@ -31,7 +29,7 @@ class _HomeState extends State<Home> {
         title: Text("LibrariX"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.chrome_reader_mode_rounded),
+            icon: Icon(Icons.auto_stories),
             onPressed: () => Navigator.pushNamed(context, "/scanner"),
             iconSize: 35.0,
           ),
@@ -117,7 +115,6 @@ class _HomeState extends State<Home> {
 
 //? Logout function
   void logout() async {
-    //? placeholder logout test
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
   }

@@ -78,7 +78,7 @@ Future<String> getUserRole(String enteredEmail) async {
 
 //? Checks for subcollections to determine if User is also a Librarian/Admin
 Future<bool> checkRole(String docid, String role) async {
-  final checkSubcollection = await FirebaseFirestore.instance
+  DocumentSnapshot checkSubcollection = await FirebaseFirestore.instance
       .collection("User")
       .doc(docid)
       .collection(role)

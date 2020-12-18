@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/Screens/borrow_book_scanner.dart';
 import 'Screens/test.dart';
 import 'Screens/catalogue_view.dart';
-import './main.dart';
-import 'Screens/Staff/booking_records.dart';
 //import 'package:librarix/views/BookCatalogue/book_details.dart';
 
 class StaffHome extends StatefulWidget {
@@ -14,14 +13,14 @@ class StaffHome extends StatefulWidget {
 }
 
 class _StaffHomeState extends State<StaffHome> {
-  int _currentIndex = 2;
+  int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 
   final List<Widget> _pages = [
     BookingView(),
     CatalogueView(),
-    HistoryView(),
+    BarcodeScanner(),
   ];
 
   @override
@@ -30,13 +29,6 @@ class _StaffHomeState extends State<StaffHome> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("LibrariX"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.chrome_reader_mode_rounded),
-            onPressed: () => Navigator.pushNamed(context, "/scanner"),
-            iconSize: 35.0,
-          ),
-        ],
       ),
       drawer: new Drawer(
         child: new ListView(
@@ -68,9 +60,7 @@ class _StaffHomeState extends State<StaffHome> {
                 trailing: new Icon(Icons.book_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return BookingRecords();
-                  }));
+                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
             new ListTile(
                 title: new Text("Fines Management"),
@@ -127,7 +117,6 @@ class _StaffHomeState extends State<StaffHome> {
 
 //? Logout function
   void logout() async {
-    //? placeholder logout test
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
   }
