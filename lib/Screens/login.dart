@@ -139,7 +139,7 @@ class _LoginState extends State<Login> {
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
         Navigator.popAndPushNamed(context, "/home");
       } else if (dropdownValue == "Librarian" || dropdownValue == "Admin") {
-        Navigator.popAndPushNamed(context, "/menuPlaceholder");
+        Navigator.popAndPushNamed(context, "/home");
       } else {
         loginError(context, "invalidRole");
         print("Please select a role");

@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         initialRoute: keepLoggedIn(),
         routes: {
           "/": (context) => Login(),
-          "/home": (context) => Home(),
+          "/home": (context) => StaffHome(),
           "/scanner": (context) => BarcodeScanner(),
         });
   }

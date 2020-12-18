@@ -3,16 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'Screens/test.dart';
 import 'Screens/catalogue_view.dart';
 import './main.dart';
+import 'Screens/Staff/booking_records.dart';
 //import 'package:librarix/views/BookCatalogue/book_details.dart';
 
-class Home2 extends StatefulWidget {
+class StaffHome extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _Home2State();
+    return _StaffHomeState();
   }
 }
 
-class _Home2State extends State<Home2> {
+class _StaffHomeState extends State<StaffHome> {
   int _currentIndex = 2;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
@@ -67,7 +68,9 @@ class _Home2State extends State<Home2> {
                 trailing: new Icon(Icons.book_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookingRecords();
+                  }));
                 }),
             new ListTile(
                 title: new Text("Fines Management"),
