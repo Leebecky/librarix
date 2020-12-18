@@ -25,8 +25,8 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   void initState() {
     i = 0;
     booksFound = [];
-    print(widget.bookCodeType);
-    print(widget.bookCode);
+    // print(widget.bookCodeType);
+    // print(widget.bookCode);
     super.initState();
   }
 
@@ -43,25 +43,23 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
             snapshot.data.docs
                 .forEach((doc) => myBook = bookFromJson(doc.data()));
 
-            print(snapshot.data);
             //~ Display Books found
-            return Column(
+            return SingleChildScrollView(
+                child: Column(
               children: [
-                SizedBox(
-                    height: 200,
-                    child: Card(
-                        child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        CustomBookTile(
-                            title: myBook.title,
-                            author: myBook.author,
-                            stock: myBook.stock,
-                            thumbnail: Container(
-                              child: Image.network(myBook.image),
-                            ))
-                      ],
-                    ))),
+                Card(
+                    child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    CustomBookTile(
+                        title: myBook.title,
+                        author: myBook.author,
+                        stock: myBook.stock,
+                        thumbnail: Container(
+                          child: Image.network(myBook.image),
+                        ))
+                  ],
+                )),
                 Text("Return Date: "),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +81,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                   ],
                 )
               ],
-            );
+            ));
           }
 
           return LinearProgressIndicator();

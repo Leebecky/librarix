@@ -18,7 +18,7 @@ class CustomBookTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -34,10 +34,6 @@ class CustomBookTile extends StatelessWidget {
               stock: stock,
             ),
           ),
-          /* const Icon(
-            Icons.more_vert,
-            size: 16.0,
-          ), */
         ],
       ),
     );
@@ -77,38 +73,13 @@ class _BookDescription extends StatelessWidget {
           ),
           const Padding(padding: EdgeInsets.symmetric(vertical: 1.0)),
           Text(
-            '$stock views',
-            style: const TextStyle(fontSize: 10.0),
+            '$stock available',
+            style: const TextStyle(
+              fontSize: 10.0,
+            ),
           ),
         ],
       ),
     );
   }
-}
-
-// ...
-
-Widget build(BuildContext context) {
-  return ListView(
-    padding: const EdgeInsets.all(8.0),
-    itemExtent: 106.0,
-    children: <CustomBookTile>[
-      CustomBookTile(
-        author: 'Flutter',
-        stock: 999000,
-        thumbnail: Container(
-          decoration: const BoxDecoration(color: Colors.blue),
-        ),
-        title: 'The Flutter YouTube Channel',
-      ),
-      CustomBookTile(
-        author: 'Dash',
-        stock: 884000,
-        thumbnail: Container(
-          decoration: const BoxDecoration(color: Colors.yellow),
-        ),
-        title: 'Announcing Flutter 1.0',
-      ),
-    ],
-  );
 }
