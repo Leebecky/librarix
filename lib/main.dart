@@ -22,21 +22,23 @@ class MyApp extends StatelessWidget {
     return FutureBuilder<String>(
         future: checkLoggedIn(),
         builder: (context, snapshot) {
-          print("myroute is ${snapshot.data}");
           if (snapshot.hasData) {
             return MaterialApp(
                 title: "LibrariX",
                 theme: ThemeData(
-                  brightness: Brightness.light,
-                  primarySwatch: Colors.blue,
-                  accentColor: Colors.white,
-                ),
+                    brightness: Brightness.light,
+                    primarySwatch: Colors.blue,
+                    accentColor: Colors.white,
+                    textTheme: TextTheme(
+                      //~ TextField Input Decoration LabelText style
+                      bodyText1: TextStyle(color: Colors.white),
+                    )),
                 darkTheme: ThemeData(
                   brightness: Brightness.dark,
                   primarySwatch: Colors.blue,
                 ),
                 //^ named Navigator routes
-                initialRoute: "${snapshot.data}",
+                initialRoute: snapshot.data,
                 routes: {
                   "/": (context) => Login(),
                   "/home": (context) => Home(),
