@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:librarix/librarix_navigations.dart';
-import 'librarix_navigations_staff.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/librarix_navigations.dart';
+import 'librarix_navigations_staff.dart';
 import './Screens/login.dart';
 import './Screens/borrow_book_scanner.dart';
+import './Models/user.dart';
 
+//TODO add splash screens to hide loading sequence of the application
 main() async {
   //? initialises firebase instances for authentication and Cloud FireStore
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,130 +19,53 @@ main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: "LibrariX",
-        theme: ThemeData(
-          brightness: Brightness.light,
-          primarySwatch: Colors.blue,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          primarySwatch: Colors.blue,
-        ),
-        //^ named Navigator routes
-        initialRoute: keepLoggedIn(),
-        routes: {
-          "/": (context) => Login(),
-          "/home": (context) => Home(),
-          "/scanner": (context) => BarcodeScanner(),
+    return FutureBuilder<String>(
+        future: checkLoggedIn(),
+        builder: (context, snapshot) {
+          print("myroute is ${snapshot.data}");
+          if (snapshot.hasData) {
+            return MaterialApp(
+                title: "LibrariX",
+                theme: ThemeData(
+                  brightness: Brightness.light,
+                  primarySwatch: Colors.blue,
+                  accentColor: Colors.white,
+                ),
+                darkTheme: ThemeData(
+                  brightness: Brightness.dark,
+                  primarySwatch: Colors.blue,
+                ),
+                //^ named Navigator routes
+                initialRoute: "${snapshot.data}",
+                routes: {
+                  "/": (context) => Login(),
+                  "/home": (context) => Home(),
+                  "/staffHome": (context) => StaffHome(),
+                  "/scanner": (context) => ScannerPage(),
+                });
+          }
+          return LinearProgressIndicator();
         });
   }
 
-//? Checks if the user is logged in. If yes, skip the login page, else redirect to login
-  String keepLoggedIn() {
-    String myRoute;
+//? Checks if the user is logged in. If yes, go to home, else redirect to login
+  Future<String> checkLoggedIn() async {
+    String myRoute = "/home";
     try {
       User currentUser = FirebaseAuth.instance.currentUser;
-      {
-        (currentUser == null) ? myRoute = "/" : myRoute = "/home";
-        return myRoute;
+
+      if (currentUser == null) {
+        myRoute = "/";
+      } else {
+        bool isAdmin = await checkRole(currentUser.uid, "Admin");
+        bool isLibrarian = await checkRole(currentUser.uid, "Librarian");
+
+        (isAdmin || isLibrarian) ? myRoute = "/staffHome" : myRoute = "/home";
       }
+      return myRoute;
     } catch (e) {
       print("$e: User is not logged in");
       return myRoute;
     }
   }
 }
-
-/*      
-class LibrarixHome extends StatefulWidget {
-  @override
-  _LibrarixHomeState createState() => _LibrarixHomeState();
-}
-
-class _LibrarixHomeState extends State<LibrarixHome> {
-  int tabIndex = 2;
-  List<Widget> pages = [
-    TestProfile(),
-    Notifications(),
-    GetBook(),
-    Booking(),
-    DisplayImage(),
-  ];
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: FutureBuilder(
-          future: getActiveUser(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError) {
-              return IconButton(
-                icon: Icon(Icons.account_circle),
-                iconSize: 40.0,
-                onPressed: logout,
-              );
-            }
-
-            if (snapshot.connectionState == ConnectionState.done) {
-              final ActiveUser activeUser =
-                  ActiveUser.fromJson(snapshot.data.data());
-              return IconButton(
-                icon: ClipRRect(
-                  borderRadius: BorderRadius.circular(50.0),
-                  child: Image.network(
-                    activeUser.avatar,
-                  ),
-                ),
-                iconSize: 40.0,
-                onPressed: logout,
-              );
-            }
-            return IconButton(
-              icon: Icon(Icons.account_circle),
-              iconSize: 40.0,
-              onPressed: logout,
-            );
-          },
-        ),
-        title: Text("LibrariX"),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.qr_code_scanner_rounded),
-              iconSize: 35.0,
-              onPressed: () => Navigator.pushNamed(context, "/scanner"))
-        ],
-      ),
-      body: pages[tabIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Theme.of(context).primaryColor,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white.withOpacity(.50),
-        unselectedFontSize: 14,
-        selectedFontSize: 14,
-        currentIndex: tabIndex,
-        onTap: changePage,
-        items: [
-          BottomNavigationBarItem(label: "Menu", icon: Icon(Icons.menu)),
-          BottomNavigationBarItem(
-              label: "Notifications", icon: Icon(Icons.notifications)),
-          BottomNavigationBarItem(
-              label: "Catalogue", icon: Icon(Icons.library_books)),
-          BottomNavigationBarItem(
-              label: "Booking", icon: Icon(Icons.event_available)),
-          BottomNavigationBarItem(label: "History", icon: Icon(Icons.history)),
-        ],
-      ),
-      home: Home(),
-    );
-  }
-
-      
-  void changePage(int i) {
-    setState(() {
-      tabIndex = i;
-    });
-  }
-*/
