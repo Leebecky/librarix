@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/Screens/scanned_book_details.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import '../Models/user.dart';
 
 //TODO implement textfield for user id
 class BarcodeScanner extends StatefulWidget {
@@ -12,8 +14,8 @@ class BarcodeScanner extends StatefulWidget {
 class _BarcodeScannerState extends State<BarcodeScanner> {
   //^ Text Controller for retrieving the ISBN code
   final bookCodeCtrl = TextEditingController();
-  String bookCode;
-  String codeType;
+  final userIdCtrl = TextEditingController();
+  String codeType, bookCode;
 
   @override
   void initState() {
@@ -36,6 +38,41 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
         body: Center(
           child: Column(
             children: [
+              //~ UserId display field
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: FutureBuilder<bool>(
+                  future: isStaff(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    //^ if User is Staff, create a textfield
+                    if (snapshot.data) {
+                      return TextField(
+                        controller: userIdCtrl,
+                        decoration: InputDecoration(
+                            labelText: "Please enter the Student/Lecturer's ID",
+                            labelStyle: Theme.of(context).textTheme.bodyText1,
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ))),
+                      );
+                    } else {
+                      //^ If User is not Staff, return UserId in Text()
+                      return FutureBuilder<ActiveUser>(
+                        future: myActiveUser(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<ActiveUser> snapshot) {
+                          return Text(snapshot.data.userId);
+                        },
+                      );
+                    }
+                  },
+                ),
+              ),
               //~ Barcode/ISBN display field
               Padding(
                 padding: EdgeInsets.all(20),
@@ -72,8 +109,8 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                 onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            ScannedBookDetails(bookCode, codeType))),
+                        builder: (context) => ScannedBookDetails(
+                            bookCode, codeType, userIdCtrl.text))),
                 child: Text("Click Me!"),
               )
             ],
@@ -96,14 +133,16 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
       bookCode = bookBarcode;
       codeType = "BookBarcode";
     });
-    // bookCodeCtrl.text = bookBarcode;
-    // return bookBarcode;
-    // return bookCodeCtrl.text;
-    /*  if (bookBarcode != "") {
-      return bookCodeCtrl.text;
-    } else {
-      return false;
-    } */
+  }
+
+  //? Checks if the User is a library staff member
+  Future<bool> isStaff() async {
+    bool isStaff;
+    String currentUser = FirebaseAuth.instance.currentUser.uid;
+    bool isAdmin = await checkRole(currentUser, "Admin");
+    bool isLibrarian = await checkRole(currentUser, "Librarian");
+    (isLibrarian || isAdmin) ? isStaff = true : isStaff = false;
+    return isStaff;
   }
 
   @override
