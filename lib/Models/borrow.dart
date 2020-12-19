@@ -46,3 +46,16 @@ Future<void> createBorrowRecord(Borrow record) async {
     updateBookStock(record.bookId, -1);
   }).catchError((onError) => print("An error has occurred: $onError"));
 }
+
+//? Retrieves all borrowed book records of a user
+Future<List<Borrow>> getUserBorrowRecords(String userId) async {
+  List<Borrow> userRecords = [];
+  var records = await FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .where("UserId", isEqualTo: userId)
+      .get();
+  if (records.docs.isNotEmpty) {
+    records.docs.forEach((doc) => userRecords.add(borrowFromJson(doc.data())));
+  }
+  return userRecords;
+}

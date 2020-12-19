@@ -4,7 +4,6 @@ import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
 
-//TODO what happens when there are multiple records returned
 //TODO when there are 3 books borrowed, cant borrow more
 
 class ScannedBookDetails extends StatefulWidget {
@@ -67,7 +66,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                           children: <Widget>[
                             Text(booksFound[i].author),
                             Text("${booksFound[i].stock.toString()} available"),
-                            borrowDetails(context, i),
+                            borrowDetails(context, i: i),
                           ],
                         );
                       });
@@ -91,7 +90,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   }
 
 //? Borrow Book Options
-  Widget borrowDetails(BuildContext context, [int i = 0]) {
+  Widget borrowDetails(BuildContext context, {int i = 0}) {
     if (booksFound[i].stock > 0) {
       return Column(children: [
         Padding(
@@ -105,12 +104,14 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 child: FlatButton(
                   onPressed: () async {
-                    if (await hasBorrowed(i) == true) {
+                    var existingRecord = await hasBorrowed(index: i);
+
+                    if (existingRecord.isNotEmpty) {
                       showDialog(
                           context: context,
                           child: AlertDialog(
                               content: Text(
-                                  "You have currently borrowing this book!"),
+                                  "You are currently borrowing this book!"),
                               actions: [
                                 FlatButton(
                                   child: Text("Close"),
@@ -120,7 +121,8 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                     } else {
                       createBorrowRecord(createRecord(
                           parseDate(DateTime.now().toString()),
-                          parseDate(calculateReturnDate())));
+                          parseDate(calculateReturnDate()),
+                          i: i));
                       showDialog(
                           context: context,
                           child: AlertDialog(
@@ -213,7 +215,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   }
 
 //? Creates the new borrow record
-  Borrow createRecord(String startDate, String returnDate, [int i = 0]) {
+  Borrow createRecord(String startDate, String returnDate, {int i = 0}) {
     String userId = widget.userId;
     String borrowBookId = bookId[i];
     String borrowBookTitle = booksFound[i].title;
@@ -225,15 +227,24 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   }
 
   //? Checks if the User is currently borrowing the book
-  Future<bool> hasBorrowed([int i = 0]) async {
-    var existingRecord = await FirebaseFirestore.instance
+  Future<List<Borrow>> hasBorrowed({int index = 0}) async {
+    /* var existingRecord = await FirebaseFirestore.instance
         .collection("BorrowedBook")
         .where("BookId", isEqualTo: bookId[i])
         .where("UserId", isEqualTo: widget.userId)
         .where("BorrowStatus", isEqualTo: "Borrowed")
-        .get();
+        .get(); */
 
-    return existingRecord.docs.isNotEmpty;
+    // return existingRecord.docs.isNotEmpty;
+    var userRecords = await getUserBorrowRecords(widget.userId);
+    if (userRecords.isNotEmpty) {
+      print(userRecords);
+      return userRecords
+          .where(
+              (doc) => doc.bookId == bookId[index] && doc.status == "Borrowed")
+          .toList();
+    }
+    return userRecords = [];
   }
 }
 
@@ -242,7 +253,7 @@ class BookCard extends StatelessWidget {
   final List<Book> booksFound;
   final int i;
 
-  BookCard(this.booksFound, [this.i = 0]);
+  BookCard(this.booksFound, {this.i = 0});
   @override
   Widget build(BuildContext context) {
     return Card(
