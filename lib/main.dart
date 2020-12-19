@@ -6,12 +6,10 @@ import 'package:librarix/loader.dart';
 import 'Screens/Navigation Bar/librarix_navigations.dart';
 import 'Screens/Navigation Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation Bar/librarix_navigation_admin.dart';
-import 'loader.dart';
 import './Screens/login.dart';
 import './Screens/borrow_book_scanner.dart';
 import './Models/user.dart';
 
-//TODO add splash screens to hide loading sequence of the application
 main() async {
   //? initialises firebase instances for authentication and Cloud FireStore
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +48,7 @@ class MyApp extends StatelessWidget {
                   "/scanner": (context) => BarcodeScanner(),
                 });
           }
-          return LinearProgressIndicator();
+          return Loader();
         });
   }
 
@@ -66,9 +64,11 @@ class MyApp extends StatelessWidget {
         bool isAdmin = await checkRole(currentUser.uid, "Admin");
         bool isLibrarian = await checkRole(currentUser.uid, "Librarian");
 
-        (isAdmin || isLibrarian)
-            ? myRoute = "/librarianHome"
-            : myRoute = "/home";
+        (isAdmin)
+            ? myRoute = "/adminHome" //~ (if admin)
+            : (isLibrarian)
+                ? myRoute = "/librarianHome" //~ (if librarian)
+                : myRoute = "/home"; //~ (if user)
       }
     } catch (e) {
       print("$e: User is not logged in");
