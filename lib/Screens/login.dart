@@ -8,6 +8,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final primaryColor = const Color(0xFF7fbfe9); 
+
   //^ Text Editing Controllers
   final userIdCtrl = TextEditingController();
   final passwordCtrl = TextEditingController();
@@ -31,7 +33,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: primaryColor,
         body: SingleChildScrollView(
             child: Expanded(
           child: Column(
@@ -43,6 +45,7 @@ class _LoginState extends State<Login> {
                     padding: EdgeInsets.all(20),
                     child: Icon(Icons.circle),
                   ),
+                  SizedBox(width: 22.0),
                   Padding(
                     padding: EdgeInsets.all(20),
                     child: Text("LibrariX",
@@ -97,11 +100,15 @@ class _LoginState extends State<Login> {
                     )),
               ),
               //~ Role Selection
+              SizedBox(height: 20.0),
               FutureBuilder<List<String>>(
                   future: roleList(enteredEmail, ["Role:"]),
                   builder: (context, listItems) {
                     return DropdownButton<String>(
                       value: dropdownValue,
+                      icon:  Icon(Icons.arrow_downward),
+                      iconSize: 24,
+                      elevation: 16,
                       items: listItems.data.map((String value) {
                         return DropdownMenuItem(
                             value: value, child: Text(value));
@@ -111,15 +118,20 @@ class _LoginState extends State<Login> {
                           dropdownValue = newValue;
                         });
                       },
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 16.0),
                       iconEnabledColor: Colors.white,
-                      dropdownColor: Theme.of(context).primaryColor,
+                      dropdownColor: primaryColor,
                     );
                   }),
               Padding(
                 padding: EdgeInsets.all(30),
                 child: RaisedButton(
-                  child: Text("Login"),
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
+                    child: Text("Login", style: TextStyle(fontSize: 18, color: primaryColor, fontWeight: FontWeight.w600)),
+                  ),
                   onPressed: accountLogin,
                 ),
               ),
