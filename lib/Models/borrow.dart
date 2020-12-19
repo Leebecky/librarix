@@ -37,7 +37,6 @@ Map<String, dynamic> _borrowToJson(Borrow instance) => <String, dynamic>{
     };
 
 //? Creates a borrowed book record
-//TODO update bookStock
 Future<void> createBorrowRecord(Borrow record) async {
   FirebaseFirestore.instance
       .collection("BorrowedBook")
@@ -46,4 +45,4 @@ Future<void> createBorrowRecord(Borrow record) async {
     print("Book has been successfully borrowed!");
     updateBookStock(record.bookId, -1);
   }).catchError((onError) => print("An error has occurred: $onError"));
-  }
+}

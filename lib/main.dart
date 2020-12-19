@@ -26,13 +26,10 @@ class MyApp extends StatelessWidget {
             return MaterialApp(
                 title: "LibrariX",
                 theme: ThemeData(
-                    brightness: Brightness.light,
-                    primarySwatch: Colors.blue,
-                    accentColor: Colors.white,
-                    textTheme: TextTheme(
-                      //~ TextField Input Decoration LabelText style
-                      bodyText1: TextStyle(color: Colors.white),
-                    )),
+                  brightness: Brightness.light,
+                  primarySwatch: Colors.blue,
+                  accentColor: Colors.white,
+                ),
                 darkTheme: ThemeData(
                   brightness: Brightness.dark,
                   primarySwatch: Colors.blue,

@@ -15,7 +15,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
   //^ Text Controller for retrieving the ISBN code
   final bookCodeCtrl = TextEditingController();
   final userIdCtrl = TextEditingController();
-  String codeType, bookCode;
+  String codeType, bookCode, userId;
 
   @override
   void initState() {
@@ -49,9 +49,9 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                     if (snapshot.data) {
                       return TextField(
                         controller: userIdCtrl,
+                        onChanged: (text) => userId = text,
                         decoration: InputDecoration(
                             labelText: "Please enter the Student/Lecturer's ID",
-                            labelStyle: Theme.of(context).textTheme.bodyText1,
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Theme.of(context).primaryColor)),
@@ -66,6 +66,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                         future: myActiveUser(),
                         builder: (BuildContext context,
                             AsyncSnapshot<ActiveUser> snapshot) {
+                          userId = snapshot.data.userId;
                           return Text(snapshot.data.userId);
                         },
                       );
@@ -110,7 +111,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ScannedBookDetails(
-                            bookCode, codeType, userIdCtrl.text))),
+                            bookCode, codeType, userId.toUpperCase()))),
                 child: Text("Click Me!"),
               )
             ],
