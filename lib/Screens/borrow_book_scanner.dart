@@ -46,7 +46,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     //^ if User is Staff, create a textfield
-                    if (snapshot.data) {
+                    if (snapshot.data == true) {
                       return TextField(
                         onChanged: (text) {
                           userId = text;
@@ -172,7 +172,6 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
         .collection("User")
         .where("UserId", isEqualTo: userId)
         .get();
-    print(validUser.docs.isNotEmpty);
     return validUser.docs.isNotEmpty;
   }
 
