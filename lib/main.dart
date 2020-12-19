@@ -3,9 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/first_view.dart';
 import 'package:librarix/loader.dart';
-import 'librarix_navigations.dart';
-import 'librarix_navigations_librarian.dart';
-import 'librarix_navigation_admin.dart';
+import 'Screens/Navigation Bar/librarix_navigations.dart';
+import 'Screens/Navigation Bar/librarix_navigations_librarian.dart';
+import 'Screens/Navigation Bar/librarix_navigation_admin.dart';
 import 'loader.dart';
 import './Screens/login.dart';
 import './Screens/borrow_book_scanner.dart';
@@ -42,10 +42,11 @@ class MyApp extends StatelessWidget {
                 initialRoute: snapshot.data,
                 routes: {
                   "/": (context) => Loader(),
-                  //"/firstview": (context) => FirstView(),
+                  "/firstview": (context) => FirstView(),
                   "/login": (context) => Login(),
                   "/home": (context) => Home(),
-                  "/staffHome": (context) => LibrarianHome(),
+                  "/librarianHome": (context) => LibrarianHome(),
+                  "/adminHome": (context) => AdminHome(),
                   "/scanner": (context) => BarcodeScanner(),
                 });
           }

@@ -19,6 +19,8 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
   void initState() {
     bookCode = "Waiting for input . . . ";
     codeType = "BookISBNCode";
+    userId = "";
+    printBookCodeType();
     super.initState();
   }
 
@@ -46,7 +48,9 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                     //^ if User is Staff, create a textfield
                     if (snapshot.data) {
                       return TextField(
-                        onChanged: (text) => userId = text,
+                        onChanged: (text) {
+                          userId = text;
+                        },
                         decoration: InputDecoration(
                             labelText: "Please enter the Student/Lecturer's ID",
                             focusedBorder: OutlineInputBorder(
@@ -62,9 +66,12 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                       return FutureBuilder<ActiveUser>(
                         future: myActiveUser(),
                         builder: (BuildContext context,
-                            AsyncSnapshot<ActiveUser> snapshot) {
-                          userId = snapshot.data.userId;
-                          return Text("User ID: ${snapshot.data.userId}");
+                            AsyncSnapshot<ActiveUser> user) {
+                          if (user.hasData) {
+                            userId = user.data.userId;
+                            return Text("User ID: ${user.data.userId}");
+                          }
+                          return LinearProgressIndicator();
                         },
                       );
                     }

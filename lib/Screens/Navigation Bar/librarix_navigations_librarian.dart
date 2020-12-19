@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'Screens/test.dart';
-import 'Screens/catalogue_view.dart';
+import '../borrow_book_scanner.dart';
+import '../test.dart';
+import '../catalogue_view.dart';
+//import 'package:librarix/views/BookCatalogue/book_details.dart';
 
-class Home extends StatefulWidget {
+class LibrarianHome extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _HomeState();
+    return _LibrarianHomeState();
   }
 }
 
-class _HomeState extends State<Home> {
+class _LibrarianHomeState extends State<LibrarianHome> {
   int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
@@ -18,7 +20,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _pages = [
     BookingView(),
     CatalogueView(),
-    HistoryView(),
+    BarcodeScanner(),
   ];
 
   @override
@@ -27,7 +29,7 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("LibrariX"),
-        actions: <Widget>[
+        actions: [
           IconButton(
             icon: Icon(Icons.auto_stories),
             onPressed: () => Navigator.pushNamed(context, "/scanner"),
@@ -61,15 +63,22 @@ class _HomeState extends State<Home> {
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
                 }),
             new ListTile(
-                title: new Text("Rewards"),
-                trailing: new Icon(Icons.outlined_flag_rounded),
+                title: new Text("Booking Records"),
+                trailing: new Icon(Icons.book_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
             new ListTile(
-                title: new Text("Fines"),
-                trailing: new Icon(Icons.monetization_on_rounded),
+                title: new Text("Fines Management"),
+                trailing: new Icon(Icons.attach_money),
+                onTap: () {
+                  //Navigator.of(context).pop();
+                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                }),
+            new ListTile(
+                title: new Text("Report Generator"),
+                trailing: new Icon(Icons.bar_chart),
                 onTap: () {
                   //Navigator.of(context).pop();
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
@@ -99,8 +108,8 @@ class _HomeState extends State<Home> {
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.history),
-            label: "History",
+            icon: new Icon(Icons.check_circle),
+            label: "Book Return",
           ),
         ],
       ),

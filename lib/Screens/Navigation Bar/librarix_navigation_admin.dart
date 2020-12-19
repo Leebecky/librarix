@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import './Screens/borrow_book_scanner.dart';
-import 'Screens/test.dart';
-import 'Screens/catalogue_view.dart';
+import 'package:librarix/Screens/borrow_book_scanner.dart';
+import '../test.dart';
+import '../catalogue_view.dart';
 //import 'package:librarix/views/BookCatalogue/book_details.dart';
 
-class LibrarianHome extends StatefulWidget {
+class AdminHome extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _LibrarianHomeState();
+    return _AdminHomeState();
   }
 }
 
-class _LibrarianHomeState extends State<LibrarianHome> {
+class _AdminHomeState extends State<AdminHome> {
   int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
@@ -29,13 +29,6 @@ class _LibrarianHomeState extends State<LibrarianHome> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("LibrariX"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.auto_stories),
-            onPressed: () => Navigator.pushNamed(context, "/scanner"),
-            iconSize: 35.0,
-          ),
-        ],
       ),
       drawer: new Drawer(
         child: new ListView(
@@ -79,6 +72,13 @@ class _LibrarianHomeState extends State<LibrarianHome> {
             new ListTile(
                 title: new Text("Report Generator"),
                 trailing: new Icon(Icons.bar_chart),
+                onTap: () {
+                  //Navigator.of(context).pop();
+                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                }),
+             new ListTile(
+                title: new Text("Librarian Management"),
+                trailing: new Icon(Icons.camera_front),
                 onTap: () {
                   //Navigator.of(context).pop();
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
