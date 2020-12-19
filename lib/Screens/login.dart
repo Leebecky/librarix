@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Models/user.dart';
+import '../Custom_Widget/general_alert_dialog.dart';
 
 //TODO change Admin page redirect
 class Login extends StatefulWidget {
@@ -154,8 +155,10 @@ class _LoginState extends State<Login> {
       //^ Testing for type of user
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
         Navigator.popAndPushNamed(context, "/home");
-      } else if (dropdownValue == "Librarian" || dropdownValue == "Admin") {
+      } else if (dropdownValue == "Librarian") {
         Navigator.popAndPushNamed(context, "/librarianHome");
+      } else if (dropdownValue == "Admin") {
+        Navigator.popAndPushNamed(context, "/adminHome");
       } else {
         loginError(context, "invalidRole");
         print("Please select a role");
@@ -220,15 +223,8 @@ class _LoginState extends State<Login> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Error logging in"),
-            content: Text(errorMsg),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text("Close"))
-            ],
-          );
+          return generalAlertDialog(context,
+              title: "Error logging in", content: errorMsg);
         });
   }
 

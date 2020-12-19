@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
+import '../Custom_Widget/general_alert_dialog.dart';
 
 class ScannedBookDetails extends StatefulWidget {
   //^ Parameters were passed form borrow_book_scanner.dart
@@ -107,15 +108,8 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                     if (existingRecord.isNotEmpty) {
                       showDialog(
                           context: context,
-                          child: AlertDialog(
-                              content: Text(
-                                  "You are currently borrowing this book!"),
-                              actions: [
-                                FlatButton(
-                                  child: Text("Close"),
-                                  onPressed: () => Navigator.pop(context),
-                                )
-                              ]));
+                          child: generalAlertDialog(context,
+                              content: "This book has already been borrowed!"));
                     } else {
                       createBorrowRecord(createRecord(
                           parseDate(DateTime.now().toString()),
@@ -123,19 +117,10 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                           i: i));
                       showDialog(
                           context: context,
-                          child: AlertDialog(
-                              content: Text(
-                                  "${booksFound[i].title} has been successfully borrowed!"),
-                              actions: [
-                                FlatButton(
-                                  child: Text("Close"),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    nav.pop();
-                                    nav.pop();
-                                  },
-                                )
-                              ]));
+                          child: generalAlertDialog(context,
+                              content:
+                                  "${booksFound[i].title} has been successfully borrowed!",
+                              returnHome: true));
                     }
                   },
                   child: Icon(Icons.check),

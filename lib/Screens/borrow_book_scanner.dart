@@ -111,23 +111,26 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                 child: Text("${printBookCodeType()} = $bookCode"),
               ),
               FlatButton(
+                //~ The Confirmation button
                 color: Theme.of(context).primaryColor,
                 textColor: Theme.of(context).accentColor,
                 onPressed: () async => {
                   if (await validUser(userId))
                     {
+                      //~ If user id is valid, check if they have exceeded the borrow book limit
                       unreturnedBooks = await activeBorrows(),
                       if (unreturnedBooks.length == 3)
                         {
                           showDialog(
                               context: context,
-                              child: generalAlertDialog(
-                                  context,
-                                  "Book Borrow Limit Reached",
-                                  "You cannot borrow more than three books at a time. Please return the books that are currently borrowed!"))
+                              child: generalAlertDialog(context,
+                                  title: "Book Borrow Limit Reached",
+                                  content:
+                                      "No more than three books can be borrowed at a time. Please return the books that are currently borrowed!"))
                         }
                       else
                         {
+                          //~ if the user has not exceeded the limit, proceed.
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -139,19 +142,12 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                     }
                   else
                     {
+                      //~ Invalid User ID entered
                       showDialog(
                           context: context,
-                          child: AlertDialog(
-                            title: Text("Invalid User"),
-                            content:
-                                Text("No user with this ID has been found!"),
-                            actions: [
-                              FlatButton(
-                                child: Text("Close"),
-                                onPressed: () => Navigator.pop(context),
-                              )
-                            ],
-                          ))
+                          child: generalAlertDialog(context,
+                              title: "Invalid User",
+                              content: "No user with this ID has been found!"))
                     }
                 },
                 child: Text("Confirm"),
