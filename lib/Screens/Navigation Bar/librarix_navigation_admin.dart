@@ -20,7 +20,7 @@ class _AdminHomeState extends State<AdminHome> {
   final List<Widget> _pages = [
     BookingView(),
     CatalogueView(),
-    BarcodeScanner(),
+    HistoryView(),
   ];
 
   @override
@@ -29,6 +29,13 @@ class _AdminHomeState extends State<AdminHome> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("LibrariX"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.auto_stories),
+            onPressed: () => Navigator.pushNamed(context, "/scanner"),
+            iconSize: 35.0,
+          ),
+        ],
       ),
       drawer: new Drawer(
         child: new ListView(
@@ -76,7 +83,7 @@ class _AdminHomeState extends State<AdminHome> {
                   //Navigator.of(context).pop();
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
-             new ListTile(
+            new ListTile(
                 title: new Text("Librarian Management"),
                 trailing: new Icon(Icons.camera_front),
                 onTap: () {
