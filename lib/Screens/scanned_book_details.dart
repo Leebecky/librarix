@@ -4,8 +4,6 @@ import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
 
-//TODO when there are 3 books borrowed, cant borrow more
-
 class ScannedBookDetails extends StatefulWidget {
   //^ Parameters were passed form borrow_book_scanner.dart
   final String bookCode, bookCodeType, userId;
@@ -228,17 +226,8 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
 
   //? Checks if the User is currently borrowing the book
   Future<List<Borrow>> hasBorrowed({int index = 0}) async {
-    /* var existingRecord = await FirebaseFirestore.instance
-        .collection("BorrowedBook")
-        .where("BookId", isEqualTo: bookId[i])
-        .where("UserId", isEqualTo: widget.userId)
-        .where("BorrowStatus", isEqualTo: "Borrowed")
-        .get(); */
-
-    // return existingRecord.docs.isNotEmpty;
     var userRecords = await getUserBorrowRecords(widget.userId);
     if (userRecords.isNotEmpty) {
-      print(userRecords);
       return userRecords
           .where(
               (doc) => doc.bookId == bookId[index] && doc.status == "Borrowed")

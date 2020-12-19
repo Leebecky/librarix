@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:librarix/Screens/scanned_book_details.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:librarix/Screens/scanned_book_details.dart';
 import '../Models/user.dart';
+import '../Models/borrow.dart';
+import '../Custom_Widget/general_alert_dialog.dart';
 
 class BarcodeScanner extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class BarcodeScanner extends StatefulWidget {
 class _BarcodeScannerState extends State<BarcodeScanner> {
   //^ Text Controller for retrieving the ISBN code
   String codeType, bookCode, userId;
-
+  var unreturnedBooks;
   @override
   void initState() {
     bookCode = "Waiting for input . . . ";
@@ -112,13 +114,32 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                 color: Theme.of(context).primaryColor,
                 textColor: Theme.of(context).accentColor,
                 onPressed: () async => {
-                  (await validUser(userId))
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ScannedBookDetails(
-                                  bookCode, codeType, userId.toUpperCase())))
-                      : showDialog(
+                  if (await validUser(userId))
+                    {
+                      unreturnedBooks = await activeBorrows(),
+                      if (unreturnedBooks.length == 3)
+                        {
+                          showDialog(
+                              context: context,
+                              child: generalAlertDialog(
+                                  context,
+                                  "Book Borrow Limit Reached",
+                                  "You cannot borrow more than three books at a time. Please return the books that are currently borrowed!"))
+                        }
+                      else
+                        {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ScannedBookDetails(
+                                      bookCode,
+                                      codeType,
+                                      userId.toUpperCase())))
+                        }
+                    }
+                  else
+                    {
+                      showDialog(
                           context: context,
                           child: AlertDialog(
                             title: Text("Invalid User"),
@@ -131,6 +152,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                               )
                             ],
                           ))
+                    }
                 },
                 child: Text("Confirm"),
               ),
@@ -182,5 +204,16 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
         ? printCodeType = "Book ISBN Code"
         : printCodeType = "Book Barcode";
     return printCodeType;
+  }
+
+  //? Checks if you are still allowed to borrow books
+  Future<List<Borrow>> activeBorrows() async {
+    List<Borrow> currentBorrows = await getUserBorrowRecords(userId);
+    if (currentBorrows.isNotEmpty) {
+      return currentBorrows
+          .where((record) => record.status == "Borrowed")
+          .toList();
+    }
+    return currentBorrows = [];
   }
 }
