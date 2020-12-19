@@ -3,9 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/first_view.dart';
 import 'package:librarix/loader.dart';
-import 'librarix_navigations.dart';
-import 'librarix_navigations_librarian.dart';
-import 'librarix_navigation_admin.dart';
+import 'Screens/Navigation Bar/librarix_navigations.dart';
+import 'Screens/Navigation Bar/librarix_navigations_librarian.dart';
+import 'Screens/Navigation Bar/librarix_navigation_admin.dart';
 import 'loader.dart';
 import './Screens/login.dart';
 import './Screens/borrow_book_scanner.dart';
@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
     return FutureBuilder<String>(
         future: checkLoggedIn(),
         builder: (context, snapshot) {
-          print("myroute is ${snapshot.data}");
           if (snapshot.hasData) {
             return MaterialApp(
                 title: "LibrariX",
@@ -40,14 +39,15 @@ class MyApp extends StatelessWidget {
                   primarySwatch: Colors.blue,
                 ),
                 //^ named Navigator routes
-                initialRoute: "${snapshot.data}",
+                initialRoute: snapshot.data,
                 routes: {
                   "/": (context) => Loader(),
-                  //"/firstview": (context) => FirstView(),
+                  "/firstview": (context) => FirstView(),
                   "/login": (context) => Login(),
                   "/home": (context) => Home(),
-                  "/staffHome": (context) => LibrarianHome(),
-                  "/scanner": (context) => ScannerPage(),
+                  "/librarianHome": (context) => LibrarianHome(),
+                  "/adminHome": (context) => AdminHome(),
+                  "/scanner": (context) => BarcodeScanner(),
                 });
           }
           return LinearProgressIndicator();
@@ -68,10 +68,9 @@ class MyApp extends StatelessWidget {
 
         (isAdmin || isLibrarian) ? myRoute = "/staffHome" : myRoute = "/home";
       }
-      return myRoute;
     } catch (e) {
       print("$e: User is not logged in");
-      return myRoute;
     }
+    return myRoute;
   }
 }
