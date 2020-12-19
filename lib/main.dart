@@ -41,8 +41,8 @@ class MyApp extends StatelessWidget {
                 //^ named Navigator routes
                 initialRoute: snapshot.data,
                 routes: {
-                  "/": (context) => Loader(),
-                  "/firstview": (context) => FirstView(),
+                  // "/": (context) => Loader(),
+                  "/": (context) => FirstView(),
                   "/login": (context) => Login(),
                   "/home": (context) => Home(),
                   "/librarianHome": (context) => LibrarianHome(),
@@ -66,7 +66,9 @@ class MyApp extends StatelessWidget {
         bool isAdmin = await checkRole(currentUser.uid, "Admin");
         bool isLibrarian = await checkRole(currentUser.uid, "Librarian");
 
-        (isAdmin || isLibrarian) ? myRoute = "/staffHome" : myRoute = "/home";
+        (isAdmin || isLibrarian)
+            ? myRoute = "/librarianHome"
+            : myRoute = "/home";
       }
     } catch (e) {
       print("$e: User is not logged in");
