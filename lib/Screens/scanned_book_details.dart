@@ -4,7 +4,7 @@ import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
 
-//TODO what happens when there are multiple records returned
+//TODO what happens when there are multiple records returned and handle book stock = 0 as well!
 
 class ScannedBookDetails extends StatefulWidget {
   //^ Parameters were passed form borrow_book_scanner.dart
@@ -112,6 +112,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                     ),
                   );
                 } else if (booksFound[0].stock <= 0) {
+                  //~ if the book is currently out of stock (in the case of entered ISBN)
                   return Column(children: [
                     Card(
                         child: Column(
@@ -139,11 +140,65 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                 return ListView.builder(
                     itemCount: booksFound.length,
                     itemBuilder: (context, i) {
-                      return ListTile(
+                      return ExpansionTile(
+                        leading: Image.network(booksFound[i].image),
+                        title: Text(booksFound[i].title),
+                        children: [
+                          Text(
+                              "Return Date: ${parseDate(calculateReturnDate())}"),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                  //~ Accept and borrow the book
+                                  padding: EdgeInsets.all(20),
+                                  child: FlatButton(
+                                    onPressed: () async {
+                                      if (await hasBorrowed()) {
+                                        createBorrowRecord(createRecord(
+                                            parseDate(
+                                                DateTime.now().toString()),
+                                            parseDate(calculateReturnDate())));
+                                        nav.pop();
+                                        nav.pop();
+                                      } else {
+                                        showDialog(
+                                            context: context,
+                                            child: AlertDialog(
+                                                content: Text(
+                                                    "You have currently borrowing this book!"),
+                                                actions: [
+                                                  FlatButton(
+                                                    child: Text("Close"),
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                  )
+                                                ]));
+                                      }
+                                    },
+                                    child: Icon(Icons.check),
+                                    color: Colors.green,
+                                  )),
+                              Padding(
+                                  //~ Decline and return to home()
+                                  padding: EdgeInsets.all(20),
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      nav.pop();
+                                      nav.pop();
+                                    },
+                                    child: Icon(Icons.clear),
+                                    color: Colors.red,
+                                  )),
+                            ],
+                          )
+                        ],
+                      );
+                      /* return ListTile(
                         leading: Image.network(booksFound[i].image),
                         title: Text(booksFound[i].title),
                         subtitle: Text(booksFound[i].author),
-                      );
+                      ); */
                     });
               } //~ Error message when no book was found
               else if (snapshot.data.length <= 0) {
@@ -210,10 +265,10 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   }
 
 //? Creates the new borrow record
-  Borrow createRecord(String startDate, String returnDate) {
+  Borrow createRecord(String startDate, String returnDate, [int i = 0]) {
     String userId = widget.userId;
-    String borrowBookId = bookId[0];
-    String borrowBookTitle = booksFound[0].title;
+    String borrowBookId = bookId[i];
+    String borrowBookTitle = booksFound[i].title;
     Borrow newRecord;
 
     newRecord = Borrow(userId, borrowBookId, borrowBookTitle, startDate,
@@ -222,13 +277,15 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   }
 
   //? Checks if the User is currently borrowing the book
-  Future<bool> hasBorrowed() async {
+  Future<bool> hasBorrowed([int i = 0]) async {
     QuerySnapshot existingRecord = await FirebaseFirestore.instance
         .collection("BorrowedBook")
+        .where("BookId", isEqualTo: bookId[i])
         .where("UserId", isEqualTo: widget.userId)
         .where("Status", isEqualTo: "Borrowed")
         .get();
 
+    print(existingRecord);
     return existingRecord.docs.isEmpty;
   }
 
