@@ -5,14 +5,14 @@ import 'Screens/test.dart';
 import 'Screens/catalogue_view.dart';
 //import 'package:librarix/views/BookCatalogue/book_details.dart';
 
-class StaffHome extends StatefulWidget {
+class LibrarianHome extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _StaffHomeState();
+    return _LibrarianHomeState();
   }
 }
 
-class _StaffHomeState extends State<StaffHome> {
+class _LibrarianHomeState extends State<LibrarianHome> {
   int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
@@ -101,8 +101,8 @@ class _StaffHomeState extends State<StaffHome> {
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.auto_stories),
-            label: "Borrow Book",
+            icon: new Icon(Icons.check_circle),
+            label: "Book Return",
           ),
         ],
       ),
