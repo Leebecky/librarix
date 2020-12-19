@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -63,17 +62,17 @@ Future<ActiveUser> myActiveUser() async {
 
 //? Checks if the user email exists in the database
 Future<String> getUserRole(String enteredEmail) async {
+  String docId = "";
   try {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("User")
         .where("UserEmail", isEqualTo: enteredEmail)
         .get();
-
-    return snapshot.docs[0].id;
+    (snapshot.docs.isNotEmpty) ? docId = snapshot.docs[0].id : docId = "";
   } catch (e) {
     print("$e : User not found");
-    return "User not found";
   }
+  return docId;
 }
 
 //? Checks for subcollections to determine if User is also a Librarian/Admin

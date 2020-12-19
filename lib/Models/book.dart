@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Book {
   //^ Attributes
   String author,
@@ -48,3 +50,13 @@ Map<String, dynamic> _bookToJson(Book instance) => <String, dynamic>{
       "BookStock": instance.stock,
       "BookTitle": instance.title,
     };
+
+//? Updates BookStock
+Future<void> updateBookStock(String docId, int stockCount) async {
+  FirebaseFirestore.instance
+      .collection("BookCatalogue")
+      .doc(docId)
+      .update({"BookStock": FieldValue.increment(stockCount)})
+      .then((value) => print("Book Stock has been updated!"))
+      .catchError((onError) => print("An error has occurred: $onError"));
+}

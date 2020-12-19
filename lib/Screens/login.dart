@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Models/user.dart';
 
+//TODO change Admin page redirect
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  final primaryColor = const Color(0xFF7fbfe9); 
+  final primaryColor = const Color(0xFF7fbfe9);
 
   //^ Text Editing Controllers
   final userIdCtrl = TextEditingController();
@@ -54,7 +55,7 @@ class _LoginState extends State<Login> {
                 ],
               ),
               Padding(
-                  //~ UserID field
+                  //~ Email field
                   padding: EdgeInsets.all(20),
                   child: TextField(
                       onChanged: (newText) {
@@ -64,7 +65,7 @@ class _LoginState extends State<Login> {
                       },
                       controller: userIdCtrl,
                       decoration: InputDecoration(
-                        labelText: "APU ID",
+                        labelText: "Email",
                         labelStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
@@ -106,7 +107,7 @@ class _LoginState extends State<Login> {
                   builder: (context, listItems) {
                     return DropdownButton<String>(
                       value: dropdownValue,
-                      icon:  Icon(Icons.arrow_downward),
+                      icon: Icon(Icons.arrow_downward),
                       iconSize: 24,
                       elevation: 16,
                       items: listItems.data.map((String value) {
@@ -118,19 +119,23 @@ class _LoginState extends State<Login> {
                           dropdownValue = newValue;
                         });
                       },
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
                       iconEnabledColor: Colors.white,
-                      dropdownColor: primaryColor,
                     );
                   }),
               Padding(
                 padding: EdgeInsets.all(30),
                 child: RaisedButton(
                   color: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
-                    child: Text("Login", style: TextStyle(fontSize: 18, color: primaryColor, fontWeight: FontWeight.w600)),
+                    padding: const EdgeInsets.only(
+                        top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
+                    child: Text("Login",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: primaryColor,
+                            fontWeight: FontWeight.w600)),
                   ),
                   onPressed: accountLogin,
                 ),

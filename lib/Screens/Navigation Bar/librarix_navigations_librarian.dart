@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/Screens/borrow_book_scanner.dart';
-import 'Screens/test.dart';
-import 'Screens/catalogue_view.dart';
-import 'Screens/Staff/booking_records.dart';
+import '../test.dart';
+import '../Staff/booking_records.dart';
+import '../borrow_book_scanner.dart';
+import '../catalogue_view.dart';
 //import 'package:librarix/views/BookCatalogue/book_details.dart';
 
 class LibrarianHome extends StatefulWidget {
@@ -30,6 +31,13 @@ class _LibrarianHomeState extends State<LibrarianHome> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("LibrariX"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.auto_stories),
+            onPressed: () => Navigator.pushNamed(context, "/scanner"),
+            iconSize: 35.0,
+          ),
+        ],
       ),
       drawer: new Drawer(
         child: new ListView(
