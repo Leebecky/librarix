@@ -61,10 +61,9 @@ class MyApp extends StatelessWidget {
 
         (isAdmin || isLibrarian) ? myRoute = "/staffHome" : myRoute = "/home";
       }
-      return myRoute;
     } catch (e) {
       print("$e: User is not logged in");
-      return myRoute;
     }
+    return myRoute;
   }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:librarix/Screens/scanned_book_details.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import '../Models/user.dart';
 
-//TODO implement textfield for user id
 class BarcodeScanner extends StatefulWidget {
   @override
   _BarcodeScannerState createState() => _BarcodeScannerState();
@@ -13,8 +13,6 @@ class BarcodeScanner extends StatefulWidget {
 
 class _BarcodeScannerState extends State<BarcodeScanner> {
   //^ Text Controller for retrieving the ISBN code
-  final bookCodeCtrl = TextEditingController();
-  final userIdCtrl = TextEditingController();
   String codeType, bookCode, userId;
 
   @override
@@ -35,7 +33,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                 onPressed: () => scanBarcode()),
           ],
         ),
-        body: Center(
+        body: SingleChildScrollView(
           child: Column(
             children: [
               //~ UserId display field
@@ -48,7 +46,6 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                     //^ if User is Staff, create a textfield
                     if (snapshot.data) {
                       return TextField(
-                        controller: userIdCtrl,
                         onChanged: (text) => userId = text,
                         decoration: InputDecoration(
                             labelText: "Please enter the Student/Lecturer's ID",
@@ -67,7 +64,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                         builder: (BuildContext context,
                             AsyncSnapshot<ActiveUser> snapshot) {
                           userId = snapshot.data.userId;
-                          return Text(snapshot.data.userId);
+                          return Text("User ID: ${snapshot.data.userId}");
                         },
                       );
                     }
@@ -83,7 +80,6 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
                   ],
-                  controller: bookCodeCtrl,
                   decoration: InputDecoration(
                       labelText: "Enter ISBN Code or Scan book barcode",
                       enabledBorder: OutlineInputBorder(
@@ -101,19 +97,36 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                 ),
               ),
               Padding(
+                //~ Displays the code type entered
                 padding: EdgeInsets.all(20),
-                child: Text("Bookcode = $bookCode"),
+                child: Text("${printBookCodeType()} = $bookCode"),
               ),
               FlatButton(
                 color: Theme.of(context).primaryColor,
                 textColor: Theme.of(context).accentColor,
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ScannedBookDetails(
-                            bookCode, codeType, userId.toUpperCase()))),
-                child: Text("Click Me!"),
-              )
+                onPressed: () async => {
+                  (await validUser(userId))
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ScannedBookDetails(
+                                  bookCode, codeType, userId.toUpperCase())))
+                      : showDialog(
+                          context: context,
+                          child: AlertDialog(
+                            title: Text("Invalid User"),
+                            content:
+                                Text("No user with this ID has been found!"),
+                            actions: [
+                              FlatButton(
+                                child: Text("Close"),
+                                onPressed: () => Navigator.pop(context),
+                              )
+                            ],
+                          ))
+                },
+                child: Text("Confirm"),
+              ),
             ],
           ),
         ));
@@ -146,9 +159,22 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
     return isStaff;
   }
 
-  @override
-  void dispose() {
-    bookCodeCtrl.dispose();
-    super.dispose();
+  //? Checks if the entered UserId belongs to a valid user
+  Future<bool> validUser(String userId) async {
+    var validUser = await FirebaseFirestore.instance
+        .collection("User")
+        .where("UserId", isEqualTo: userId)
+        .get();
+    print(validUser.docs.isNotEmpty);
+    return validUser.docs.isNotEmpty;
+  }
+
+  //? Separates the codeType for printing
+  String printBookCodeType() {
+    String printCodeType;
+    (codeType == "BookISBNCode")
+        ? printCodeType = "Book ISBN Code"
+        : printCodeType = "Book Barcode";
+    return printCodeType;
   }
 }

@@ -5,9 +5,9 @@ import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
 
 //TODO what happens when there are multiple records returned
-//TODO UserID validation
 
 class ScannedBookDetails extends StatefulWidget {
+  //^ Parameters were passed form borrow_book_scanner.dart
   final String bookCode, bookCodeType, userId;
   ScannedBookDetails(this.bookCode, this.bookCodeType, this.userId);
   @override
@@ -43,7 +43,6 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
             builder:
                 (BuildContext context, AsyncSnapshot<List<Book>> snapshot) {
               //~ Display Book found
-              print(snapshot.data.length);
               if (snapshot.data.length == 1) {
                 if (booksFound[0].stock > 0) {
                   return SingleChildScrollView(
@@ -68,19 +67,36 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
+                                //~ Accept and borrow the book
                                 padding: EdgeInsets.all(20),
                                 child: FlatButton(
-                                  onPressed: () {
-                                    createBorrowRecord(createRecord(
-                                        parseDate(DateTime.now().toString()),
-                                        parseDate(calculateReturnDate())));
-                                    nav.pop();
-                                    nav.pop();
+                                  onPressed: () async {
+                                    if (await hasBorrowed()) {
+                                      showDialog(
+                                          context: context,
+                                          child: AlertDialog(
+                                              content: Text(
+                                                  "You have currently borrowing this book!"),
+                                              actions: [
+                                                FlatButton(
+                                                  child: Text("Close"),
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                )
+                                              ]));
+                                    } else {
+                                      createBorrowRecord(createRecord(
+                                          parseDate(DateTime.now().toString()),
+                                          parseDate(calculateReturnDate())));
+                                      nav.pop();
+                                      nav.pop();
+                                    }
                                   },
                                   child: Icon(Icons.check),
                                   color: Colors.green,
                                 )),
                             Padding(
+                                //~ Decline and return to home()
                                 padding: EdgeInsets.all(20),
                                 child: FlatButton(
                                   onPressed: () {
@@ -203,5 +219,22 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
     newRecord = Borrow(userId, borrowBookId, borrowBookTitle, startDate,
         returnDate, "Borrowed");
     return newRecord;
+  }
+
+  //? Checks if the User is currently borrowing the book
+  Future<bool> hasBorrowed() async {
+    QuerySnapshot existingRecord = await FirebaseFirestore.instance
+        .collection("BorrowedBook")
+        .where("UserId", isEqualTo: widget.userId)
+        .where("Status", isEqualTo: "Borrowed")
+        .get();
+
+    return existingRecord.docs.isEmpty;
+  }
+
+  @override
+  void dispose() {
+    nav.dispose();
+    super.dispose();
   }
 }

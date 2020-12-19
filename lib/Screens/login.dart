@@ -51,7 +51,7 @@ class _LoginState extends State<Login> {
                 ],
               ),
               Padding(
-                  //~ UserID field
+                  //~ Email field
                   padding: EdgeInsets.all(20),
                   child: TextField(
                       onChanged: (newText) {
@@ -61,7 +61,7 @@ class _LoginState extends State<Login> {
                       },
                       controller: userIdCtrl,
                       decoration: InputDecoration(
-                        labelText: "APU ID",
+                        labelText: "Email",
                         labelStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
@@ -111,9 +111,7 @@ class _LoginState extends State<Login> {
                           dropdownValue = newValue;
                         });
                       },
-                      style: TextStyle(color: Colors.white),
                       iconEnabledColor: Colors.white,
-                      dropdownColor: Theme.of(context).primaryColor,
                     );
                   }),
               Padding(
