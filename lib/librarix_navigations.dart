@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/config.dart';
 import 'Screens/test.dart';
 import 'Screens/catalogue_view.dart';
 
@@ -74,6 +75,13 @@ class _HomeState extends State<Home> {
                   //Navigator.of(context).pop();
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
+            new ListTile(
+                title: new Text("Switch theme"),
+                trailing: new Icon(Icons.toggle_off_rounded),
+                onTap: () {
+                  currentTheme.switchTheme();
+                }),
+            SizedBox(height: 270.0),
             new Divider(),
             new ListTile(
               title: new Text("Logout"),
