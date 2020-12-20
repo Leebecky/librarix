@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../Models/user.dart';
+import '../Custom_Widget/general_alert_dialog.dart';
 
-//TODO change Admin page redirect
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -43,14 +44,14 @@ class _LoginState extends State<Login> {
               Row(
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Icon(Icons.circle),
+                    padding: EdgeInsets.only(left: 40.0),
+                    child: Image(image: AssetImage('assets/Icon/library.png'), width: 50.0, fit: BoxFit.fitWidth,),
                   ),
-                  SizedBox(width: 22.0),
+                  SizedBox(width: 16.0),
                   Padding(
                     padding: EdgeInsets.all(20),
                     child: Text("LibrariX",
-                        style: TextStyle(fontSize: 50, color: Colors.white)),
+                        style: GoogleFonts.getFont('ZCOOL XiaoWei',textStyle: TextStyle(fontSize: 50, color: Colors.white))),
                   )
                 ],
               ),
@@ -154,8 +155,10 @@ class _LoginState extends State<Login> {
       //^ Testing for type of user
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
         Navigator.popAndPushNamed(context, "/home");
-      } else if (dropdownValue == "Librarian" || dropdownValue == "Admin") {
-        Navigator.popAndPushNamed(context, "/staffHome");
+      } else if (dropdownValue == "Librarian") {
+        Navigator.popAndPushNamed(context, "/librarianHome");
+      } else if (dropdownValue == "Admin") {
+        Navigator.popAndPushNamed(context, "/adminHome");
       } else {
         loginError(context, "invalidRole");
         print("Please select a role");
@@ -220,15 +223,8 @@ class _LoginState extends State<Login> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Error logging in"),
-            content: Text(errorMsg),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text("Close"))
-            ],
-          );
+          return generalAlertDialog(context,
+              title: "Error logging in", content: errorMsg);
         });
   }
 

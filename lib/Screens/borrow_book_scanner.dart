@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:librarix/Screens/scanned_book_details.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:librarix/Screens/scanned_book_details.dart';
 import '../Models/user.dart';
+import '../Models/borrow.dart';
+import '../Custom_Widget/general_alert_dialog.dart';
 
 class BarcodeScanner extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class BarcodeScanner extends StatefulWidget {
 class _BarcodeScannerState extends State<BarcodeScanner> {
   //^ Text Controller for retrieving the ISBN code
   String codeType, bookCode, userId;
-
+  var unreturnedBooks;
   @override
   void initState() {
     bookCode = "Waiting for input . . . ";
@@ -46,19 +48,22 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
                     //^ if User is Staff, create a textfield
-                    if (snapshot.data) {
+                    if (snapshot.data == true) {
                       return TextField(
                         onChanged: (text) {
-                          userId = text;
+                          setState(() {
+                            userId = text.toUpperCase();
+                            return userId.toUpperCase();
+                          });
                         },
                         decoration: InputDecoration(
                             labelText: "Please enter the Student/Lecturer's ID",
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
+                                    color: Theme.of(context).accentColor)),
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                              color: Theme.of(context).primaryColor,
+                              color: Theme.of(context).accentColor,
                             ))),
                       );
                     } else {
@@ -90,11 +95,11 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                   decoration: InputDecoration(
                       labelText: "Enter ISBN Code or Scan book barcode",
                       enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).primaryColor)),
+                          borderSide:
+                              BorderSide(color: Theme.of(context).accentColor)),
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Theme.of(context).primaryColor))),
+                              color: Theme.of(context).accentColor))),
                   onChanged: (newText) {
                     setState(() {
                       bookCode = newText;
@@ -109,28 +114,42 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                 child: Text("${printBookCodeType()} = $bookCode"),
               ),
               FlatButton(
-                color: Theme.of(context).primaryColor,
-                textColor: Theme.of(context).accentColor,
+                //~ The Confirmation button
+                color: Theme.of(context).accentColor,
+                textColor: Colors.black,
                 onPressed: () async => {
-                  (await validUser(userId))
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ScannedBookDetails(
-                                  bookCode, codeType, userId.toUpperCase())))
-                      : showDialog(
+                  if (await validUser(userId))
+                    {
+                      //~ If user id is valid, check if they have exceeded the borrow book limit
+                      unreturnedBooks = await activeBorrows(),
+                      if (unreturnedBooks.length == 3)
+                        {
+                          showDialog(
+                              context: context,
+                              child: generalAlertDialog(context,
+                                  title: "Book Borrow Limit Reached",
+                                  content:
+                                      "No more than three books can be borrowed at a time. Please return the books that are currently borrowed!"))
+                        }
+                      else
+                        //~ if the user has not exceeded the limit, proceed
+                        {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ScannedBookDetails(
+                                      bookCode, codeType, userId)))
+                        }
+                    }
+                  else
+                    {
+                      //~ Invalid User ID entered
+                      showDialog(
                           context: context,
-                          child: AlertDialog(
-                            title: Text("Invalid User"),
-                            content:
-                                Text("No user with this ID has been found!"),
-                            actions: [
-                              FlatButton(
-                                child: Text("Close"),
-                                onPressed: () => Navigator.pop(context),
-                              )
-                            ],
-                          ))
+                          child: generalAlertDialog(context,
+                              title: "Invalid User",
+                              content: "No user with this ID has been found!"))
+                    }
                 },
                 child: Text("Confirm"),
               ),
@@ -172,7 +191,6 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
         .collection("User")
         .where("UserId", isEqualTo: userId)
         .get();
-    print(validUser.docs.isNotEmpty);
     return validUser.docs.isNotEmpty;
   }
 
@@ -183,5 +201,16 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
         ? printCodeType = "Book ISBN Code"
         : printCodeType = "Book Barcode";
     return printCodeType;
+  }
+
+  //? Checks if you are still allowed to borrow books
+  Future<List<Borrow>> activeBorrows() async {
+    List<Borrow> currentBorrows = await getUserBorrowRecords(userId);
+    if (currentBorrows.isNotEmpty) {
+      return currentBorrows
+          .where((record) => record.status == "Borrowed")
+          .toList();
+    }
+    return currentBorrows = [];
   }
 }

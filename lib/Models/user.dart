@@ -62,13 +62,13 @@ Future<ActiveUser> myActiveUser() async {
 
 //? Checks if the user email exists in the database
 Future<String> getUserRole(String enteredEmail) async {
-  String docId = "";
+  String docId;
   try {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("User")
         .where("UserEmail", isEqualTo: enteredEmail)
         .get();
-    (snapshot.docs.isNotEmpty) ? docId = snapshot.docs[0].id : docId = "";
+    docId = snapshot.docs[0].id;
   } catch (e) {
     print("$e : User not found");
   }
