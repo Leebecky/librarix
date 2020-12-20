@@ -37,7 +37,7 @@ Map<String, String> _bookingToJson(Booking instance) => <String, String>{
       "BookingType": instance.bookingType,
     };
 
-//booking_Record Future Builder
+//retrive booking_Record Future Builder
 Future<QuerySnapshot> getBooking() async {
   var firestore = FirebaseFirestore.instance;
 
