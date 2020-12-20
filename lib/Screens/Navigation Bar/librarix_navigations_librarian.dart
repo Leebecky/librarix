@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../test.dart';
 import '../catalogue_view.dart';
 import 'package:librarix/config.dart';
-//import 'package:librarix/views/BookCatalogue/book_details.dart';
 
 class LibrarianHome extends StatefulWidget {
   @override
