@@ -109,6 +109,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                       showDialog(
                           context: context,
                           child: generalAlertDialog(context,
+                              title: "Request Cancelled",
                               content: "This book has already been borrowed!"));
                     } else {
                       createBorrowRecord(createRecord(
@@ -118,6 +119,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                       showDialog(
                           context: context,
                           child: generalAlertDialog(context,
+                              title: "Request Approved",
                               content:
                                   "${booksFound[i].title} has been successfully borrowed!",
                               returnHome: true));
@@ -149,6 +151,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
         FlatButton(
           child: Text("Place Reservation"),
           color: Colors.yellow,
+          textColor: Colors.black,
           onPressed: () => print("Reserved!"),
         )
       ]);
