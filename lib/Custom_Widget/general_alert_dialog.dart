@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 Widget generalAlertDialog(BuildContext context,
-    {String title, String content, returnHome = false}) {
+    {String title = "", String content = "", returnHome = false}) {
   NavigatorState nav = Navigator.of(context);
   return AlertDialog(
     title: Text(title),

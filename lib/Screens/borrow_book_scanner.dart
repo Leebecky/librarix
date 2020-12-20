@@ -51,16 +51,19 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                     if (snapshot.data == true) {
                       return TextField(
                         onChanged: (text) {
-                          userId = text;
+                          setState(() {
+                            userId = text.toUpperCase();
+                            return userId.toUpperCase();
+                          });
                         },
                         decoration: InputDecoration(
                             labelText: "Please enter the Student/Lecturer's ID",
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
+                                    color: Theme.of(context).accentColor)),
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                              color: Theme.of(context).primaryColor,
+                              color: Theme.of(context).accentColor,
                             ))),
                       );
                     } else {
@@ -92,11 +95,11 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                   decoration: InputDecoration(
                       labelText: "Enter ISBN Code or Scan book barcode",
                       enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).primaryColor)),
+                          borderSide:
+                              BorderSide(color: Theme.of(context).accentColor)),
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Theme.of(context).primaryColor))),
+                              color: Theme.of(context).accentColor))),
                   onChanged: (newText) {
                     setState(() {
                       bookCode = newText;
@@ -112,8 +115,8 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
               ),
               FlatButton(
                 //~ The Confirmation button
-                color: Theme.of(context).primaryColor,
-                textColor: Theme.of(context).accentColor,
+                color: Theme.of(context).accentColor,
+                textColor: Colors.black,
                 onPressed: () async => {
                   if (await validUser(userId))
                     {
@@ -129,15 +132,13 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                                       "No more than three books can be borrowed at a time. Please return the books that are currently borrowed!"))
                         }
                       else
+                        //~ if the user has not exceeded the limit, proceed
                         {
-                          //~ if the user has not exceeded the limit, proceed.
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ScannedBookDetails(
-                                      bookCode,
-                                      codeType,
-                                      userId.toUpperCase())))
+                                      bookCode, codeType, userId)))
                         }
                     }
                   else

@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Models/user.dart';
 import '../Custom_Widget/general_alert_dialog.dart';
 
-//TODO change Admin page redirect
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
