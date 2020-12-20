@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
 import 'package:librarix/loader.dart';
 import 'Screens/Navigation Bar/librarix_navigations.dart';
@@ -18,7 +19,22 @@ main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+//Get the state of dark mode or light mode and update it
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState(){
+    super.initState();
+    currentTheme.addListener(() {
+      print('Changes');
+      setState((){});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
@@ -27,15 +43,9 @@ class MyApp extends StatelessWidget {
           if (snapshot.hasData) {
             return MaterialApp(
                 title: "LibrariX",
-                theme: ThemeData(
-                  brightness: Brightness.light,
-                  primarySwatch: Colors.blue,
-                  accentColor: Colors.white,
-                ),
-                darkTheme: ThemeData(
-                  brightness: Brightness.dark,
-                  primarySwatch: Colors.blue,
-                ),
+                theme: ThemeData.light(),
+                darkTheme: ThemeData.dark(),
+                themeMode: currentTheme.currentTheme(),
                 //^ named Navigator routes
                 initialRoute: snapshot.data,
                 routes: {
@@ -52,7 +62,6 @@ class MyApp extends StatelessWidget {
         });
   }
 
-//? Checks if the user is logged in. If yes, go to home, else redirect to login
   Future<String> checkLoggedIn() async {
     String myRoute = "/home";
     try {

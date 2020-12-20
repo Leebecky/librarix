@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../Models/user.dart';
 import '../Custom_Widget/general_alert_dialog.dart';
 
@@ -44,14 +45,14 @@ class _LoginState extends State<Login> {
               Row(
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Icon(Icons.circle),
+                    padding: EdgeInsets.only(left: 40.0),
+                    child: Image(image: AssetImage('assets/Icon/library.png'), width: 50.0, fit: BoxFit.fitWidth,),
                   ),
-                  SizedBox(width: 22.0),
+                  SizedBox(width: 16.0),
                   Padding(
                     padding: EdgeInsets.all(20),
                     child: Text("LibrariX",
-                        style: TextStyle(fontSize: 50, color: Colors.white)),
+                        style: GoogleFonts.getFont('ZCOOL XiaoWei',textStyle: TextStyle(fontSize: 50, color: Colors.white))),
                   )
                 ],
               ),
