@@ -33,26 +33,21 @@ class BookingRecords extends StatelessWidget {
                       leading: Container(
                         padding: EdgeInsets.only(right: 12.0),
                         decoration: new BoxDecoration(
-                            border: new Border(
-                                right: new BorderSide(
-                                    width: 1.0, color: Colors.blueGrey))),
-                        child:
-                            Icon(Icons.meeting_room, color: Colors.grey[600]),
+                            border:
+                                new Border(right: new BorderSide(width: 1.0))),
+                        child: Icon(Icons.meeting_room),
                       ),
                       title: Text(
                         myBooking[index].roomOrTableNum,
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Row(
                         children: <Widget>[
                           Expanded(
                               child: Padding(
                             padding: EdgeInsets.only(left: 10.0),
-                            child: Text(
-                              myBooking[index].userId + "  |  TeohXP",
-                              style: TextStyle(color: Colors.black),
-                            ),
+                            child:
+                                Text(myBooking[index].userId + "  |  TeohXP"),
                           )),
 
                           //wanna make it to the new line
@@ -61,7 +56,6 @@ class BookingRecords extends StatelessWidget {
                             myBooking[index].bookingStartTime +
                                 " - " +
                                 myBooking[index].bookingEndTime,
-                            style: TextStyle(color: Colors.black),
                           ),
                         ],
                       ),

@@ -5,6 +5,7 @@ import '../test.dart';
 import '../Staff/booking_records.dart';
 import '../borrow_book_scanner.dart';
 import '../catalogue_view.dart';
+import '../Staff/book_management.dart';
 //import 'package:librarix/views/BookCatalogue/book_details.dart';
 
 class LibrarianHome extends StatefulWidget {
@@ -71,6 +72,15 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                   //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return BookingRecords();
+                  }));
+                }),
+            new ListTile(
+                title: new Text("Book Management"),
+                trailing: new Icon(Icons.book_online),
+                onTap: () {
+                  //Navigator.of(context).pop();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookManagement();
                   }));
                 }),
             new ListTile(
