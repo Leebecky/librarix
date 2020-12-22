@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../test.dart';
+import '../Staff/booking_records.dart';
 import '../catalogue_view.dart';
+import '../Staff/book_management.dart';
 import 'package:librarix/config.dart';
+import '../booking_maker.dart';
 
 class LibrarianHome extends StatefulWidget {
   @override
@@ -18,7 +21,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 
   final List<Widget> _pages = [
-    BookingView(),
+    BookingMaker(),
     CatalogueView(),
     HistoryView(),
   ];
@@ -71,7 +74,18 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                 trailing: new Icon(Icons.book_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookingRecords();
+                  }));
+                }),
+            new ListTile(
+                title: new Text("Book Management"),
+                trailing: new Icon(Icons.book_online),
+                onTap: () {
+                  //Navigator.of(context).pop();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookManagement();
+                  }));
                 }),
             new ListTile(
                 title: new Text("Fines Management"),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../modules.dart';
 import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
@@ -185,19 +186,13 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
     DateTime returnDate = startDate.add(Duration(days: 6));
 
     //^ Checks if the returnDate lands on a weekend and extends it to Monday if so
-    if (returnDate.day == DateTime.saturday) {
-      returnDate.add(Duration(days: 2));
-    } else if (returnDate.day == DateTime.sunday) {
-      returnDate.add(Duration(days: 1));
+
+    if (returnDate.weekday == DateTime.saturday) {
+      returnDate = returnDate.add(Duration(days: 2));
+    } else if (returnDate.weekday == DateTime.sunday) {
+      returnDate = returnDate.add(Duration(days: 1));
     }
     return returnDate.toString();
-  }
-
-  //? Takes the dateTime string and extracts only the day/month/year
-  String parseDate(String date) {
-    var dateParse = DateTime.parse(date);
-    var dateString = "${dateParse.day}/${dateParse.month}/${dateParse.year}";
-    return dateString.toString();
   }
 
 //? Creates the new borrow record

@@ -116,8 +116,8 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
               FlatButton(
                 //~ The Confirmation button
                 color: Theme.of(context).accentColor,
-                textColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                colorBrightness: Theme.of(context).accentColorBrightness,
                 onPressed: () async => {
                   if (await validUser(userId))
                     {

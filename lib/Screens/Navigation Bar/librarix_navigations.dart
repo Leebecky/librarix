@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../test.dart';
 import '../catalogue_view.dart';
 import 'package:librarix/config.dart';
+import 'package:librarix/Screens/booking_maker.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _HomeState extends State<Home> {
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 
   final List<Widget> _pages = [
-    BookingView(),
+    BookingMaker(),
     CatalogueView(),
     HistoryView(),
   ];
