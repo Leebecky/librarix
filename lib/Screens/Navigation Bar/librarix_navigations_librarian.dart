@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:librarix/Screens/borrow_book_scanner.dart';
 import '../test.dart';
 import '../Staff/booking_records.dart';
 import '../catalogue_view.dart';
 import '../Staff/book_management.dart';
 import 'package:librarix/config.dart';
 import '../booking_maker.dart';
-
 
 class LibrarianHome extends StatefulWidget {
   @override
