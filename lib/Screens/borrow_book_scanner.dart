@@ -76,7 +76,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                             AsyncSnapshot<ActiveUser> user) {
                           if (user.hasData) {
                             userId = user.data.userId;
-                            return Text("User ID: ${user.data.userId}");
+                            return Text("User ID: ${user.data.userId}", style: TextStyle(fontSize: 20.0),);
                           }
                           return LinearProgressIndicator();
                         },
@@ -113,11 +113,12 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
               Padding(
                 //~ Displays the code type entered
                 padding: EdgeInsets.all(20),
-                child: Text("${printBookCodeType()} = $bookCode"),
+                child: Text("${printBookCodeType()} = $bookCode", style: TextStyle(fontSize: 18.0)),
               ),
               FlatButton(
                 //~ The Confirmation button
                 color: Theme.of(context).accentColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
                 colorBrightness: Theme.of(context).accentColorBrightness,
                 onPressed: () async => {
                   if (await validUser(userId.value))
@@ -153,7 +154,10 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                               content: "No user with this ID has been found!"))
                     }
                 },
-                child: Text("Confirm"),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
+                  child: Text("Confirm", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400)),
+                ),
               ),
             ],
           ),
