@@ -37,7 +37,6 @@ class _LoginState extends State<Login> {
     return Scaffold(
         backgroundColor: primaryColor,
         body: SingleChildScrollView(
-            child: Expanded(
           child: Column(
             children: [
               Padding(padding: EdgeInsets.all(40)),
@@ -45,13 +44,19 @@ class _LoginState extends State<Login> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(left: 40.0),
-                    child: Image(image: AssetImage('assets/Icon/library.png'), width: 50.0, fit: BoxFit.fitWidth,),
+                    child: Image(
+                      image: AssetImage('assets/Icon/library.png'),
+                      width: 50.0,
+                      fit: BoxFit.fitWidth,
+                    ),
                   ),
                   SizedBox(width: 16.0),
                   Padding(
                     padding: EdgeInsets.all(20),
                     child: Text("LibrariX",
-                        style: GoogleFonts.getFont('ZCOOL XiaoWei',textStyle: TextStyle(fontSize: 50, color: Colors.white))),
+                        style: GoogleFonts.getFont('ZCOOL XiaoWei',
+                            textStyle:
+                                TextStyle(fontSize: 50, color: Colors.white))),
                   )
                 ],
               ),
@@ -143,7 +148,7 @@ class _LoginState extends State<Login> {
               ),
             ],
           ),
-        )));
+        ));
   }
 
   //? Login
