@@ -60,11 +60,3 @@ Future<void> updateBookStock(String docId, int stockCount) async {
       .then((value) => print("Book Stock has been updated!"))
       .catchError((onError) => print("An error has occurred: $onError"));
 }
-
-Future<QuerySnapshot> getBook() async {
-  var firestore = FirebaseFirestore.instance;
-
-  QuerySnapshot bookDetails = await firestore.collection("BookCatalogue").get();
-
-  return bookDetails;
-}

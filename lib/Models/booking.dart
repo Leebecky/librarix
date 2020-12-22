@@ -20,6 +20,7 @@ class Booking {
     this.roomOrTableNum,
     this.userId,
   );
+
   Map<String, String> toJson() => _bookingToJson(this);
 }
 
@@ -39,7 +40,7 @@ Map<String, String> _bookingToJson(Booking instance) => <String, String>{
       "BookingDate": instance.bookingDate,
       "BookingEndTime": instance.bookingEndTime,
       "BookingStartTime": instance.bookingStartTime,
-      "BookingStatus": instance.bookingStatus,
+      "BookingStatus" : instance.bookingStatus,
       "BookingType": instance.bookingType,
       "Room/TableNum": instance.roomOrTableNum,
       "UserId": instance.userId,
