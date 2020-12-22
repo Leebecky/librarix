@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../test.dart';
 import '../catalogue_view.dart';
 import 'package:librarix/config.dart';
+import 'package:librarix/Screens/booking_maker.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -12,18 +13,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  double screenWidth, screenHeight;
   int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 
   final List<Widget> _pages = [
-    BookingView(),
+    BookingMaker(),
     CatalogueView(),
     HistoryView(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    screenHeight = size.height;
+    screenWidth = size.width;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -81,7 +87,7 @@ class _HomeState extends State<Home> {
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
-            SizedBox(height: 270.0),
+            SizedBox(height: screenHeight * 0.35),
             new Divider(),
             new ListTile(
               title: new Text("Logout"),

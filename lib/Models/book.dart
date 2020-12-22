@@ -16,9 +16,10 @@ class Book {
   //^ Constructor
   Book(this.author, this.barcode, this.description, this.genre, this.isbnCode,
       this.image, this.publishDate, this.publisher, this.stock, this.title);
-
+      
   //? Converts the Book into a map of key/value pairs
   Map<String, String> toJson() => _bookToJson(this);
+
 }
 
 //? Converts map of values from Firestore into Book object.

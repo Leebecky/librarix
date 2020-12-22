@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/config.dart';
 import '../test.dart';
 import '../catalogue_view.dart';
+import '../booking_maker.dart';
 import '../Staff/booking_records.dart';
 import '../Staff/book_management.dart';
-//import 'package:librarix/views/BookCatalogue/book_details.dart';
 
 class AdminHome extends StatefulWidget {
   @override
@@ -15,18 +15,23 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
+  double screenWidth, screenHeight;
   int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 
   final List<Widget> _pages = [
-    BookingView(),
+    BookingMaker(),
     CatalogueView(),
     HistoryView(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    screenHeight = size.height;
+    screenWidth = size.width;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -109,6 +114,7 @@ class _AdminHomeState extends State<AdminHome> {
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
+            SizedBox(height: screenHeight * 0.2),
             new Divider(),
             new ListTile(
               title: new Text("Logout"),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../modules.dart';
 import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
@@ -192,13 +193,6 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
       returnDate = returnDate.add(Duration(days: 1));
     }
     return returnDate.toString();
-  }
-
-  //? Takes the dateTime string and extracts only the day/month/year
-  String parseDate(String date) {
-    var dateParse = DateTime.parse(date);
-    var dateString = "${dateParse.day}/${dateParse.month}/${dateParse.year}";
-    return dateString.toString();
   }
 
 //? Creates the new borrow record
