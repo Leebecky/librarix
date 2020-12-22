@@ -61,6 +61,7 @@ Future<void> updateBookStock(String docId, int stockCount) async {
       .catchError((onError) => print("An error has occurred: $onError"));
 }
 
+//retrieve and diplay list view in book_management
 Future<QuerySnapshot> getBook() async {
   var firestore = FirebaseFirestore.instance;
 
