@@ -12,6 +12,7 @@ class LibrarianHome extends StatefulWidget {
 }
 
 class _LibrarianHomeState extends State<LibrarianHome> {
+  double screenWidth, screenHeight;
   int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
@@ -24,6 +25,10 @@ class _LibrarianHomeState extends State<LibrarianHome> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    screenHeight = size.height;
+    screenWidth = size.width;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -88,7 +93,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
-            SizedBox(height: 300.0),
+            SizedBox(height: screenHeight * 0.28),
             new Divider(),
             new ListTile(
               title: new Text("Logout"),

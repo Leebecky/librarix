@@ -13,6 +13,7 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
+  double screenWidth, screenHeight;
   int _currentIndex = 1;
   String currentProfilePic =
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
@@ -25,6 +26,10 @@ class _AdminHomeState extends State<AdminHome> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    screenHeight = size.height;
+    screenWidth = size.width;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -96,6 +101,7 @@ class _AdminHomeState extends State<AdminHome> {
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
+            SizedBox(height: screenHeight * 0.2),
             new Divider(),
             new ListTile(
               title: new Text("Logout"),
