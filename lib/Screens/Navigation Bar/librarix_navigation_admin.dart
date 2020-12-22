@@ -84,7 +84,7 @@ class _AdminHomeState extends State<AdminHome> {
                 onTap: () {
                   //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return BookManagement();
+                    return BookManagementListView();
                   }));
                 }),
             new ListTile(

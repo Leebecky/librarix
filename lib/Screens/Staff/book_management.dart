@@ -1,10 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:librarix/Models/book.dart';
-import '../Staff/book_management_detail_page.dart';
+import 'package:flutter/cupertino.dart';
+import 'book_management_detail_page.dart';
 
-class BookManagement extends StatelessWidget {
-  List<Book> myBook = [];
+class BookManagementListView extends StatefulWidget {
+  @override
+  _BookManagementListViewState createState() => _BookManagementListViewState();
+}
+
+class _BookManagementListViewState extends State<BookManagementListView> {
+  Future getBook() async {
+    await Firebase.initializeApp();
+    var firestore = FirebaseFirestore.instance;
+    QuerySnapshot bookDetail =
+        await firestore.collection("BookCatalogue").get();
+    return bookDetail.docs;
+  }
+
+  navigateToDetail(DocumentSnapshot bookCatalogue) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                BookManagementDetailPage(bookCatalogue: bookCatalogue)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,50 +44,39 @@ class BookManagement extends StatelessWidget {
         ),
       ),
       body: Container(
-        child: FutureBuilder<QuerySnapshot>(
+        child: FutureBuilder(
           future: getBook(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.data == null) {
+          builder: (_, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                   child: Text(
                 "Loading ... ",
                 textAlign: TextAlign.center,
               ));
             } else {
-              snapshot.data.docs.forEach((doc) {
-                myBook.add(bookFromJson(doc.data()));
-              });
+              // snapshot.data.docs.forEach((doc) {
+              //   myBook.add(bookFromJson(doc.data()));
+              // });
               return ListView.builder(
-                  itemCount: myBook.length,
-                  itemBuilder: (BuildContext context, int index) {
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (_, index) {
                     return ListTile(
                       leading: Container(
                         padding: EdgeInsets.only(bottom: 15.0),
                         child: Image.network(
-                          myBook[index].image,
-                        ),
+                            snapshot.data[index].data()['BookImage']),
                       ),
                       title: Text(
-                        myBook[index].title,
+                        snapshot.data[index].data()['BookTitle'],
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       subtitle: Text(
-                        myBook[index].description,
+                        snapshot.data[index].data()['BookDescription'],
                         style: TextStyle(fontSize: 14),
                       ),
                       onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             new BookManagementDetailPage(
-                        //                 myBook[index])));
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return BookManagementDetailPage();
-                        }));
+                        navigateToDetail(snapshot.data[index]);
                       },
                     );
                   });

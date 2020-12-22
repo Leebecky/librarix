@@ -16,10 +16,9 @@ class Book {
   //^ Constructor
   Book(this.author, this.barcode, this.description, this.genre, this.isbnCode,
       this.image, this.publishDate, this.publisher, this.stock, this.title);
-      
+
   //? Converts the Book into a map of key/value pairs
   Map<String, String> toJson() => _bookToJson(this);
-
 }
 
 //? Converts map of values from Firestore into Book object.
@@ -60,13 +59,4 @@ Future<void> updateBookStock(String docId, int stockCount) async {
       .update({"BookStock": FieldValue.increment(stockCount)})
       .then((value) => print("Book Stock has been updated!"))
       .catchError((onError) => print("An error has occurred: $onError"));
-}
-
-//retrieve and diplay list view in book_management
-Future<QuerySnapshot> getBook() async {
-  var firestore = FirebaseFirestore.instance;
-
-  QuerySnapshot bookDetails = await firestore.collection("BookCatalogue").get();
-
-  return bookDetails;
 }
