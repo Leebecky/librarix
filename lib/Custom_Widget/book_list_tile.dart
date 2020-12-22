@@ -63,15 +63,15 @@ class _BookDescription extends StatelessWidget {
             title,
             style: const TextStyle(
               fontWeight: FontWeight.w500,
-              fontSize: 14.0,
+              fontSize: 25,
             ),
           ),
           const Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
           Text(
             author,
-            style: const TextStyle(fontSize: 10.0),
+            style: const TextStyle(fontSize: 15.0),
           ),
-          const Padding(padding: EdgeInsets.symmetric(vertical: 1.0)),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
           Text(
             '$stock available',
             style: const TextStyle(

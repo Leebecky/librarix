@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
-
-//TODO what happens when there are multiple records returned and handle book stock = 0 as well!
+import '../Custom_Widget/general_alert_dialog.dart';
 
 class ScannedBookDetails extends StatefulWidget {
   //^ Parameters were passed form borrow_book_scanner.dart
@@ -32,6 +31,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
     super.initState();
   }
 
+  //? Screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,180 +43,119 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
             builder:
                 (BuildContext context, AsyncSnapshot<List<Book>> snapshot) {
               //~ Display Book found
-              if (snapshot.data.length == 1) {
-                if (booksFound[0].stock > 0) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.data.length == 1) {
                   return SingleChildScrollView(
                     child: Column(
                       children: [
-                        Card(
-                            child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            CustomBookTile(
-                                title: booksFound[0].title,
-                                author: booksFound[0].author,
-                                stock: booksFound[0].stock,
-                                thumbnail: Container(
-                                  child: Image.network(booksFound[0].image),
-                                ))
-                          ],
-                        )),
-                        Text(
-                            "Return Date: ${parseDate(calculateReturnDate())}"),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                                //~ Accept and borrow the book
-                                padding: EdgeInsets.all(20),
-                                child: FlatButton(
-                                  onPressed: () async {
-                                    if (await hasBorrowed()) {
-                                      showDialog(
-                                          context: context,
-                                          child: AlertDialog(
-                                              content: Text(
-                                                  "You have currently borrowing this book!"),
-                                              actions: [
-                                                FlatButton(
-                                                  child: Text("Close"),
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                )
-                                              ]));
-                                    } else {
-                                      createBorrowRecord(createRecord(
-                                          parseDate(DateTime.now().toString()),
-                                          parseDate(calculateReturnDate())));
-                                      nav.pop();
-                                      nav.pop();
-                                    }
-                                  },
-                                  child: Icon(Icons.check),
-                                  color: Colors.green,
-                                )),
-                            Padding(
-                                //~ Decline and return to home()
-                                padding: EdgeInsets.all(20),
-                                child: FlatButton(
-                                  onPressed: () {
-                                    nav.pop();
-                                    nav.pop();
-                                  },
-                                  child: Icon(Icons.clear),
-                                  color: Colors.red,
-                                )),
-                          ],
-                        )
+                        BookCard(booksFound),
+                        borrowDetails(context),
                       ],
                     ),
                   );
-                } else if (booksFound[0].stock <= 0) {
-                  //~ if the book is currently out of stock (in the case of entered ISBN)
-                  return Column(children: [
-                    Card(
-                        child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        CustomBookTile(
-                            title: booksFound[0].title,
-                            author: booksFound[0].author,
-                            stock: booksFound[0].stock,
-                            thumbnail: Container(
-                              child: Image.network(booksFound[0].image),
-                            ))
-                      ],
-                    )),
-                    FlatButton(
-                      child: Text("Place Reservation"),
-                      color: Colors.yellow,
-                      onPressed: () => print("Reserved!"),
-                    )
-                  ]);
+                }
+                //~  Selection screen when >1 book is returned from the database
+                else if (snapshot.data.length > 1) {
+                  return ListView.builder(
+                      itemCount: booksFound.length,
+                      itemBuilder: (context, i) {
+                        return ExpansionTile(
+                          leading: Image.network(booksFound[i].image),
+                          title: Text(booksFound[i].title),
+                          children: <Widget>[
+                            Text(booksFound[i].author),
+                            Text("${booksFound[i].stock.toString()} available"),
+                            borrowDetails(context, i: i),
+                          ],
+                        );
+                      });
+                } //~ Error message when no book was found
+                else if (snapshot.data.length <= 0) {
+                  return Center(
+                      child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Text(
+                      "Sorry, no book matching the provided ${widget.bookCodeType} has been found. Please try again.",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ));
                 }
               }
-              //~  Selection screen when >1 book is returned from the database
-              else if (snapshot.data.length > 1) {
-                return ListView.builder(
-                    itemCount: booksFound.length,
-                    itemBuilder: (context, i) {
-                      return ExpansionTile(
-                        leading: Image.network(booksFound[i].image),
-                        title: Text(booksFound[i].title),
-                        children: [
-                          Text(
-                              "Return Date: ${parseDate(calculateReturnDate())}"),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                  //~ Accept and borrow the book
-                                  padding: EdgeInsets.all(20),
-                                  child: FlatButton(
-                                    onPressed: () async {
-                                      if (await hasBorrowed()) {
-                                        createBorrowRecord(createRecord(
-                                            parseDate(
-                                                DateTime.now().toString()),
-                                            parseDate(calculateReturnDate())));
-                                        nav.pop();
-                                        nav.pop();
-                                      } else {
-                                        showDialog(
-                                            context: context,
-                                            child: AlertDialog(
-                                                content: Text(
-                                                    "You have currently borrowing this book!"),
-                                                actions: [
-                                                  FlatButton(
-                                                    child: Text("Close"),
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                  )
-                                                ]));
-                                      }
-                                    },
-                                    child: Icon(Icons.check),
-                                    color: Colors.green,
-                                  )),
-                              Padding(
-                                  //~ Decline and return to home()
-                                  padding: EdgeInsets.all(20),
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      nav.pop();
-                                      nav.pop();
-                                    },
-                                    child: Icon(Icons.clear),
-                                    color: Colors.red,
-                                  )),
-                            ],
-                          )
-                        ],
-                      );
-                      /* return ListTile(
-                        leading: Image.network(booksFound[i].image),
-                        title: Text(booksFound[i].title),
-                        subtitle: Text(booksFound[i].author),
-                      ); */
-                    });
-              } //~ Error message when no book was found
-              else if (snapshot.data.length <= 0) {
-                return Center(
-                    child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.0),
-                  child: Text(
-                    "Sorry, no book matching the provided ${widget.bookCodeType} has been found. Please try again.",
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ));
-              }
-
               //~  Progress Indicator when data is buffering
               return LinearProgressIndicator();
             }));
+  }
+
+//? Borrow Book Options
+  Widget borrowDetails(BuildContext context, {int i = 0}) {
+    if (booksFound[i].stock > 0) {
+      return Column(children: [
+        Padding(
+            padding: EdgeInsets.symmetric(vertical: 15),
+            child: Text("Return Date: ${parseDate(calculateReturnDate())}")),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+                //~ Accept and borrow the book
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: FlatButton(
+                  onPressed: () async {
+                    var existingRecord = await hasBorrowed(index: i);
+
+                    if (existingRecord.isNotEmpty) {
+                      showDialog(
+                          context: context,
+                          child: generalAlertDialog(context,
+                              title: "Request Cancelled",
+                              content: "This book has already been borrowed!"));
+                    } else {
+                      createBorrowRecord(createRecord(
+                          parseDate(DateTime.now().toString()),
+                          parseDate(calculateReturnDate()),
+                          i: i));
+                      showDialog(
+                          context: context,
+                          child: generalAlertDialog(context,
+                              title: "Request Approved",
+                              content:
+                                  "${booksFound[i].title} has been successfully borrowed!",
+                              returnHome: true));
+                    }
+                  },
+                  child: Icon(Icons.check),
+                  color: Colors.green,
+                )),
+            Padding(padding: EdgeInsets.all(15)),
+            Padding(
+                //~ Decline and return to home()
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: FlatButton(
+                  onPressed: () {
+                    nav.pop();
+                    nav.pop();
+                  },
+                  child: Icon(Icons.clear),
+                  color: Colors.red,
+                )),
+          ],
+        )
+      ]);
+    } else {
+      return Column(children: [
+        Padding(
+            padding: EdgeInsets.symmetric(vertical: 15),
+            child: Text("Return Date: ${parseDate(calculateReturnDate())}")),
+        FlatButton(
+          child: Text("Place Reservation"),
+          color: Colors.yellow,
+          textColor: Colors.black,
+          onPressed: () => print("Reserved!"),
+        )
+      ]);
+    }
   }
 
   //? Search for book in catalogue based on scanned barcode/ISBN code
@@ -246,15 +185,13 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
     DateTime returnDate = startDate.add(Duration(days: 6));
 
     //^ Checks if the returnDate lands on a weekend and extends it to Monday if so
-    if (returnDate.day == DateTime.saturday) {
-      returnDate.add(Duration(days: 2));
-      return returnDate.toString();
-    } else if (returnDate.day == DateTime.sunday) {
-      returnDate.add(Duration(days: 1));
-      return returnDate.toString();
-    } else {
-      return returnDate.toString();
+
+    if (returnDate.weekday == DateTime.saturday) {
+      returnDate = returnDate.add(Duration(days: 2));
+    } else if (returnDate.weekday == DateTime.sunday) {
+      returnDate = returnDate.add(Duration(days: 1));
     }
+    return returnDate.toString();
   }
 
   //? Takes the dateTime string and extracts only the day/month/year
@@ -265,7 +202,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   }
 
 //? Creates the new borrow record
-  Borrow createRecord(String startDate, String returnDate, [int i = 0]) {
+  Borrow createRecord(String startDate, String returnDate, {int i = 0}) {
     String userId = widget.userId;
     String borrowBookId = bookId[i];
     String borrowBookTitle = booksFound[i].title;
@@ -277,21 +214,38 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   }
 
   //? Checks if the User is currently borrowing the book
-  Future<bool> hasBorrowed([int i = 0]) async {
-    QuerySnapshot existingRecord = await FirebaseFirestore.instance
-        .collection("BorrowedBook")
-        .where("BookId", isEqualTo: bookId[i])
-        .where("UserId", isEqualTo: widget.userId)
-        .where("Status", isEqualTo: "Borrowed")
-        .get();
-
-    print(existingRecord);
-    return existingRecord.docs.isEmpty;
+  Future<List<Borrow>> hasBorrowed({int index = 0}) async {
+    var userRecords = await getUserBorrowRecords(widget.userId);
+    if (userRecords.isNotEmpty) {
+      return userRecords
+          .where(
+              (doc) => doc.bookId == bookId[index] && doc.status == "Borrowed")
+          .toList();
+    }
+    return userRecords = [];
   }
+}
 
+//? BookCard widget
+class BookCard extends StatelessWidget {
+  final List<Book> booksFound;
+  final int i;
+
+  BookCard(this.booksFound, {this.i = 0});
   @override
-  void dispose() {
-    nav.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return Card(
+        child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        CustomBookTile(
+            title: booksFound[i].title,
+            author: booksFound[i].author,
+            stock: booksFound[i].stock,
+            thumbnail: Container(
+              child: Image.network(booksFound[i].image),
+            ))
+      ],
+    ));
   }
 }

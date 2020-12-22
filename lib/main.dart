@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
 import 'package:librarix/loader.dart';
 import 'Screens/Navigation Bar/librarix_navigations.dart';
 import 'Screens/Navigation Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation Bar/librarix_navigation_admin.dart';
-import 'loader.dart';
 import './Screens/login.dart';
 import './Screens/borrow_book_scanner.dart';
 import './Models/user.dart';
 
-//TODO add splash screens to hide loading sequence of the application
 main() async {
   //? initialises firebase instances for authentication and Cloud FireStore
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +19,22 @@ main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+//Get the state of dark mode or light mode and update it
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState(){
+    super.initState();
+    currentTheme.addListener(() {
+      print('Changes');
+      setState((){});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
@@ -29,20 +43,14 @@ class MyApp extends StatelessWidget {
           if (snapshot.hasData) {
             return MaterialApp(
                 title: "LibrariX",
-                theme: ThemeData(
-                  brightness: Brightness.light,
-                  primarySwatch: Colors.blue,
-                  accentColor: Colors.white,
-                ),
-                darkTheme: ThemeData(
-                  brightness: Brightness.dark,
-                  primarySwatch: Colors.blue,
-                ),
+                theme: ThemeData.light(),
+                darkTheme: ThemeData.dark(),
+                themeMode: currentTheme.currentTheme(),
                 //^ named Navigator routes
                 initialRoute: snapshot.data,
                 routes: {
-                  // "/": (context) => Loader(),
                   "/": (context) => FirstView(),
+                  "/loader": (context) => Loader(),
                   "/login": (context) => Login(),
                   "/home": (context) => Home(),
                   "/librarianHome": (context) => LibrarianHome(),
@@ -50,11 +58,10 @@ class MyApp extends StatelessWidget {
                   "/scanner": (context) => BarcodeScanner(),
                 });
           }
-          return LinearProgressIndicator();
+          return Loader();
         });
   }
 
-//? Checks if the user is logged in. If yes, go to home, else redirect to login
   Future<String> checkLoggedIn() async {
     String myRoute = "/home";
     try {
@@ -66,9 +73,11 @@ class MyApp extends StatelessWidget {
         bool isAdmin = await checkRole(currentUser.uid, "Admin");
         bool isLibrarian = await checkRole(currentUser.uid, "Librarian");
 
-        (isAdmin || isLibrarian)
-            ? myRoute = "/librarianHome"
-            : myRoute = "/home";
+        (isAdmin)
+            ? myRoute = "/adminHome" //~ (if admin)
+            : (isLibrarian)
+                ? myRoute = "/librarianHome" //~ (if librarian)
+                : myRoute = "/home"; //~ (if user)
       }
     } catch (e) {
       print("$e: User is not logged in");
