@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:librarix/Screens/scanned_book_details.dart';
-import '../Models/user.dart';
+// import '../Models/user.dart';
 import '../Models/borrow.dart';
 import '../Custom_Widget/general_alert_dialog.dart';
+import '../Custom_Widget/user_id_field.dart';
+import '../modules.dart';
 
 class BarcodeScanner extends StatefulWidget {
   @override
@@ -15,13 +15,14 @@ class BarcodeScanner extends StatefulWidget {
 
 class _BarcodeScannerState extends State<BarcodeScanner> {
   //^ Text Controller for retrieving the ISBN code
-  String codeType, bookCode, userId;
+  String codeType, bookCode;
   var unreturnedBooks;
+  ValueNotifier<String> userId = ValueNotifier("");
+
   @override
   void initState() {
     bookCode = "Waiting for input . . . ";
     codeType = "BookISBNCode";
-    userId = "";
     printBookCodeType();
     super.initState();
   }
@@ -43,7 +44,8 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
               //~ UserId display field
               Padding(
                 padding: EdgeInsets.all(20),
-                child: FutureBuilder<bool>(
+                child: userIdField(userId),
+                /* FutureBuilder<bool>(
                   future: isStaff(),
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -81,7 +83,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                       );
                     }
                   },
-                ),
+                ), */
               ),
               //~ Barcode/ISBN display field
               Padding(
@@ -118,7 +120,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                 color: Theme.of(context).accentColor,
                 colorBrightness: Theme.of(context).accentColorBrightness,
                 onPressed: () async => {
-                  if (await validUser(userId))
+                  if (await validUser(userId.value))
                     {
                       //~ If user id is valid, check if they have exceeded the borrow book limit
                       unreturnedBooks = await activeBorrows(),
@@ -138,7 +140,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ScannedBookDetails(
-                                      bookCode, codeType, userId)))
+                                      bookCode, codeType, userId.value)))
                         }
                     }
                   else
@@ -175,7 +177,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
     });
   }
 
-  //? Checks if the User is a library staff member
+  /* //? Checks if the User is a library staff member
   Future<bool> isStaff() async {
     bool isStaff;
     String currentUser = FirebaseAuth.instance.currentUser.uid;
@@ -192,7 +194,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
         .where("UserId", isEqualTo: userId)
         .get();
     return validUser.docs.isNotEmpty;
-  }
+  } */
 
   //? Separates the codeType for printing
   String printBookCodeType() {
@@ -205,7 +207,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
 
   //? Checks if you are still allowed to borrow books
   Future<List<Borrow>> activeBorrows() async {
-    List<Borrow> currentBorrows = await getUserBorrowRecords(userId);
+    List<Borrow> currentBorrows = await getUserBorrowRecords(userId.value);
     if (currentBorrows.isNotEmpty) {
       return currentBorrows
           .where((record) => record.status == "Borrowed")

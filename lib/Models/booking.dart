@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 //? Booking class
 class Booking {
@@ -52,4 +52,15 @@ Future<QuerySnapshot> getBooking() async {
   QuerySnapshot bookingDetails = await firestore.collection("Booking").get();
 
   return bookingDetails;
+}
+
+//? Creates new record in database
+Future<void> createBooking(Booking bookingRecord) async {
+  FirebaseFirestore.instance
+      .collection("Booking")
+      .add(_bookingToJson(bookingRecord))
+      .then(
+        (value) => print("Booking has been successfully created!"),
+      )
+      .catchError((onError) => print("An error was encountered: $onError"));
 }
