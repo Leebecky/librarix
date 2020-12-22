@@ -4,7 +4,8 @@ import 'package:librarix/config.dart';
 import '../test.dart';
 import '../catalogue_view.dart';
 import '../booking_maker.dart';
-//import 'package:librarix/views/BookCatalogue/book_details.dart';
+import '../Staff/booking_records.dart';
+import '../Staff/book_management.dart';
 
 class AdminHome extends StatefulWidget {
   @override
@@ -68,7 +69,18 @@ class _AdminHomeState extends State<AdminHome> {
                 trailing: new Icon(Icons.book_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookingRecords();
+                  }));
+                }),
+            new ListTile(
+                title: new Text("Book Management"),
+                trailing: new Icon(Icons.book_online),
+                onTap: () {
+                  //Navigator.of(context).pop();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookManagement();
+                  }));
                 }),
             new ListTile(
                 title: new Text("Fines Management"),
