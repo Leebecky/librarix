@@ -90,12 +90,10 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                       unreturnedBooks = await activeBorrows(),
                       if (unreturnedBooks.length == 3)
                         {
-                          showDialog(
-                              context: context,
-                              child: generalAlertDialog(context,
+                         generalAlertDialog(context,
                                   title: "Book Borrow Limit Reached",
                                   content:
-                                      "No more than three books can be borrowed at a time. Please return the books that are currently borrowed!"))
+                                      "No more than three books can be borrowed at a time. Please return the books that are currently borrowed!")
                         }
                       else
                         //~ if the user has not exceeded the limit, proceed
@@ -110,11 +108,9 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                   else
                     {
                       //~ Invalid User ID entered
-                      showDialog(
-                          context: context,
-                          child: generalAlertDialog(context,
+                     generalAlertDialog(context,
                               title: "Invalid User",
-                              content: "No user with this ID has been found!"))
+                              content: "No user with this ID has been found!")
                     }
                 },
                 child: Padding(

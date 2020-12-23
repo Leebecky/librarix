@@ -8,9 +8,6 @@ import '../Custom_Widget/general_alert_dialog.dart';
 import '../modules.dart';
 
 //TODO Booking query, return only available rooms
-//TODO no bookings allowed when active bookings exist
-//TODO lock discussion room/endtime buttons when no data
-//TODO ban incomplete booking creation (disable button until all fields are filled)
 
 class BookingDiscussionRoom extends StatefulWidget {
   final ValueNotifier<String> userId;
@@ -66,27 +63,27 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
               if (await getUserBookings(widget.userId))
               //~ Check if User has active bookings
               {
-                createBooking(createMyBooking(widget.userId));
-                showDialog(
-                    context: context,
-                    child: generalAlertDialog(context,
-                        title: "Booking",
-                        content: "Booking successfully created!"));
+                if (completeBookingDetails()) {
+                  createBooking(createMyBooking(widget.userId));
+                  generalAlertDialog(context,
+                      title: "Booking",
+                      content: "Booking successfully created!");
+                } else {
+                  generalAlertDialog(context,
+                      title: "Booking",
+                      content: "Please fill in all booking details first!");
+                }
               } else {
-                showDialog(
-                    context: context,
-                    child: generalAlertDialog(context,
-                        title: "Active Booking Found",
-                        content:
-                            "Please clear your current booking before making another one!"));
+                generalAlertDialog(context,
+                    title: "Active Booking Found",
+                    content:
+                        "Please clear your current booking before making another one!");
               }
             } else {
               //~ UserId is invalid
-              showDialog(
-                  context: context,
-                  child: generalAlertDialog(context,
-                      title: "Invalid User",
-                      content: "No user with this ID has been found!"));
+              generalAlertDialog(context,
+                  title: "Invalid User",
+                  content: "No user with this ID has been found!");
             }
           })
     ]);
@@ -117,15 +114,15 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
   discussionRoomSelect(String selectedRoomSize) {
     showModalBottomSheet(
         context: context,
-        builder: (BuildContext contetx) {
-          return FutureBuilder<List<Text>>(
-              future: findDiscussionRoom(int.parse(selectedRoomSize)),
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<Text>> roomList) {
-                if (roomList.hasData) {
-                  return Container(
-                      height: MediaQuery.of(context).size.height / 2,
-                      child: (Column(children: [
+        builder: (BuildContext context) {
+          return Container(
+              height: MediaQuery.of(context).size.height / 2,
+              child: FutureBuilder<List<Text>>(
+                  future: findDiscussionRoom(selectedRoomSize),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Text>> roomList) {
+                    if (roomList.hasData) {
+                      return Column(children: [
                         bookingListWheelScrollView(context,
                             listChildren: roomList.data,
                             itemChanged: (index) =>
@@ -137,17 +134,21 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                                           roomList.data[0].data
                                       : selectedDiscussionRoom = selectedRoom;
                                 })),
-                      ])));
-                }
-                return Loader();
-              });
+                      ]);
+                    }
+                    return Loader();
+                  }));
         });
   }
 
+
+//TODO validation for complete booking details
   //? Returns available discussion rooms that fits the requested criteria
-  Future<List<Text>> findDiscussionRoom(int size) async {
+  Future<List<Text>> findDiscussionRoom(String size) async {
     List<Text> rooms = [];
-    var allRoomsOfSize = await getRoomsOfSize(size);
+    int roomSize = int.parse(size);
+
+    var allRoomsOfSize = await getRoomsOfSize(roomSize);
 
     if (allRoomsOfSize.isNotEmpty) {
       for (var room in allRoomsOfSize) {
@@ -191,5 +192,17 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
         "Active", bookingType, roomOrTableNum, uid);
 
     return myBooking;
+  }
+
+  bool completeBookingDetails() {
+    String bookingStartTime = widget.startTime,
+        bookingEndTime = widget.endTime,
+        roomOrTableNum = selectedDiscussionRoom;
+
+    return (bookingStartTime == "Select a start time" ||
+            bookingEndTime == "Select an end time" ||
+            roomOrTableNum == "Select a room")
+        ? false
+        : true;
   }
 }

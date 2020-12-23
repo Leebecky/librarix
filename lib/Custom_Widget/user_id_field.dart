@@ -12,6 +12,7 @@ Widget userIdField(ValueNotifier userId) {
           onChanged: (text) {
             userId.value = text.toUpperCase();
           },
+          
           decoration: InputDecoration(
               labelText: "Please enter the Student/Lecturer's ID",
               focusedBorder: OutlineInputBorder(

@@ -107,23 +107,19 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                     var existingRecord = await hasBorrowed(index: i);
 
                     if (existingRecord.isNotEmpty) {
-                      showDialog(
-                          context: context,
-                          child: generalAlertDialog(context,
-                              title: "Request Cancelled",
-                              content: "This book has already been borrowed!"));
+                      generalAlertDialog(context,
+                          title: "Request Cancelled",
+                          content: "This book has already been borrowed!");
                     } else {
                       createBorrowRecord(createRecord(
                           parseDate(DateTime.now().toString()),
                           parseDate(calculateReturnDate()),
                           i: i));
-                      showDialog(
-                          context: context,
-                          child: generalAlertDialog(context,
-                              title: "Request Approved",
-                              content:
-                                  "${booksFound[i].title} has been successfully borrowed!",
-                              returnHome: true));
+                      generalAlertDialog(context,
+                          title: "Request Approved",
+                          content:
+                              "${booksFound[i].title} has been successfully borrowed!",
+                          returnHome: true);
                     }
                   },
                   child: Icon(Icons.check),
