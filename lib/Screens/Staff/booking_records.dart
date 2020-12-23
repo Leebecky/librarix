@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:librarix/Models/booking.dart';
+import '../../loader.dart';
 
 class BookingRecords extends StatelessWidget {
   List<Booking> myBooking = [];
@@ -17,11 +18,7 @@ class BookingRecords extends StatelessWidget {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.data == null) {
-                return Center(
-                    child: Text(
-                  "Loading ... ",
-                  textAlign: TextAlign.center,
-                ));
+                return Loader();
               } else {
                 snapshot.data.docs.forEach((doc) {
                   myBooking.add(bookingFromJson(doc.data()));

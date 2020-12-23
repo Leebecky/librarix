@@ -114,7 +114,7 @@ class _AdminHomeState extends State<AdminHome> {
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
-            SizedBox(height: screenHeight * 0.2),
+            SizedBox(height: screenHeight * 0.04),
             new Divider(),
             new ListTile(
               title: new Text("Logout"),

@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import '../../loader.dart';
 import 'book_management_detail_page.dart';
+import 'book_management_add.dart';
 
 class BookManagementListView extends StatefulWidget {
   @override
@@ -18,7 +20,7 @@ class _BookManagementListViewState extends State<BookManagementListView> {
     return bookDetail.docs;
   }
 
-  navigateToDetail(DocumentSnapshot bookCatalogue) {
+  navigateToBookManagementDetail(DocumentSnapshot bookCatalogue) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -35,7 +37,7 @@ class _BookManagementListViewState extends State<BookManagementListView> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return AddNewBook_BookManagement();
+            return AddNewBook();
           }));
         },
         child: Icon(
@@ -48,11 +50,7 @@ class _BookManagementListViewState extends State<BookManagementListView> {
           future: getBook(),
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child: Text(
-                "Loading ... ",
-                textAlign: TextAlign.center,
-              ));
+              return Loader();
             } else {
               // snapshot.data.docs.forEach((doc) {
               //   myBook.add(bookFromJson(doc.data()));
@@ -72,28 +70,17 @@ class _BookManagementListViewState extends State<BookManagementListView> {
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       subtitle: Text(
-                        snapshot.data[index].data()['BookDescription'],
+                        snapshot.data[index].data()['BookAuthor'],
                         style: TextStyle(fontSize: 14),
                       ),
                       onTap: () {
-                        navigateToDetail(snapshot.data[index]);
+                        navigateToBookManagementDetail(snapshot.data[index]);
                       },
                     );
                   });
             }
           },
         ),
-      ),
-    );
-  }
-}
-
-class AddNewBook_BookManagement extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Add New Book"),
       ),
     );
   }
