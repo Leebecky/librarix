@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/cupertino.dart';
-import '../../loader.dart';
 import 'book_management_detail_page.dart';
 import 'book_management_add.dart';
 
@@ -50,7 +50,9 @@ class _BookManagementListViewState extends State<BookManagementListView> {
           future: getBook(),
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Loader();
+              return SpinKitWave(
+                color: Theme.of(context).accentColor,
+              );
             } else {
               // snapshot.data.docs.forEach((doc) {
               //   myBook.add(bookFromJson(doc.data()));

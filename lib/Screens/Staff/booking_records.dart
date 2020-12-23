@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:librarix/Models/booking.dart';
-import '../../loader.dart';
 
 class BookingRecords extends StatelessWidget {
   final List<Booking> myBooking = [];
@@ -18,7 +18,9 @@ class BookingRecords extends StatelessWidget {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.data == null) {
-                return Loader();
+                return SpinKitWave(
+                  color: Theme.of(context).accentColor,
+                );
               } else {
                 snapshot.data.docs.forEach((doc) {
                   myBooking.add(bookingFromJson(doc.data()));
