@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 //? Booking class
 class Booking {
@@ -52,4 +52,33 @@ Future<QuerySnapshot> getBooking() async {
   QuerySnapshot bookingDetails = await firestore.collection("Booking").get();
 
   return bookingDetails;
+}
+
+//? Creates new record in database
+Future<void> createBooking(Booking bookingRecord) async {
+  FirebaseFirestore.instance
+      .collection("Booking")
+      .add(_bookingToJson(bookingRecord))
+      .then(
+        (value) => print("Booking has been successfully created!"),
+      )
+      .catchError((onError) => print("An error was encountered: $onError"));
+}
+
+//? Returns all bookings of a given date
+Future<List<Booking>> getBookingsOf(String queryField, String queryItem) async {
+  List<Booking> bookingsOf = [];
+  QuerySnapshot bookings = await FirebaseFirestore.instance
+      .collection("Booking")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+
+  if (bookings.docs.isNotEmpty) {
+    bookings.docs.forEach((doc) {
+      bookingsOf.add(bookingFromJson(doc.data()));
+    });
+  }
+  return bookingsOf;
 }

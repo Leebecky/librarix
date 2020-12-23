@@ -4,7 +4,7 @@ import 'package:librarix/Models/booking.dart';
 import '../../loader.dart';
 
 class BookingRecords extends StatelessWidget {
-  List<Booking> myBooking = [];
+  final List<Booking> myBooking = [];
 
   @override
   Widget build(BuildContext context) {

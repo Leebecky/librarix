@@ -44,73 +44,73 @@ class _AdminHomeState extends State<AdminHome> {
           ),
         ],
       ),
-      drawer: new Drawer(
-        child: new ListView(
+      drawer: Drawer(
+        child: ListView(
           children: <Widget>[
-            new UserAccountsDrawerHeader(
-              accountName: new Text("Bramvbilsen"),
-              accountEmail: new Text("bramvbilsen@gmail.com"),
-              currentAccountPicture: new GestureDetector(
-                child: new CircleAvatar(
-                  backgroundImage: new NetworkImage(currentProfilePic),
+            UserAccountsDrawerHeader(
+              accountName: Text("Bramvbilsen"),
+              accountEmail: Text("bramvbilsen@gmail.com"),
+              currentAccountPicture: GestureDetector(
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(currentProfilePic),
                 ),
                 onTap: () => print("This is your current account."),
               ),
-              decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                      image: new NetworkImage(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: NetworkImage(
                           "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
                       fit: BoxFit.fill)),
             ),
-            new ListTile(
-                title: new Text("Notifications"),
-                trailing: new Icon(Icons.notifications),
+            ListTile(
+                title: Text("Notifications"),
+                trailing: Icon(Icons.notifications),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
+                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
                 }),
-            new ListTile(
-                title: new Text("Booking Records"),
-                trailing: new Icon(Icons.book_rounded),
+            ListTile(
+                title: Text("Booking Records"),
+                trailing: Icon(Icons.book_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return BookingRecords();
                   }));
                 }),
-            new ListTile(
-                title: new Text("Book Management"),
-                trailing: new Icon(Icons.book_online),
+            ListTile(
+                title: Text("Book Management"),
+                trailing: Icon(Icons.book_online),
                 onTap: () {
                   //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return BookManagementListView();
                   }));
                 }),
-            new ListTile(
-                title: new Text("Fines Management"),
-                trailing: new Icon(Icons.attach_money),
+            ListTile(
+                title: Text("Fines Management"),
+                trailing: Icon(Icons.attach_money),
                 onTap: () {
                   //Navigator.of(context).pop();
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
-            new ListTile(
-                title: new Text("Report Generator"),
-                trailing: new Icon(Icons.bar_chart),
+            ListTile(
+                title: Text("Report Generator"),
+                trailing: Icon(Icons.bar_chart),
                 onTap: () {
                   //Navigator.of(context).pop();
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
-            new ListTile(
-                title: new Text("Librarian Management"),
-                trailing: new Icon(Icons.camera_front),
+            ListTile(
+                title: Text("Librarian Management"),
+                trailing: Icon(Icons.camera_front),
                 onTap: () {
                   //Navigator.of(context).pop();
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
-            new ListTile(
-                title: new Text("Switch theme"),
-                trailing: new Icon(Icons.toggle_off_rounded),
+            ListTile(
+                title: Text("Switch theme"),
+                trailing: Icon(Icons.toggle_off_rounded),
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
@@ -132,15 +132,15 @@ class _AdminHomeState extends State<AdminHome> {
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            icon: new Icon(Icons.event_available),
+            icon: Icon(Icons.event_available),
             label: "Booking",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.library_books),
+            icon: Icon(Icons.library_books),
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.check_circle),
+            icon: Icon(Icons.check_circle),
             label: "Book Return",
           ),
         ],

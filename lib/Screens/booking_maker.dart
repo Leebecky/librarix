@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:librarix/Screens/booking_discussion_room.dart';
 import 'package:librarix/modules.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import '../Models/booking.dart';
-// import '../Models/discussion_room.dart';
-// import '../Models/user.dart';
-// import '../Custom_Widget/general_alert_dialog.dart';
 import '../Custom_Widget/booking_list_wheel_scroll_view.dart';
+import '../Custom_Widget/user_id_field.dart';
+import '../Custom_Widget/buttons.dart';
 
 class BookingMaker extends StatefulWidget {
   @override
@@ -16,8 +14,10 @@ class BookingMaker extends StatefulWidget {
 enum BookingType { discussionRoom, studyTable }
 
 class _BookingMakerState extends State<BookingMaker> {
+  ValueNotifier<String> userId = ValueNotifier("");
+  List<Text> minutes, hours;
   BookingType type;
-  String dateToday,
+  String dateSelected,
       selectedHour,
       selectedMin,
       endTimeString,
@@ -26,12 +26,11 @@ class _BookingMakerState extends State<BookingMaker> {
       startMin,
       endHour,
       endMin;
-  List<Text> minutes, hours;
 
   @override
   void initState() {
     type = BookingType.discussionRoom;
-    dateToday = parseDate(DateTime.now().toString());
+    dateSelected = parseDate(DateTime.now().toString());
     minutes = [Text("Minutes:"), Text("00"), Text("30")];
     hours = [Text("Hour:")];
     selectedHour = "9";
@@ -64,34 +63,30 @@ class _BookingMakerState extends State<BookingMaker> {
             onChanged: (value) => selectBookingType(value),
           ),
         ),
-        //~ Shared Booking Details (Date, Start/End Time pickers)
-        TextButton(
-          onPressed: () async => showDatePicker(
+        Padding(
+          padding: EdgeInsets.all(20),
+          child: userIdField(userId),
+        ),
+        //~ Shared Booking Details
+        CustomOutlineButton(
+          buttonText: "Select a date: $dateSelected",
+          onClick: () async => showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
                   firstDate: DateTime.now(),
                   lastDate: DateTime.now().add(Duration(days: 6)))
               .then((date) => setState(() {
-                    dateToday = parseDate(date.toString());
+                    dateSelected = parseDate(date.toString());
                   })),
-          child: Text("Select a date: $dateToday"),
         ),
-        SizedBox(
-            width: MediaQuery.of(context).size.width / 2.5,
-            child: FlatButton(
-                color: Theme.of(context).accentColor,
-                colorBrightness: Theme.of(context).accentColorBrightness,
-                onPressed: () => timePicker("start", 9, 20, 11),
-                child: Text("Start Time: $startTimeString"))),
-        SizedBox(
-            width: MediaQuery.of(context).size.width / 2.5,
-            child: FlatButton(
-                color: Theme.of(context).accentColor,
-                colorBrightness: Theme.of(context).accentColorBrightness,
-                onPressed: () =>
-                    timePicker("end", (int.parse(startHour) + 1), 21, 4),
-                child: Text("End Time: $endTimeString"))),
-
+        CustomOutlineButton(
+          buttonText: "Start Time: $startTimeString",
+          onClick: () => timePicker("start", 9, 20, 11),
+        ),
+        CustomOutlineButton(
+          buttonText: "End Time: $endTimeString",
+          onClick: () => timePicker("end", (int.parse(startHour) + 1), 21, 4),
+        ),
         //~ Specific Booking Type Details
         bookingMakerType(),
       ],
@@ -107,83 +102,34 @@ class _BookingMakerState extends State<BookingMaker> {
               height: MediaQuery.of(context).size.height / 2,
               child: Column(children: [
                 Expanded(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          //~ hours
-                          child: ListWheelScrollView(
-                              itemExtent: 30,
-                              useMagnifier: true,
-                              magnification: 2.0,
-                              diameterRatio: 1.0,
-                              children: setTime(
-                                  timeType, earliestTime, latestTime, maxHours),
-                              onSelectedItemChanged: (index) {
-                                selectedHour = hours[index].data;
-                                setTimeStrings(
-                                    timeType, selectedHour, selectedMin);
-                              })),
-                      bookingListWheelScrollView(context, listChildren: minutes,
-                          itemChanged: (index) {
-                        selectedMin = minutes[index].data;
-                        setTimeStrings(timeType, selectedHour, selectedMin);
-                      }),
-                      /*  Expanded(
-                          //~ minutes
-                          child: ListWheelScrollView(
-                              itemExtent: 30,
-                              useMagnifier: true,
-                              magnification: 2.0,
-                              diameterRatio: 1.0,
-                              children: minutes,
-                              onSelectedItemChanged: (index) {
-                                selectedMin = minutes[index].data;
-                                setTimeStrings(
-                                    timeType, selectedHour, selectedMin);
-                              })), */
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          child: FlatButton(
-                            color: Colors.red,
-                            textColor: Colors.white,
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text("Cancel"),
-                          )),
-                    ),
-                    Expanded(
-                        child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5),
-                            child: FlatButton(
-                              color: Colors.green,
-                              textColor: Colors.white,
-                              onPressed: () {
-                                setState(() {
-                                  setTimeStrings(
-                                      timeType, selectedHour, selectedMin);
-                                  Navigator.of(context).pop();
-                                });
-                              },
-                              child: Text("Set"),
-                            ))),
-                  ],
-                )
+                    child: Row(children: <Widget>[
+                  //~ hours
+                  bookingListWheelScrollView(context,
+                      listChildren:
+                          setTime(timeType, earliestTime, latestTime, maxHours),
+                      itemChanged: (index) => {
+                            selectedHour = hours[index].data,
+                          }),
+                  //~ minutes
+                  bookingListWheelScrollView(context,
+                      listChildren: minutes,
+                      itemChanged: (index) => {
+                            selectedMin = minutes[index].data,
+                          }),
+                ])),
+                //~ Buttons at the bottom of the scrollView
+                listScrollButtons(context, checkButtonClicked: () {
+                  setTimeStrings(timeType, selectedHour, selectedMin);
+                }),
               ]));
         });
   }
 
-//TODO room size & room select - scrollListView
   Widget bookingMakerType() {
     //~ Build Method for Discussion Room Booking
     if (type == BookingType.discussionRoom) {
-      return Column(
-        children: [],
-      );
+      return BookingDiscussionRoom(type.index.toString(), userId, dateSelected,
+          startTimeString, endTimeString);
     } else {
       //~ Build Method for Study Table Booking
       return Container(

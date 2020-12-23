@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../modules.dart';
 import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
@@ -85,7 +86,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                 }
               }
               //~  Progress Indicator when data is buffering
-              return LinearProgressIndicator();
+              return SpinKitWave(color: Theme.of(context).accentColor);
             }));
   }
 
@@ -107,23 +108,19 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                     var existingRecord = await hasBorrowed(index: i);
 
                     if (existingRecord.isNotEmpty) {
-                      showDialog(
-                          context: context,
-                          child: generalAlertDialog(context,
-                              title: "Request Cancelled",
-                              content: "This book has already been borrowed!"));
+                      generalAlertDialog(context,
+                          title: "Request Cancelled",
+                          content: "This book has already been borrowed!");
                     } else {
                       createBorrowRecord(createRecord(
                           parseDate(DateTime.now().toString()),
                           parseDate(calculateReturnDate()),
                           i: i));
-                      showDialog(
-                          context: context,
-                          child: generalAlertDialog(context,
-                              title: "Request Approved",
-                              content:
-                                  "${booksFound[i].title} has been successfully borrowed!",
-                              returnHome: true));
+                      generalAlertDialog(context,
+                          title: "Request Approved",
+                          content:
+                              "${booksFound[i].title} has been successfully borrowed!",
+                          returnHome: true);
                     }
                   },
                   child: Icon(Icons.check),

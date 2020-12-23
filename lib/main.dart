@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Screens/book_details.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
-import 'package:librarix/loader.dart';
 import 'Screens/Navigation Bar/librarix_navigations.dart';
 import 'Screens/Navigation Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation Bar/librarix_navigation_admin.dart';
@@ -18,10 +18,13 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseAuth.instance;
-  runApp(MyApp());
+  String myRoute = await checkLoggedIn();
+  runApp(MyApp(myRoute));
 }
 
 class MyApp extends StatefulWidget {
+  final String myRoute;
+  MyApp(this.myRoute);
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -29,62 +32,50 @@ class MyApp extends StatefulWidget {
 //Get the state of dark mode or light mode and update it
 class _MyAppState extends State<MyApp> {
   @override
-  void initState(){
-    super.initState();
+  void initState() {
     currentTheme.addListener(() {
       print('Changes');
-      setState((){});
+      super.initState();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future: checkLoggedIn(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return MaterialApp(
-                title: "LibrariX",
-                theme: ThemeData.light(),
-                darkTheme: ThemeData.dark(),
-                themeMode: currentTheme.currentTheme(),
-                //^ named Navigator routes
-                initialRoute: snapshot.data,
-                routes: {
-                  "/": (context) => FirstView(),
-                  //"/loader": (context) => Loader(),
-                  "/login": (context) => Login(),
-                  "/home": (context) => Home(),
-                  "/librarianHome": (context) => LibrarianHome(),
-                  "/adminHome": (context) => AdminHome(),
-                  "/scanner": (context) => BarcodeScanner(),
-                  "/bookDetails": (context) => BookDetails(),
-                });
-          }
-          return Loader();
+    return MaterialApp(
+        title: "LibrariX",
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
+        themeMode: currentTheme.currentTheme(),
+        //^ named Navigator routes
+        initialRoute: widget.myRoute,
+        routes: {
+          "/": (context) => FirstView(),
+          "/login": (context) => Login(),
+          "/home": (context) => Home(),
+          "/librarianHome": (context) => LibrarianHome(),
+          "/adminHome": (context) => AdminHome(),
+          "/scanner": (context) => BarcodeScanner(),
+          "/bookDetails": (context) => BookDetails(),
         });
   }
+}
 
-  Future<String> checkLoggedIn() async {
-    String myRoute = "/home";
-    try {
-      User currentUser = FirebaseAuth.instance.currentUser;
-
-      if (currentUser == null) {
-        myRoute = "/";
-      } else {
-        bool isAdmin = await checkRole(currentUser.uid, "Admin");
-        bool isLibrarian = await checkRole(currentUser.uid, "Librarian");
-
-        (isAdmin)
-            ? myRoute = "/adminHome" //~ (if admin)
-            : (isLibrarian)
-                ? myRoute = "/librarianHome" //~ (if librarian)
-                : myRoute = "/home"; //~ (if user)
-      }
-    } catch (e) {
-      print("$e: User is not logged in");
+Future<String> checkLoggedIn() async {
+  String myRoute = "/home";
+  try {
+    User currentUserId = FirebaseAuth.instance.currentUser;
+    if (currentUserId == null) {
+      myRoute = "/";
+    } else {
+      ActiveUser currentUser = await myActiveUser(docId: currentUserId.uid);
+      (currentUser.role == "Admin")
+          ? myRoute = "/adminHome" //~ (if admin)
+          : (currentUser.role == "Librarian")
+              ? myRoute = "/librarianHome" //~ (if librarian)
+              : myRoute = "/home"; //~ (if user)
     }
-    return myRoute;
+  } catch (e) {
+    print("$e: User is not logged in");
   }
+  return myRoute;
 }
