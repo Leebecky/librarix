@@ -30,14 +30,19 @@ Map<String, dynamic> _discussionRoomToJson(DiscussionRoom instance) =>
 
 //? Retrive rooms of a given size
 Future<List<DiscussionRoom>> getRoomsOfSize(int size) async {
-  List<DiscussionRoom> dr;
+  List<DiscussionRoom> dr = [];
   var rooms = await FirebaseFirestore.instance
       .collection("DiscussionRoom")
-      .where("RoomSize", isGreaterThanOrEqualTo: size)
-      .get();
+      .orderBy("RoomNum")
+      // .where("RoomSize", isGreaterThanOrEqualTo: size)
+      .get()
+      .catchError((onError) => print(
+          "An error has occurred while retrieving discussion room data: $onError"));
 
-  rooms.docs.forEach((doc) {
-    dr.add(discussionRoomFromJson(doc.data()));
-  });
-  return dr;
+  if (rooms.docs.isNotEmpty) {
+    rooms.docs.forEach((doc) {
+      dr.add(discussionRoomFromJson(doc.data()));
+    });
+  }
+  return dr.where((room) => room.size >= size).toList();
 }

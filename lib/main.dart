@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Screens/book_details.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
-import 'package:librarix/loader.dart';
 import 'Screens/Navigation Bar/librarix_navigations.dart';
 import 'Screens/Navigation Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation Bar/librarix_navigation_admin.dart';
@@ -29,11 +29,11 @@ class MyApp extends StatefulWidget {
 //Get the state of dark mode or light mode and update it
 class _MyAppState extends State<MyApp> {
   @override
-  void initState(){
+  void initState() {
     super.initState();
     currentTheme.addListener(() {
       print('Changes');
-      setState((){});
+      setState(() {});
     });
   }
 
@@ -52,7 +52,6 @@ class _MyAppState extends State<MyApp> {
                 initialRoute: snapshot.data,
                 routes: {
                   "/": (context) => FirstView(),
-                  //"/loader": (context) => Loader(),
                   "/login": (context) => Login(),
                   "/home": (context) => Home(),
                   "/librarianHome": (context) => LibrarianHome(),
@@ -61,7 +60,9 @@ class _MyAppState extends State<MyApp> {
                   "/bookDetails": (context) => BookDetails(),
                 });
           }
-          return Loader();
+          return SpinKitWave(
+            color: Theme.of(context).accentColor,
+          );
         });
   }
 

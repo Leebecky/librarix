@@ -51,22 +51,25 @@ Future<DocumentSnapshot> getActiveUser() async {
 }
 
 //? Retrieves data from Firestore and stores in an ActiveUser object
-Future<ActiveUser> myActiveUser() async {
-  CollectionReference userDb = FirebaseFirestore.instance.collection("User");
-  final User currentUser = FirebaseAuth.instance.currentUser;
-  final currentId = currentUser.uid;
-  final activeUserDetails = await userDb.doc(currentId).get();
+Future<ActiveUser> myActiveUser({String docId}) async {
+  String currentId;
+  User currentUser = FirebaseAuth.instance.currentUser;
+  (docId == null) ? currentId = currentUser.uid : currentId = docId;
+
+  var activeUserDetails =
+      await FirebaseFirestore.instance.collection("User").doc(currentId).get();
+
   final ActiveUser activeUser = ActiveUser.fromJson(activeUserDetails.data());
   return activeUser;
 }
 
 //? Checks if the user email exists in the database
-Future<String> getUserRole(String enteredEmail) async {
+Future<String> findUser(String queryField, String queryItem) async {
   String docId;
   try {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("User")
-        .where("UserEmail", isEqualTo: enteredEmail)
+        .where(queryField, isEqualTo: queryItem)
         .get();
     docId = snapshot.docs[0].id;
   } catch (e) {
@@ -75,13 +78,9 @@ Future<String> getUserRole(String enteredEmail) async {
   return docId;
 }
 
-//? Checks for subcollections to determine if User is also a Librarian/Admin
+/* //? Checks for subcollections to determine if User is also a Librarian/Admin
 Future<bool> checkRole(String docid, String role) async {
-  DocumentSnapshot checkSubcollection = await FirebaseFirestore.instance
-      .collection("User")
-      .doc(docid)
-      .collection(role)
-      .doc("${role}Details")
-      .get();
-  return checkSubcollection.exists;
-}
+  var userRole =
+      await FirebaseFirestore.instance.collection("User").doc(docid).get();
+  return userRole.data()
+} */
