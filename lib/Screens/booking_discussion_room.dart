@@ -1,12 +1,11 @@
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
-import 'package:librarix/loader.dart';
 import '../Models/discussion_room.dart';
 import '../Models/booking.dart';
 import '../Custom_Widget/booking_list_wheel_scroll_view.dart';
 import '../Custom_Widget/buttons.dart';
 import '../Custom_Widget/general_alert_dialog.dart';
 import '../modules.dart';
-
 //TODO Booking query, return only available rooms
 
 class BookingDiscussionRoom extends StatefulWidget {
@@ -52,6 +51,10 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
       CustomOutlineButton(
         buttonText: "Discussion Room: $selectedDiscussionRoom",
         onClick: () => discussionRoomSelect(selectedRoomSize),
+      ),
+      CustomOutlineButton(
+        buttonText: "Testing!",
+        onClick: () async => getDatedBookings(widget.date),
       ),
       //~ Confirm and Create Booking
       CustomFlatButton(
@@ -136,11 +139,12 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                                 })),
                       ]);
                     }
-                    return Loader();
+                    return SpinKitWave(
+                      color: Theme.of(context).accentColor,
+                    );
                   }));
         });
   }
-
 
 //TODO validation for complete booking details
   //? Returns available discussion rooms that fits the requested criteria
@@ -163,7 +167,25 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
 
   //? Queries bookings made on the selected date
   Future getDatedBookings(String date) async {
+    String startTime = widget.startTime, endTime = widget.endTime;
     List<Booking> allBookings = await getBookingsOf("BookingDate", date);
+    // list of active bookings on a given date
+    var activeBookings =
+        allBookings.where((booking) => booking.bookingStatus == "Active");
+    //list of discussion rooms of selected size
+    // var roomsOfSize = await getRoomsOfSize(int.parse(selectedRoomSize));
+
+    //compare for bookings that will clash with selected time
+    //if yes, check if the room is in roomsOfSize and remove if so
+    //then check if there are alternatives (roomsOfSize.notEmpty)
+    // if no, get list
+    print(int.parse(startTime));
+    /* var timing = activeBookings.where((booking) =>
+        int.parse(startTime) >= int.parse(booking.bookingEndTime) ||
+        int.parse(endTime) <= int.parse(booking.bookingStartTime)); */
+    for (var item in activeBookings) {
+      print(item.roomOrTableNum);
+    }
   }
 
   //? Queries bookings if the user has any active bookings

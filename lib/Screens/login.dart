@@ -182,21 +182,20 @@ class _LoginState extends State<Login> {
   //? Dropdown menu items
   Future<List<String>> roleList(
       String emailEntered, List<String> roleValues) async {
-    bool role;
-    String docId = await getUserRole(enteredEmail);
+    ActiveUser currentUser;
+    String docId = await findUser("UserEmail", enteredEmail);
     if (docId == null) {
       roleValues = ["Role:"];
     } else {
+      currentUser = await myActiveUser(docId: docId);
       if (emailEntered.startsWith("tp")) {
         roleValues.add("Student");
-        role = await checkRole(docId, "Librarian");
-        if (role) {
+        if (currentUser.role == "Librarian") {
           roleValues.add("Librarian");
         }
       } else if (emailEntered.startsWith("lc")) {
         roleValues.add("Lecturer");
-        role = await checkRole(docId, "Admin");
-        if (role) {
+        if (currentUser.role == "Admin") {
           roleValues.add("Admin");
         }
       }
@@ -225,12 +224,7 @@ class _LoginState extends State<Login> {
     }
 
     //^ Build method for AlertDialog
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return generalAlertDialog(context,
-              title: "Error logging in", content: errorMsg);
-        });
+    generalAlertDialog(context, title: "Error logging in", content: errorMsg);
   }
 
   //? Disposes of the widget once login is completed
