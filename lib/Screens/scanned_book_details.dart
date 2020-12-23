@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../modules.dart';
 import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
@@ -85,7 +86,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                 }
               }
               //~  Progress Indicator when data is buffering
-              return LinearProgressIndicator();
+              return SpinKitWave(color: Theme.of(context).accentColor);
             }));
   }
 

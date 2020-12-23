@@ -79,18 +79,6 @@ class _BookingMakerState extends State<BookingMaker> {
                     dateSelected = parseDate(date.toString());
                   })),
         ),
-        /*  TextButton(
-          //~ Date picker
-          onPressed: () async => showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime.now().add(Duration(days: 6)))
-              .then((date) => setState(() {
-                    dateSelected = parseDate(date.toString());
-                  })),
-          child: Text("Select a date: $dateSelected"),
-        ), */
         CustomOutlineButton(
           buttonText: "Start Time: $startTimeString",
           onClick: () => timePicker("start", 9, 20, 11),

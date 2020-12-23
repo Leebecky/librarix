@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-class BookDetails extends StatefulWidget{
+class BookDetails extends StatefulWidget {
   final DocumentSnapshot bookCatalogue;
   BookDetails({this.bookCatalogue});
 
@@ -20,7 +20,6 @@ class _BookDetailsState extends State<BookDetails> {
         child: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-              title: Text(widget.bookCatalogue["BookTitle"]),
               backgroundColor: primaryColor,
               expandedHeight: 350.0,
               flexibleSpace: FlexibleSpaceBar(
@@ -32,58 +31,72 @@ class _BookDetailsState extends State<BookDetails> {
               delegate: SliverChildListDelegate([
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(widget.bookCatalogue["BookTitle"], style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w500)),
+                  child: Text(widget.bookCatalogue["BookTitle"],
+                      style: TextStyle(
+                          fontSize: 30.0, fontWeight: FontWeight.w500)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 5.0, left: 8.0),
-                  child: Text(widget.bookCatalogue["BookAuthor"], style: TextStyle(fontSize: 20.0, fontStyle: FontStyle.italic)),
+                  child: Text(widget.bookCatalogue["BookAuthor"],
+                      style: TextStyle(
+                          fontSize: 20.0, fontStyle: FontStyle.italic)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: AutoSizeText(widget.bookCatalogue["BookDescription"], style: TextStyle(fontSize: 15.0), maxLines: 20, textAlign: TextAlign.left,),
+                  child: AutoSizeText(
+                    widget.bookCatalogue["BookDescription"],
+                    style: TextStyle(fontSize: 15.0),
+                    maxLines: 20,
+                    textAlign: TextAlign.left,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 30.0, left: 8.0),
                   child: Row(
                     children: [
                       Text("Barcode: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookBarcode"], style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookBarcode"],
+                          style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0, left:8.0),
+                  padding: const EdgeInsets.only(top: 10.0, left: 8.0),
                   child: Row(
                     children: [
                       Text("Genre: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookGenre"], style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookGenre"],
+                          style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0, left:8.0),
+                  padding: const EdgeInsets.only(top: 10.0, left: 8.0),
                   child: Row(
                     children: [
                       Text("Publish Year: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookPublishDate"], style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookPublishDate"],
+                          style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0, left:8.0),
+                  padding: const EdgeInsets.only(top: 10.0, left: 8.0),
                   child: Row(
                     children: [
                       Text("Publisher: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookPublisher"], style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookPublisher"],
+                          style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0, left:8.0),
+                  padding: const EdgeInsets.only(top: 10.0, left: 8.0),
                   child: Row(
                     children: [
                       Text("Stock: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookStock"].toString(), style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookStock"].toString(),
+                          style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
                 ),
@@ -95,4 +108,3 @@ class _BookDetailsState extends State<BookDetails> {
     );
   }
 }
-

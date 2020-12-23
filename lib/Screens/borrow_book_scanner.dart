@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:librarix/Screens/scanned_book_details.dart';
-// import '../Models/user.dart';
 import '../Models/borrow.dart';
 import '../Custom_Widget/general_alert_dialog.dart';
 import '../Custom_Widget/user_id_field.dart';
 import '../modules.dart';
+import '../Custom_Widget/textfield.dart';
 
 class BarcodeScanner extends StatefulWidget {
   @override
@@ -48,29 +47,16 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
               ),
               //~ Barcode/ISBN display field
               Padding(
-                padding: EdgeInsets.all(20),
-                child: TextField(
-                  //~ locks the keyboard to numerical only
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  decoration: InputDecoration(
-                      labelText: "Enter ISBN Code or Scan book barcode",
-                      enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Theme.of(context).accentColor)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).accentColor))),
-                  onChanged: (newText) {
-                    setState(() {
-                      bookCode = newText;
-                      codeType = "BookISBNCode";
-                    });
-                  },
-                ),
-              ),
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                      text: "Enter ISBN Code or Scan book barcode",
+                      fixKeyboardToNum: true,
+                      onChange: (newText) => {
+                            setState(() {
+                              bookCode = newText;
+                              codeType = "BookISBNCode";
+                            })
+                          })),
               Padding(
                 //~ Displays the code type entered
                 padding: EdgeInsets.all(20),
@@ -90,10 +76,10 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                       unreturnedBooks = await activeBorrows(),
                       if (unreturnedBooks.length == 3)
                         {
-                         generalAlertDialog(context,
-                                  title: "Book Borrow Limit Reached",
-                                  content:
-                                      "No more than three books can be borrowed at a time. Please return the books that are currently borrowed!")
+                          generalAlertDialog(context,
+                              title: "Book Borrow Limit Reached",
+                              content:
+                                  "No more than three books can be borrowed at a time. Please return the books that are currently borrowed!")
                         }
                       else
                         //~ if the user has not exceeded the limit, proceed
@@ -108,9 +94,9 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                   else
                     {
                       //~ Invalid User ID entered
-                     generalAlertDialog(context,
-                              title: "Invalid User",
-                              content: "No user with this ID has been found!")
+                      generalAlertDialog(context,
+                          title: "Invalid User",
+                          content: "No user with this ID has been found!")
                     }
                 },
                 child: Padding(
@@ -136,7 +122,6 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
     } catch (e) {
       print("An unexpected error has occurred: $e");
     }
-
     setState(() {
       bookCode = bookBarcode;
       codeType = "BookBarcode";
