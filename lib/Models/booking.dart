@@ -64,3 +64,21 @@ Future<void> createBooking(Booking bookingRecord) async {
       )
       .catchError((onError) => print("An error was encountered: $onError"));
 }
+
+//? Returns all bookings of a given date
+Future<List<Booking>> getBookingsOf(String queryField, String queryItem) async {
+  List<Booking> bookingsOf = [];
+  QuerySnapshot bookings = await FirebaseFirestore.instance
+      .collection("Booking")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+
+  if (bookings.docs.isNotEmpty) {
+    bookings.docs.forEach((doc) {
+      bookingsOf.add(bookingFromJson(doc.data()));
+    });
+  }
+  return bookingsOf;
+}
