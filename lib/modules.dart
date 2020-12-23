@@ -13,10 +13,12 @@ String parseDate(String date) {
 //? Checks if the User is a library staff member
 Future<bool> isStaff() async {
   bool isStaff;
-  String currentUser = FirebaseAuth.instance.currentUser.uid;
-  bool isAdmin = await checkRole(currentUser, "Admin");
-  bool isLibrarian = await checkRole(currentUser, "Librarian");
-  (isLibrarian || isAdmin) ? isStaff = true : isStaff = false;
+  String currentUserId = FirebaseAuth.instance.currentUser.uid;
+  ActiveUser currentUser = await myActiveUser(docId: currentUserId);
+
+  (currentUser.role == "Librarian" || currentUser.role == "Admin")
+      ? isStaff = true
+      : isStaff = false;
   return isStaff;
 }
 
