@@ -3,6 +3,7 @@ import 'package:librarix/Screens/booking_discussion_room.dart';
 import 'package:librarix/modules.dart';
 import '../Custom_Widget/booking_list_wheel_scroll_view.dart';
 import '../Custom_Widget/user_id_field.dart';
+import '../Custom_Widget/buttons.dart';
 
 class BookingMaker extends StatefulWidget {
   @override
@@ -46,7 +47,6 @@ class _BookingMakerState extends State<BookingMaker> {
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        userIdField(userId),
         Padding(
           //~ Select Booking Type
           padding: EdgeInsets.all(20),
@@ -63,8 +63,23 @@ class _BookingMakerState extends State<BookingMaker> {
             onChanged: (value) => selectBookingType(value),
           ),
         ),
+        Padding(
+          padding: EdgeInsets.all(20),
+          child: userIdField(userId),
+        ),
         //~ Shared Booking Details
-        TextButton(
+        CustomOutlineButton(
+          buttonText: "Select a date: $dateSelected",
+          onClick: () async => showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(Duration(days: 6)))
+              .then((date) => setState(() {
+                    dateSelected = parseDate(date.toString());
+                  })),
+        ),
+        /*  TextButton(
           //~ Date picker
           onPressed: () async => showDatePicker(
                   context: context,
@@ -75,24 +90,15 @@ class _BookingMakerState extends State<BookingMaker> {
                     dateSelected = parseDate(date.toString());
                   })),
           child: Text("Select a date: $dateSelected"),
+        ), */
+        CustomOutlineButton(
+          buttonText: "Start Time: $startTimeString",
+          onClick: () => timePicker("start", 9, 20, 11),
         ),
-        SizedBox(
-            //~ Start Time Picker
-            width: MediaQuery.of(context).size.width / 1.5,
-            child: FlatButton(
-                color: Theme.of(context).accentColor,
-                colorBrightness: Theme.of(context).accentColorBrightness,
-                onPressed: () => timePicker("start", 9, 20, 11),
-                child: Text("Start Time: $startTimeString"))),
-        SizedBox(
-            //~ End Time picker
-            width: MediaQuery.of(context).size.width / 1.5,
-            child: FlatButton(
-                color: Theme.of(context).accentColor,
-                colorBrightness: Theme.of(context).accentColorBrightness,
-                onPressed: () =>
-                    timePicker("end", (int.parse(startHour) + 1), 21, 4),
-                child: Text("End Time: $endTimeString"))),
+        CustomOutlineButton(
+          buttonText: "End Time: $endTimeString",
+          onClick: () => timePicker("end", (int.parse(startHour) + 1), 21, 4),
+        ),
         //~ Specific Booking Type Details
         bookingMakerType(),
       ],
@@ -134,7 +140,7 @@ class _BookingMakerState extends State<BookingMaker> {
   Widget bookingMakerType() {
     //~ Build Method for Discussion Room Booking
     if (type == BookingType.discussionRoom) {
-      return BookingDiscussionRoom(type.toString(), userId, dateSelected,
+      return BookingDiscussionRoom(type.index.toString(), userId, dateSelected,
           startTimeString, endTimeString);
     } else {
       //~ Build Method for Study Table Booking

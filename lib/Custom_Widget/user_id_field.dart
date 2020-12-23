@@ -3,7 +3,6 @@ import '../modules.dart';
 import '../Models/user.dart';
 
 Widget userIdField(ValueNotifier userId) {
- 
   return FutureBuilder<bool>(
     future: isStaff(),
     builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {

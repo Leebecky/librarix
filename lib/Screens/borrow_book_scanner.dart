@@ -45,45 +45,6 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
               Padding(
                 padding: EdgeInsets.all(20),
                 child: userIdField(userId),
-                /* FutureBuilder<bool>(
-                  future: isStaff(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    //^ if User is Staff, create a textfield
-                    if (snapshot.data == true) {
-                      return TextField(
-                        onChanged: (text) {
-                          setState(() {
-                            userId = text.toUpperCase();
-                            return userId.toUpperCase();
-                          });
-                        },
-                        decoration: InputDecoration(
-                            labelText: "Please enter the Student/Lecturer's ID",
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).accentColor)),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                              color: Theme.of(context).accentColor,
-                            ))),
-                      );
-                    } else {
-                      //^ If User is not Staff, return UserId in Text()
-                      return FutureBuilder<ActiveUser>(
-                        future: myActiveUser(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<ActiveUser> user) {
-                          if (user.hasData) {
-                            userId = user.data.userId;
-                            return Text("User ID: ${user.data.userId}", style: TextStyle(fontSize: 20.0),);
-                          }
-                          return LinearProgressIndicator();
-                        },
-                      );
-                    }
-                  },
-                ), */
               ),
               //~ Barcode/ISBN display field
               Padding(
@@ -113,12 +74,14 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
               Padding(
                 //~ Displays the code type entered
                 padding: EdgeInsets.all(20),
-                child: Text("${printBookCodeType()} = $bookCode", style: TextStyle(fontSize: 18.0)),
+                child: Text("${printBookCodeType()} = $bookCode",
+                    style: TextStyle(fontSize: 18.0)),
               ),
               FlatButton(
                 //~ The Confirmation button
                 color: Theme.of(context).accentColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
                 colorBrightness: Theme.of(context).accentColorBrightness,
                 onPressed: () async => {
                   if (await validUser(userId.value))
@@ -155,8 +118,11 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                     }
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
-                  child: Text("Confirm", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400)),
+                  padding: const EdgeInsets.only(
+                      top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
+                  child: Text("Confirm",
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.w400)),
                 ),
               ),
             ],
@@ -180,25 +146,6 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
       codeType = "BookBarcode";
     });
   }
-
-  /* //? Checks if the User is a library staff member
-  Future<bool> isStaff() async {
-    bool isStaff;
-    String currentUser = FirebaseAuth.instance.currentUser.uid;
-    bool isAdmin = await checkRole(currentUser, "Admin");
-    bool isLibrarian = await checkRole(currentUser, "Librarian");
-    (isLibrarian || isAdmin) ? isStaff = true : isStaff = false;
-    return isStaff;
-  }
-
-  //? Checks if the entered UserId belongs to a valid user
-  Future<bool> validUser(String userId) async {
-    var validUser = await FirebaseFirestore.instance
-        .collection("User")
-        .where("UserId", isEqualTo: userId)
-        .get();
-    return validUser.docs.isNotEmpty;
-  } */
 
   //? Separates the codeType for printing
   String printBookCodeType() {
