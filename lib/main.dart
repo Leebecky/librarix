@@ -69,17 +69,14 @@ class _MyAppState extends State<MyApp> {
   Future<String> checkLoggedIn() async {
     String myRoute = "/home";
     try {
-      User currentUser = FirebaseAuth.instance.currentUser;
-
-      if (currentUser == null) {
+      User currentUserId = FirebaseAuth.instance.currentUser;
+      ActiveUser currentUser = await myActiveUser(docId: currentUserId.uid);
+      if (currentUserId == null) {
         myRoute = "/";
       } else {
-        bool isAdmin = await checkRole(currentUser.uid, "Admin");
-        bool isLibrarian = await checkRole(currentUser.uid, "Librarian");
-
-        (isAdmin)
+        (currentUser.role == "Admin")
             ? myRoute = "/adminHome" //~ (if admin)
-            : (isLibrarian)
+            : (currentUser.role == "Librarian")
                 ? myRoute = "/librarianHome" //~ (if librarian)
                 : myRoute = "/home"; //~ (if user)
       }

@@ -67,7 +67,7 @@ class _AdminHomeState extends State<AdminHome> {
                 trailing: Icon(Icons.notifications),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
+                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
                 }),
             ListTile(
                 title: Text("Booking Records"),
@@ -131,15 +131,15 @@ class _AdminHomeState extends State<AdminHome> {
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            icon: new Icon(Icons.event_available),
+            icon: Icon(Icons.event_available),
             label: "Booking",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.library_books),
+            icon: Icon(Icons.library_books),
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.check_circle),
+            icon: Icon(Icons.check_circle),
             label: "Book Return",
           ),
         ],

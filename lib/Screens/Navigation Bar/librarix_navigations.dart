@@ -42,56 +42,56 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      drawer: new Drawer(
-        child: new ListView(
+      drawer: Drawer(
+        child: ListView(
           children: <Widget>[
-            new UserAccountsDrawerHeader(
-              accountName: new Text("Bramvbilsen"),
-              accountEmail: new Text("bramvbilsen@gmail.com"),
-              currentAccountPicture: new GestureDetector(
-                child: new CircleAvatar(
-                  backgroundImage: new NetworkImage(currentProfilePic),
+            UserAccountsDrawerHeader(
+              accountName: Text("Bramvbilsen"),
+              accountEmail: Text("bramvbilsen@gmail.com"),
+              currentAccountPicture: GestureDetector(
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(currentProfilePic),
                 ),
                 onTap: () => print("This is your current account."),
               ),
-              decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                      image: new NetworkImage(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: NetworkImage(
                           "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
                       fit: BoxFit.fill)),
             ),
-            new ListTile(
-                title: new Text("Notifications"),
-                trailing: new Icon(Icons.notifications),
+            ListTile(
+                title: Text("Notifications"),
+                trailing: Icon(Icons.notifications),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
+                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
                 }),
-            new ListTile(
-                title: new Text("Rewards"),
-                trailing: new Icon(Icons.outlined_flag_rounded),
+            ListTile(
+                title: Text("Rewards"),
+                trailing: Icon(Icons.outlined_flag_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) =>  Page("Second Page")));
                 }),
-            new ListTile(
-                title: new Text("Fines"),
-                trailing: new Icon(Icons.monetization_on_rounded),
+            ListTile(
+                title: Text("Fines"),
+                trailing: Icon(Icons.monetization_on_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) =>  Page("Second Page")));
                 }),
-            new ListTile(
-                title: new Text("Switch theme"),
-                trailing: new Icon(Icons.toggle_off_rounded),
+            ListTile(
+                title: Text("Switch theme"),
+                trailing: Icon(Icons.toggle_off_rounded),
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
-            SizedBox(height: screenHeight * 0.35),
-            new Divider(),
-            new ListTile(
-              title: new Text("Logout"),
-              trailing: new Icon(Icons.logout),
+            // SizedBox(height: screenHeight * 0.35),
+            Divider(),
+            ListTile(
+              title: Text("Logout"),
+              trailing: Icon(Icons.logout),
               onTap: () => logout(),
             ),
           ],
@@ -105,15 +105,15 @@ class _HomeState extends State<Home> {
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            icon: new Icon(Icons.event_available),
+            icon: Icon(Icons.event_available),
             label: "Booking",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.library_books),
+            icon: Icon(Icons.library_books),
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.history),
+            icon: Icon(Icons.history),
             label: "History",
           ),
         ],
