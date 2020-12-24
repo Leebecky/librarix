@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Screens/book_details.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
@@ -35,8 +34,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     currentTheme.addListener(() {
       print('Changes');
-      super.initState();
+      setState(() {});
     });
+      super.initState();
   }
 
   @override
