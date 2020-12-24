@@ -34,7 +34,6 @@ Future<List<DiscussionRoom>> getRoomsOfSize(int size) async {
   var rooms = await FirebaseFirestore.instance
       .collection("DiscussionRoom")
       .orderBy("RoomNum")
-      // .where("RoomSize", isGreaterThanOrEqualTo: size)
       .get()
       .catchError((onError) => print(
           "An error has occurred while retrieving discussion room data: $onError"));
