@@ -6,7 +6,6 @@ import '../Custom_Widget/booking_list_wheel_scroll_view.dart';
 import '../Custom_Widget/buttons.dart';
 import '../Custom_Widget/general_alert_dialog.dart';
 import '../modules.dart';
-//TODO Booking query, return only available rooms
 
 class BookingDiscussionRoom extends StatefulWidget {
   final ValueNotifier<String> userId;
@@ -21,9 +20,17 @@ class BookingDiscussionRoom extends StatefulWidget {
 class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
   String selectedRoomSize, numPeople, selectedRoom, selectedDiscussionRoom;
   List<Text> roomSizes, discussionRoomsAvailable;
+  ValueNotifier<bool> roomsFound;
+  ValueNotifier<bool> detailsChange;
+  String initialDate, initialStartTime, initialEndTime;
 
   @override
   void initState() {
+    initialDate = widget.date;
+    initialStartTime = widget.startTime;
+    initialEndTime = widget.endTime;
+    roomsFound = ValueNotifier<bool>(true);
+    detailsChange = ValueNotifier<bool>(false);
     selectedRoomSize = "Select room size";
     selectedDiscussionRoom = "Select a room";
     numPeople = "";
@@ -48,47 +55,61 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
         onClick: () => discussionRoomSize(),
       ),
       //~ Select Room
-      CustomOutlineButton(
-        buttonText: "Discussion Room: $selectedDiscussionRoom",
-        onClick: () => discussionRoomSelect(selectedRoomSize),
-      ),
-      CustomOutlineButton(
-        buttonText: "Testing!",
-        onClick: () async => getDatedBookings(widget.date),
-      ),
-      //~ Confirm and Create Booking
-      CustomFlatButton(
-          roundBorder: true,
-          buttonText: "Confirm Booking",
-          onClick: () async {
-            if (await validUser(widget.userId.value)) {
-              //~ User Id is Valid
-              if (await getUserBookings(widget.userId))
-              //~ Check if User has active bookings
-              {
-                if (completeBookingDetails()) {
-                  createBooking(createMyBooking(widget.userId));
-                  generalAlertDialog(context,
-                      title: "Booking",
-                      content: "Booking successfully created!");
-                } else {
-                  generalAlertDialog(context,
-                      title: "Booking",
-                      content: "Please fill in all booking details first!");
-                }
-              } else {
-                generalAlertDialog(context,
-                    title: "Active Booking Found",
-                    content:
-                        "Please clear your current booking before making another one!");
-              }
-            } else {
-              //~ UserId is invalid
-              generalAlertDialog(context,
-                  title: "Invalid User",
-                  content: "No user with this ID has been found!");
+      ValueListenableBuilder(
+          valueListenable: detailsChange,
+          builder: (BuildContext context, bool value, Widget child) {
+            if (widget.startTime != initialStartTime ||
+                widget.endTime != initialEndTime) {
+              value = !value;
+              selectedDiscussionRoom = "Select a room";
+              initialStartTime = widget.startTime;
+              initialEndTime = widget.endTime;
             }
-          })
+            if (widget.date != initialDate) {
+              value = !value;
+              initialDate = widget.date;
+              selectedDiscussionRoom = "Select a room";
+            }
+            return CustomOutlineButton(
+              buttonText: "Discussion Room: $selectedDiscussionRoom",
+              onClick: () => discussionRoomSelect(selectedRoomSize),
+            );
+          }),
+      //~ Confirm and Create Booking
+      Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: CustomFlatButton(
+              roundBorder: true,
+              buttonText: "Confirm Booking",
+              onClick: () async {
+                if (await validUser(widget.userId.value)) {
+                  //~ User Id is Valid
+                  if (await getUserBookings(widget.userId))
+                  //~ Check if User has active bookings
+                  {
+                    if (completeBookingDetails(roomsFound.value)) {
+                      createBooking(createMyBooking(widget.userId));
+                      generalAlertDialog(context,
+                          title: "Booking",
+                          content: "Booking successfully created!");
+                    } else {
+                      generalAlertDialog(context,
+                          title: "Booking",
+                          content: "Please fill in all booking details first!");
+                    }
+                  } else {
+                    generalAlertDialog(context,
+                        title: "Active Booking Found",
+                        content:
+                            "Please clear your current booking before making another one!");
+                  }
+                } else {
+                  //~ UserId is invalid
+                  generalAlertDialog(context,
+                      title: "Invalid User",
+                      content: "No user with this ID has been found!");
+                }
+              }))
     ]);
   }
 
@@ -105,6 +126,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                     itemChanged: (index) => numPeople = roomSizes[index].data),
                 listScrollButtons(context,
                     checkButtonClicked: () => setState(() {
+                          selectedDiscussionRoom = "Select a room";
                           (numPeople == "" || numPeople == "Number of people:")
                               ? selectedRoomSize = "3"
                               : selectedRoomSize = numPeople;
@@ -121,10 +143,15 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
           return Container(
               height: MediaQuery.of(context).size.height / 2,
               child: FutureBuilder<List<Text>>(
-                  future: findDiscussionRoom(selectedRoomSize),
+                  future: getRoomsAvailable(widget.date),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Text>> roomList) {
                     if (roomList.hasData) {
+                      (roomList.data[0].data ==
+                              "Sorry, there are no available rooms right now")
+                          ? roomsFound.value = false
+                          : roomsFound.value = true;
+
                       return Column(children: [
                         bookingListWheelScrollView(context,
                             listChildren: roomList.data,
@@ -146,54 +173,60 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
         });
   }
 
-//TODO validation for complete booking details
-  //? Returns available discussion rooms that fits the requested criteria
-  Future<List<Text>> findDiscussionRoom(String size) async {
-    List<Text> rooms = [];
-    int roomSize = int.parse(size);
-
-    var allRoomsOfSize = await getRoomsOfSize(roomSize);
-
-    if (allRoomsOfSize.isNotEmpty) {
-      for (var room in allRoomsOfSize) {
-        rooms.add(Text(room.roomNum));
-      }
-    } else {
-      rooms.add(Text("Sorry, there are no rooms available at this time."));
-    }
-    print(rooms[0].data);
-    return rooms;
-  }
-
-  //? Queries bookings made on the selected date
-  Future getDatedBookings(String date) async {
+  //? Queries bookings, compares with rooms and returns list of available rooms
+  Future<List<Text>> getRoomsAvailable(String date) async {
     String startTime = (widget.startTime.split(":").join("")),
         endTime = (widget.endTime.split(":").join(""));
+    List<Text> rooms = [];
+    List<String> listOfRoomsInUse = [];
+
     //^  list of all bookings on a given date
     List<Booking> allBookings = await getBookingsOf("BookingDate", date);
 
-    //^ list of active bookings on a given date
-    var activeBookings = allBookings
-        .where((booking) => booking.bookingStatus == "Active")
-        .toList();
-
     //^ list of discussion rooms of selected size
-    // var roomsOfSize = await getRoomsOfSize(int.parse(selectedRoomSize));
+    var roomsOfSize = await getRoomsOfSize(int.parse(selectedRoomSize));
 
-    //compare for bookings that will clash with selected time
-    //if yes, check if the room is in roomsOfSize and remove if so
-    //then check if there are alternatives (roomsOfSize.notEmpty)
-    // if no, get list
-    var timing = activeBookings
-        .where((booking) =>
-            int.parse(startTime) >=
-                int.parse(booking.bookingEndTime.split(":").join("")) ||
-            int.parse(endTime) <=
-                int.parse(booking.bookingStartTime.split(":").join("")))
+    //^ list of active/ongoing bookings on a given date
+    List<Booking> clashingBookings = allBookings
+        .where((booking) => booking.bookingStatus != "Cancelled")
         .toList();
-    for (var item in timing) {
-      print(item.roomOrTableNum);
+
+//? checks for any clashing bookings at the (user) selected time
+    clashingBookings.removeWhere((booking) =>
+        int.parse(startTime) >=
+            int.parse(booking.bookingEndTime.split(":").join("")) ||
+        int.parse(endTime) <=
+            int.parse(booking.bookingStartTime.split(":").join("")));
+    clashingBookings.join(",");
+    //^ if clashingBookings.isEmpty = true, no clashing bookings exist
+    if (clashingBookings.isEmpty) {
+      //~ return the list of available rooms
+      for (var room in roomsOfSize) {
+        rooms.add(Text(room.roomNum));
+      }
+    } else {
+      //^ process roomsOfSize and remove rooms that are booked
+      //~ add to a list, the rooms that are in use
+      for (var booking in clashingBookings) {
+        listOfRoomsInUse.add(booking.roomOrTableNum);
+      }
+      //~ remove from (all) room list, rooms that are in use
+      for (var roomInUse in listOfRoomsInUse) {
+        roomsOfSize.removeWhere((room) => room.roomNum == roomInUse.toString());
+        roomsOfSize.join(",");
+      }
+      //~ return list of available rooms
+      for (var room in roomsOfSize) {
+        rooms.add(Text(room.roomNum));
+      }
+
+      //~ if therea are no rooms available at all
+      (rooms.length == 0)
+          ? rooms.add(Text("Sorry, there are no available rooms right now"))
+          : rooms = rooms;
     }
+    print(initialDate);
+    return rooms;
   }
 
   //? Queries bookings if the user has any active bookings
@@ -224,14 +257,15 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     return myBooking;
   }
 
-  bool completeBookingDetails() {
+  bool completeBookingDetails(bool roomsFound) {
     String bookingStartTime = widget.startTime,
         bookingEndTime = widget.endTime,
         roomOrTableNum = selectedDiscussionRoom;
 
     return (bookingStartTime == "Select a start time" ||
             bookingEndTime == "Select an end time" ||
-            roomOrTableNum == "Select a room")
+            roomOrTableNum == "Select a room" ||
+            roomsFound == false)
         ? false
         : true;
   }
