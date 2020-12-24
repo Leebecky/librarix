@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Models/user.dart';
 import '../Custom_Widget/general_alert_dialog.dart';
 
@@ -111,22 +112,25 @@ class _LoginState extends State<Login> {
               FutureBuilder<List<String>>(
                   future: roleList(enteredEmail, ["Role:"]),
                   builder: (context, listItems) {
-                    return DropdownButton<String>(
-                      value: dropdownValue,
-                      icon: Icon(Icons.arrow_downward),
-                      iconSize: 24,
-                      elevation: 16,
-                      items: listItems.data.map((String value) {
-                        return DropdownMenuItem(
-                            value: value, child: Text(value));
-                      }).toList(),
-                      onChanged: (String newValue) {
-                        setState(() {
-                          dropdownValue = newValue;
-                        });
-                      },
-                      iconEnabledColor: Colors.white,
-                    );
+                    if (listItems.hasData) {
+                      return DropdownButton<String>(
+                        value: dropdownValue,
+                        icon: Icon(Icons.arrow_downward),
+                        iconSize: 24,
+                        elevation: 16,
+                        items: listItems.data.map((String value) {
+                          return DropdownMenuItem(
+                              value: value, child: Text(value));
+                        }).toList(),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            dropdownValue = newValue;
+                          });
+                        },
+                        iconEnabledColor: Colors.white,
+                      );
+                    }
+                    return SpinKitWave(color: Theme.of(context).accentColor);
                   }),
               Padding(
                 padding: EdgeInsets.all(30),
