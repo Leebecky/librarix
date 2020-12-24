@@ -7,25 +7,34 @@ class CustomTextField extends StatelessWidget {
   final Function onChange;
   final Color borderColor;
   CustomTextField(
-      {this.text, this.onChange, this.fixKeyboardToNum, this.borderColor});
+      {this.text,
+      this.onChange,
+      this.fixKeyboardToNum = false,
+      this.borderColor});
 
   @override
   Widget build(BuildContext context) {
-    TextInputFormatter digits;
+    List<TextInputFormatter> formatList = [];
+    TextInputFormatter digits = FilteringTextInputFormatter.digitsOnly;
+    TextInputType keyboardType;
     Color textFieldBorderColor;
 
     (borderColor == null)
         ? textFieldBorderColor = Theme.of(context).accentColor
         : textFieldBorderColor = borderColor;
 
-    (fixKeyboardToNum)
-        ? digits = FilteringTextInputFormatter.digitsOnly
-        : digits = null;
+    if (fixKeyboardToNum) {
+      keyboardType = TextInputType.number;
+      formatList.add(digits);
+    } else {
+      keyboardType = TextInputType.text;
+      digits = null;
+    }
 
     return TextField(
       //~ locks the keyboard to numerical only
-      keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[digits],
+      keyboardType: keyboardType,
+      inputFormatters: formatList,
       decoration: InputDecoration(
           labelText: text,
           enabledBorder: OutlineInputBorder(
