@@ -167,23 +167,31 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
 
   //? Queries bookings made on the selected date
   Future getDatedBookings(String date) async {
-    String startTime = widget.startTime, endTime = widget.endTime;
+    String startTime = (widget.startTime.split(":").join("")),
+        endTime = (widget.endTime.split(":").join(""));
+    //^  list of all bookings on a given date
     List<Booking> allBookings = await getBookingsOf("BookingDate", date);
-    // list of active bookings on a given date
-    var activeBookings =
-        allBookings.where((booking) => booking.bookingStatus == "Active");
-    //list of discussion rooms of selected size
+
+    //^ list of active bookings on a given date
+    var activeBookings = allBookings
+        .where((booking) => booking.bookingStatus == "Active")
+        .toList();
+
+    //^ list of discussion rooms of selected size
     // var roomsOfSize = await getRoomsOfSize(int.parse(selectedRoomSize));
 
     //compare for bookings that will clash with selected time
     //if yes, check if the room is in roomsOfSize and remove if so
     //then check if there are alternatives (roomsOfSize.notEmpty)
     // if no, get list
-    print(int.parse(startTime));
-    /* var timing = activeBookings.where((booking) =>
-        int.parse(startTime) >= int.parse(booking.bookingEndTime) ||
-        int.parse(endTime) <= int.parse(booking.bookingStartTime)); */
-    for (var item in activeBookings) {
+    var timing = activeBookings
+        .where((booking) =>
+            int.parse(startTime) >=
+                int.parse(booking.bookingEndTime.split(":").join("")) ||
+            int.parse(endTime) <=
+                int.parse(booking.bookingStartTime.split(":").join("")))
+        .toList();
+    for (var item in timing) {
       print(item.roomOrTableNum);
     }
   }
