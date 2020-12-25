@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/config.dart';
 import '../test.dart';
 import '../catalogue_view.dart';
-import '../booking_maker.dart';
+import '../Booking/booking_maker.dart';
 import '../Staff/booking_records.dart';
 import '../Staff/book_management.dart';
 

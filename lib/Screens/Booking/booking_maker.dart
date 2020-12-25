@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:librarix/Screens/booking_discussion_room.dart';
+import 'package:librarix/Screens/Booking/booking_discussion_room.dart';
 import 'package:librarix/modules.dart';
-import '../Custom_Widget/booking_list_wheel_scroll_view.dart';
-import '../Custom_Widget/user_id_field.dart';
-import '../Custom_Widget/buttons.dart';
+import '../../Custom_Widget/booking_list_wheel_scroll_view.dart';
+import '../../Custom_Widget/user_id_field.dart';
+import '../../Custom_Widget/buttons.dart';
+import './booking_study_table.dart';
 
 class BookingMaker extends StatefulWidget {
   @override
@@ -132,11 +133,7 @@ class _BookingMakerState extends State<BookingMaker> {
           startTimeString, endTimeString);
     } else {
       //~ Build Method for Study Table Booking
-      return Container(
-        height: 50,
-        color: Colors.red,
-        child: Text("Study Table"),
-      );
+      return BookingStudyTable();
     }
   }
 

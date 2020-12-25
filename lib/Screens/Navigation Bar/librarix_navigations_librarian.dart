@@ -5,7 +5,7 @@ import '../Staff/booking_records.dart';
 import '../catalogue_view.dart';
 import '../Staff/book_management.dart';
 import 'package:librarix/config.dart';
-import '../booking_maker.dart';
+import '../Booking/booking_maker.dart';
 
 class LibrarianHome extends StatefulWidget {
   @override
