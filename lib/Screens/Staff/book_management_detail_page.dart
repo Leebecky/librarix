@@ -15,6 +15,13 @@ class BookManagementDetailPage extends StatefulWidget {
 class _BookManagementDetailPageState extends State<BookManagementDetailPage> {
   final primaryColor = const Color(0xFF7fbfe9);
 
+  // navigateToEditBook(DocumentSnapshot bookCatalogue) {
+  //   Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => EditBook(bookCatalogue: bookCatalogue)));
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

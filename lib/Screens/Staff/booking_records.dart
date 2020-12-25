@@ -48,10 +48,7 @@ class BookingRecords extends StatelessWidget {
                             child:
                                 Text(myBooking[index].userId + "  |  TeohXP"),
                           )),
-
-                          //wanna make it to the new line
                           Text(
-                            // "Timing: " +
                             myBooking[index].bookingStartTime +
                                 " - " +
                                 myBooking[index].bookingEndTime,

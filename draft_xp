@@ -1,207 +1,178 @@
-class BookManagement extends StatelessWidget {
-  // List<Book> myBook = [];
-  Future getBookCatalogue() async {
-    await Firebase.initializeApp();
-    var firestore = FirebaseFirestore.instance;
-    QuerySnapshot qn = await firestore.collection("BookCatalogue").get();
-    return qn.docs;
-  }
-
-  navigateToDetail(DocumentSnapshot bookCatalogue) {
-    Navigator.push(context,MaterialPageRoute(builder: (context) => BookDetails(bookCatalogue: bookCatalogue)));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Book Management"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return AddNewBook_BookManagement();
-          }));
-        },
-        child: Icon(
-          Icons.add,
-          color: Colors.black,
-        ),
-      ),
-      body: Container(
-        child: FutureBuilder(
-          future: getBook(),
-          builder:
-              (_, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child: Text(
-                "Loading ... ",
-                textAlign: TextAlign.center,
-              ));
-            } else {
-              // snapshot.data.docs.forEach((doc) {
-              //   myBook.add(bookFromJson(doc.data()));
-              // });
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (_, index) {
-                    return ListTile(
-                      leading: Container(
-                        padding: EdgeInsets.only(bottom: 15.0),
-                        child: Image.network(
-                          snapshot.data[index].data()['BookImage']
-                        ),
-                      ),
-                      title: Text(
-                        snapshot.data[index].data()['BookTitle'],,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      subtitle: Text(
-                        snapshot.data[index].data()['BookDescription'],
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             new BookManagementDetailPage(
-                        //                 myBook[index])));
-
-                        //?temporary
-                        navigateToDetail(snapshot.data[index]);
-                      },
-                    );
-                  });
-            }
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class AddNewBook_BookManagement extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Add New Book"),
-      ),
-    );
-  }
-}
-
-
----------
-book_management.dart 
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../book_details.dart';
-import 'package:flutter/cupertino.dart';
 
-class BookManagementListView extends StatefulWidget {
-  @override
-  _BookManagementListViewState createState() => _BookManagementListViewState();
-}
+const textInputDecoration = InputDecoration(
+  filled: true,
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(width: 3.0),
+  ),
+  focusedBorder: OutlineInputBorder(borderSide: BorderSide(width: 3.0)),
+);
 
-class _BookManagementListViewState extends State<BookManagementListView> {
-  Future getBook() async {
-    await Firebase.initializeApp();
-    var firestore = FirebaseFirestore.instance;
-    QuerySnapshot bookDetail =
-        await firestore.collection("BookCatalogue").get();
-    return bookDetail.docs;
-  }
-
-  navigateToDetail(DocumentSnapshot bookCatalogue) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BookDetails(bookCatalogue: bookCatalogue)));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Book Management"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return AddNewBook_BookManagement();
-          }));
-        },
-        child: Icon(
-          Icons.add,
-          color: Colors.black,
-        ),
-      ),
-      body: Container(
-        child: FutureBuilder(
-          future: getBook(),
-          builder: (_, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child: Text(
-                "Loading ... ",
-                textAlign: TextAlign.center,
-              ));
-            } else {
-              // snapshot.data.docs.forEach((doc) {
-              //   myBook.add(bookFromJson(doc.data()));
-              // });
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (_, index) {
-                    return ListTile(
-                      leading: Container(
-                        padding: EdgeInsets.only(bottom: 15.0),
-                        child: Image.network(
-                            snapshot.data[index].data()['BookImage']),
-                      ),
-                      title: Text(
-                        snapshot.data[index].data()['BookTitle'],
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      subtitle: Text(
-                        snapshot.data[index].data()['BookDescription'],
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             new BookManagementDetailPage(
-                        //                 myBook[index])));
-
-                        //?temporary
-                        navigateToDetail(snapshot.data[index]);
-                      },
-                    );
-                  });
-            }
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class AddNewBook_BookManagement extends StatelessWidget {
+class AddNewBook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Add New Book"),
       ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+          child: Form(
+              child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 20.0,
+              ),
+              TextFormField(
+                decoration:
+                    textInputDecoration.copyWith(labelText: "Book Title"),
+                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
+                //   setState(()=>)
+                // },
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              TextFormField(
+                decoration:
+                    textInputDecoration.copyWith(labelText: "Book ISBN Code"),
+                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
+                //   setState(()=>)
+                // },
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              TextFormField(
+                decoration:
+                    textInputDecoration.copyWith(labelText: "Description"),
+                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
+                //   setState(()=>)
+                // },
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              TextFormField(
+                decoration:
+                    textInputDecoration.copyWith(labelText: "Book Author"),
+                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
+                //   setState(()=>)
+                // },
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              TextFormField(
+                decoration:
+                    textInputDecoration.copyWith(labelText: "Book Publisher"),
+                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
+                //   setState(()=>)
+                // },
+              ),
+              // SizedBox(
+              //   height: 20.0,
+              // ),
+              // TextFormField(
+              //   decoration:
+              //       textInputDecoration.copyWith(labelText: "Publish Date"),
+              //   // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
+              //   //   setState(()=>)
+              //   // },
+              // ),
+              // SizedBox(
+              //   height: 20.0,
+              // ),
+              // TextFormField(
+              //   decoration: textInputDecoration.copyWith(labelText: "Book Image"),
+              //   // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
+              //   //   setState(()=>)
+              //   // },
+              // ),
+              // SizedBox(
+              //   height: 20.0,
+              // ),
+              // TextFormField(
+              //   decoration: textInputDecoration.copyWith(labelText: "Barcode"),
+              //   // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
+              //   //   setState(()=>)
+              //   // },
+              // ),
+            ],
+          )),
+        ),
+      ),
     );
   }
 }
+
+
+
+
+Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                          child: TextField(
+                              decoration: InputDecoration(
+                                  labelText: "Book Genre",
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).accentColor)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).accentColor))
+                                              ),
+                              controller: _controller)),
+                      PopupMenuButton<String>(
+                        icon: const Icon(Icons.arrow_drop_down),
+                        onSelected: (String value) {
+                          _controller.text = value;
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return bookGenre
+                              .map<PopupMenuItem<String>>((String value) {
+                            return PopupMenuItem(
+                                child: Text(value), value: value);
+                          }).toList();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+
+                FormField<String>(
+          builder: (FormFieldState<String> state) {
+            return InputDecorator(
+              decoration: InputDecoration(
+                  labelStyle: textStyle,
+                  errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
+                  hintText: 'Please select expense',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
+              isEmpty: _currentSelectedValue == '',
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: _currentSelectedValue,
+                  isDense: true,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      _currentSelectedValue = newValue;
+                      state.didChange(newValue);
+                    });
+                  },
+                  items: _currencies.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+            );
+          },
+        )
