@@ -40,6 +40,12 @@ dependencies:
   #Loaders
   flutter_spinkit: ^4.1.2+1
 
+  #Dependencies for Study Table floor plan
+  #A flutter library to help with (Canvas) Path creation and manipulation
+  path_drawing: ^0.4.1+1
+  #Adds gesture callbacks to shapes drawn on the canvas in CustomPainter
+  touchable: ^0.2.0
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
@@ -67,7 +73,7 @@ flutter_icons:
 flutter:
   assets:
     - assets/Icon/library.png
-
+    - assets\Study_Table_Floor_Plan.svg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
