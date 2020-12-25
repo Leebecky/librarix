@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:librarix/Models/user.dart';
+//import 'package:librarix/Models/user.dart';
+import '../Custom_Widget/buttons.dart';
 
 class BookDetails extends StatefulWidget {
   final DocumentSnapshot bookCatalogue;
@@ -11,7 +14,6 @@ class BookDetails extends StatefulWidget {
 }
 
 class _BookDetailsState extends State<BookDetails> {
-  final primaryColor = const Color(0xFF7fbfe9);
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +22,9 @@ class _BookDetailsState extends State<BookDetails> {
         child: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-              backgroundColor: primaryColor,
-              expandedHeight: 350.0,
+              expandedHeight: 400.0,
               flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(widget.bookCatalogue["BookImage"]),
+                background: Image.network(widget.bookCatalogue["BookImage"], height: 300, fit: BoxFit.fill),
               ),
             ),
             SliverFixedExtentList(
@@ -100,11 +101,65 @@ class _BookDetailsState extends State<BookDetails> {
                     ],
                   ),
                 ),
+                CustomOutlineButton(
+                  buttonText: "Placehold",
+                  onClick: (){
+                    _showMyDialog();
+                  },
+                ),
               ]),
             )
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Reserve Book'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("Do you want to reserve ${widget.bookCatalogue["BookTitle"]} ?"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Yes"),
+              onPressed: () async {
+                  createRecord();
+                  Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () => Navigator.of(context).pop()
+              )
+          ],
+        );
+      },
+    );
+  }
+
+  Future createRecord() async {
+ActiveUser myUser = await myActiveUser();
+
+
+    DocumentReference ref = await FirebaseFirestore.instance.collection("BorrowedBook")
+      .add({
+        'BookId': widget.bookCatalogue.id,
+        'BookTitle': widget.bookCatalogue["BookTitle"],
+        'BorrowDate': null,
+        'BorrowReturnedDate': null,
+        'BorrowStatus': 'Reserved',
+        'UserId': myUser.userId,
+      });
+    print(ref.id);
   }
 }
