@@ -36,6 +36,11 @@ class _HomeState extends State<Home> {
         title: Text("LibrariX"),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.search), 
+            onPressed: () => Navigator.pushNamed(context, "/search"), 
+            iconSize: 35.0
+          ),
+          IconButton(
             icon: Icon(Icons.auto_stories),
             onPressed: () => Navigator.pushNamed(context, "/scanner"),
             iconSize: 35.0,

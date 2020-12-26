@@ -10,16 +10,29 @@ class Book {
       image,
       publishDate,
       publisher,
-      title;
+      title,
+      id;
   int stock;
 
   //^ Constructor
   Book(this.author, this.barcode, this.description, this.genre, this.isbnCode,
-      this.image, this.publishDate, this.publisher, this.stock, this.title);
+      this.image, this.publishDate, this.publisher, this.stock, this.title, this.id);
       
   //? Converts the Book into a map of key/value pairs
   Map<String, String> toJson() => _bookToJson(this);
 
+  Book.fromSnapshot(DocumentSnapshot snapshot) :
+    author = snapshot['BookAuthor'],
+    barcode = snapshot['BookBarcode'],
+    description = snapshot['BookDescription'],
+    genre = snapshot['BookGenre'],
+    isbnCode = snapshot['BookISBNCode'],
+    image = snapshot['BookImage'],
+    publishDate = snapshot['BookPublishDate'],
+    publisher = snapshot['BookPublisher'],
+    stock = snapshot['BookStock'],
+    title = snapshot['BookTitle'],
+    id = snapshot.id;
 }
 
 //? Converts map of values from Firestore into Book object.
@@ -35,6 +48,7 @@ Book bookFromJson(Map<String, dynamic> json) {
     json["BookPublisher"] as String,
     json["BookStock"] as int,
     json["BookTitle"] as String,
+    json['BookId'] as String
   );
 }
 
@@ -69,3 +83,4 @@ Future<QuerySnapshot> getBook() async {
 
   return bookDetails;
 }
+
