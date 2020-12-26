@@ -9,10 +9,9 @@ import '../../modules.dart';
 
 class BookingDiscussionRoom extends StatefulWidget {
   final ValueNotifier<String> userId;
-  final String startTime, endTime, date, bookingType;
+  final String startTime, endTime, date;
 
-  BookingDiscussionRoom(
-      this.bookingType, this.userId, this.date, this.startTime, this.endTime);
+  BookingDiscussionRoom(this.userId, this.date, this.startTime, this.endTime);
   @override
   _BookingDiscussionRoomState createState() => _BookingDiscussionRoomState();
 }
@@ -186,9 +185,11 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     //^ list of discussion rooms of selected size
     var roomsOfSize = await getRoomsOfSize(int.parse(selectedRoomSize));
 
-    //^ list of active/ongoing bookings on a given date
+    //^ list of active/ongoing discussion room bookings on a given date
     List<Booking> clashingBookings = allBookings
-        .where((booking) => booking.bookingStatus != "Cancelled")
+        .where((booking) =>
+            booking.bookingStatus != "Cancelled" &&
+            booking.bookingType == "Discussion Room")
         .toList();
 
 //? checks for any clashing bookings at the (user) selected time
@@ -225,7 +226,6 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
           ? rooms.add(Text("Sorry, there are no available rooms right now"))
           : rooms = rooms;
     }
-    print(initialDate);
     return rooms;
   }
 
@@ -243,13 +243,9 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     String bookingDate = widget.date,
         bookingEndTime = widget.endTime,
         bookingStartTime = widget.startTime,
-        bookingType,
+        bookingType = "Discussion Room",
         uid = userId.value,
         roomOrTableNum = selectedDiscussionRoom;
-
-    (widget.bookingType == "0")
-        ? bookingType = "Discussion Room"
-        : bookingType = "Study Table";
 
     Booking myBooking = Booking(bookingDate, bookingEndTime, bookingStartTime,
         "Active", bookingType, roomOrTableNum, uid);

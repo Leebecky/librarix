@@ -129,11 +129,11 @@ class _BookingMakerState extends State<BookingMaker> {
   Widget bookingMakerType() {
     //~ Build Method for Discussion Room Booking
     if (type == BookingType.discussionRoom) {
-      return BookingDiscussionRoom(type.index.toString(), userId, dateSelected,
-          startTimeString, endTimeString);
+      return BookingDiscussionRoom(
+          userId, dateSelected, startTimeString, endTimeString);
     } else {
       //~ Build Method for Study Table Booking
-      return BookingStudyTable();
+      return BookingStudyTable(userId, dateSelected, startTimeString, endTimeString);
     }
   }
 

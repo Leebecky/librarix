@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_drawing/path_drawing.dart';
@@ -12,44 +13,42 @@ class FloorPlan extends StatefulWidget {
 class _FloorPlanState extends State<FloorPlan> {
   List<String> tableNum = [];
   List<StudyTable> tableList = [];
-  // ValueNotifier<String> selection;
+  ValueNotifier<String> selection;
 
   @override
   void initState() {
-    // selection = ValueNotifier<String>("");
+    selection = ValueNotifier<String>("");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        child:
-            /*  child: ValueListenableBuilder<String>(
-            valueListenable: selection,
-            builder: (BuildContext context, String value, Widget child) {
-              return  */
-            FutureBuilder<List<StudyTable>>(
-                future: studyTableList(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<StudyTable>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Container(
-                        child: CanvasTouchDetector(
-                      builder: (context) => CustomPaint(
-                        painter: PathPainter(
-                          context,
-                          tableList: snapshot.data,
+        child: FutureBuilder<List<StudyTable>>(
+            future: studyTableList(),
+            builder: (BuildContext context,
+                AsyncSnapshot<List<StudyTable>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ValueListenableBuilder<String>(
+                    valueListenable: selection,
+                    builder:
+                        (BuildContext context, String value, Widget child) {
+                      return Container(
+                          child: CanvasTouchDetector(
+                        builder: (context) => CustomPaint(
+                          painter: PathPainter(context,
+                              tableList: snapshot.data, a: selection),
                         ),
-                      ),
-                    ));
-                  }
-                  return SpinKitWave(color: Theme.of(context).accentColor);
-                }));
+                      ));
+                    });
+              }
+              return SpinKitWave(color: Theme.of(context).accentColor);
+            }));
   }
 
+//? Retrieves the study tables from the database
   Future<List<StudyTable>> studyTableList() async {
     tableList = await getStudyTables();
-
     return tableList;
   }
 }
@@ -58,11 +57,13 @@ class PathPainter extends CustomPainter {
   final BuildContext context;
   final List<StudyTable> tableList;
   List<String> selectedTable = [];
+  ValueNotifier<String> a;
 
   PathPainter(
     this.context, {
     this.tableList,
-  });
+    this.a,
+  }) : super(repaint: a);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -84,11 +85,10 @@ class PathPainter extends CustomPainter {
       Path path = parseSvgPathData(table.svgPath);
 
       paint.color = Colors.white;
-      if (selectedTable != null) {
-        if (selectedTable.contains(table.tableNum)) {
-          paint.color = Colors.red;
-          // paint.strokeWidth = 8.0;
-        }
+
+      if (selectedTable.contains(table.tableNum)) {
+        paint.color = Colors.red;
+        print("Hit");
       }
 
       path.transform(matrix4.storage);
@@ -103,9 +103,14 @@ class PathPainter extends CustomPainter {
           } */
           if (!selectedTable.contains(table.tableNum)) {
             selectedTable.add(table.tableNum);
-          } else {
-            selectedTable.removeAt(0);
+            a.value = table.tableNum;
           }
+          /* else {
+            selectedTable.remove(table.tableNum);
+          }
+          if (selectedTable.length > 1) {
+            selectedTable.removeAt(0);
+          } */
           print("${table.tableNum}");
         },
       );
