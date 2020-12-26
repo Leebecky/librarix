@@ -1,24 +1,23 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:librarix/Custom_Widget/buttons.dart';
+import 'package:librarix/Models/book.dart';
 import 'package:librarix/Models/user.dart';
-import '../Custom_Widget/buttons.dart';
-import '../modules.dart';
 
-class BookDetails extends StatefulWidget {
+import '../../modules.dart';
 
+class DetailBookView extends StatefulWidget {
+  final Book book;
 
-  final DocumentSnapshot bookCatalogue;
-  BookDetails({this.bookCatalogue});
+  DetailBookView({Key key, @required this.book}) : super(key: key);
 
   @override
-  _BookDetailsState createState() => _BookDetailsState();
+  _DetailBookViewState createState() => _DetailBookViewState();
 }
 
-class _BookDetailsState extends State<BookDetails> {
+class _DetailBookViewState extends State<DetailBookView> {
   ValueNotifier get userId => null;
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +27,7 @@ class _BookDetailsState extends State<BookDetails> {
             SliverAppBar(
               expandedHeight: 400.0,
               flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(widget.bookCatalogue["BookImage"], height: 300, fit: BoxFit.fill),
+                background: Image.network(widget.book.image, height: 300, fit: BoxFit.fill)
               ),
             ),
             SliverFixedExtentList(
@@ -36,20 +35,20 @@ class _BookDetailsState extends State<BookDetails> {
               delegate: SliverChildListDelegate([
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(widget.bookCatalogue["BookTitle"],
+                  child: Text(widget.book.title,
                       style: TextStyle(
                           fontSize: 30.0, fontWeight: FontWeight.w500)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 5.0, left: 8.0),
-                  child: Text(widget.bookCatalogue["BookAuthor"],
+                  child: Text(widget.book.author,
                       style: TextStyle(
                           fontSize: 20.0, fontStyle: FontStyle.italic)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: AutoSizeText(
-                    widget.bookCatalogue["BookDescription"],
+                    widget.book.description,
                     style: TextStyle(fontSize: 15.0),
                     maxLines: 20,
                     textAlign: TextAlign.left,
@@ -60,7 +59,7 @@ class _BookDetailsState extends State<BookDetails> {
                   child: Row(
                     children: [
                       Text("Barcode: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookBarcode"],
+                      Text(widget.book.barcode,
                           style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
@@ -70,7 +69,7 @@ class _BookDetailsState extends State<BookDetails> {
                   child: Row(
                     children: [
                       Text("Genre: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookGenre"],
+                      Text(widget.book.genre,
                           style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
@@ -80,7 +79,7 @@ class _BookDetailsState extends State<BookDetails> {
                   child: Row(
                     children: [
                       Text("Publish Year: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookPublishDate"],
+                      Text(widget.book.publishDate,
                           style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
@@ -90,7 +89,7 @@ class _BookDetailsState extends State<BookDetails> {
                   child: Row(
                     children: [
                       Text("Publisher: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookPublisher"],
+                      Text(widget.book.publisher,
                           style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
@@ -100,7 +99,7 @@ class _BookDetailsState extends State<BookDetails> {
                   child: Row(
                     children: [
                       Text("Stock: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.bookCatalogue["BookStock"].toString(),
+                      Text(widget.book.stock.toString(),
                           style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
@@ -109,6 +108,7 @@ class _BookDetailsState extends State<BookDetails> {
                   padding: const EdgeInsets.all(8.0),
                   child: verifyUser(userId),
                 ),
+                
               ]),
             )
           ],
@@ -142,7 +142,7 @@ class _BookDetailsState extends State<BookDetails> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text("Do you want to reserve ${widget.bookCatalogue["BookTitle"]} ?"),
+                Text("Do you want to reserve ${widget.book.title} ?"),
               ],
             ),
           ),
@@ -169,8 +169,8 @@ class _BookDetailsState extends State<BookDetails> {
 
     DocumentReference ref = await FirebaseFirestore.instance.collection("BorrowedBook")
       .add({
-        'BookId': widget.bookCatalogue.id,
-        'BookTitle': widget.bookCatalogue["BookTitle"],
+        'BookId': widget.book.id,
+        'BookTitle': widget.book.title,
         'BorrowDate': null,
         'BorrowReturnedDate': null,
         'BorrowStatus': 'Reserved',
