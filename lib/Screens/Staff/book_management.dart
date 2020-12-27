@@ -12,14 +12,15 @@ class BookManagementListView extends StatefulWidget {
 }
 
 class _BookManagementListViewState extends State<BookManagementListView> {
-  Future getBook() async {
-    await Firebase.initializeApp();
-    var firestore = FirebaseFirestore.instance;
-    QuerySnapshot bookDetail =
-        await firestore.collection("BookCatalogue").get();
-    return bookDetail.docs;
-  }
-
+  // Stream getBook() async {
+  //   await Firebase.initializeApp();
+  //   var firestore = FirebaseFirestore.instance;
+  //   QuerySnapshot bookDetail =
+  //       await firestore.collection("BookCatalogue").get();
+  //   return bookDetail.docs;
+  // }
+  CollectionReference bookDb =
+      FirebaseFirestore.instance.collection("BookCatalogue");
   navigateToBookManagementDetail(DocumentSnapshot bookCatalogue) {
     Navigator.push(
         context,
@@ -46,43 +47,48 @@ class _BookManagementListViewState extends State<BookManagementListView> {
         ),
       ),
       body: Container(
-        child: FutureBuilder(
-          future: getBook(),
-          builder: (_, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return SpinKitWave(
-                color: Theme.of(context).accentColor,
-              );
-            } else {
-              // snapshot.data.docs.forEach((doc) {
-              //   myBook.add(bookFromJson(doc.data()));
-              // });
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (_, index) {
+        child: StreamBuilder<QuerySnapshot>(
+            stream: bookDb.snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasData) {
+                // snapshot.data.docs.forEach((doc) {
+                //   myBook.add(bookFromJson(doc.data()));
+                // });
+                return ListView(
+                  children: snapshot.data.docs.map((DocumentSnapshot document) {
+                    print(document.data()["BookImage"]);
                     return ListTile(
                       leading: Container(
                         padding: EdgeInsets.only(bottom: 15.0),
                         child: Image.network(
-                            snapshot.data[index].data()['BookImage']),
+                          document.data()['BookImage'],
+                          // width: 150,
+                          height: 500,
+                          fit: BoxFit.fitHeight,
+                        ),
                       ),
                       title: Text(
-                        snapshot.data[index].data()['BookTitle'],
+                        document.data()['BookTitle'],
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       subtitle: Text(
-                        snapshot.data[index].data()['BookAuthor'],
+                        document.data()['BookAuthor'],
                         style: TextStyle(fontSize: 14),
                       ),
                       onTap: () {
-                        navigateToBookManagementDetail(snapshot.data[index]);
+                        navigateToBookManagementDetail(document);
                       },
                     );
-                  });
-            }
-          },
-        ),
+                  }).toList(),
+                );
+              }
+
+              return SpinKitWave(
+                color: Theme.of(context).accentColor,
+              );
+            }),
       ),
     );
   }

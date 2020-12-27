@@ -1,14 +1,66 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:librarix/Models/book.dart';
+import '../../Custom_Widget/buttons.dart';
+import '../../Custom_Widget/textfield.dart';
 
-const textInputDecoration = InputDecoration(
-  filled: true,
-  enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(width: 3.0),
-  ),
-  focusedBorder: OutlineInputBorder(borderSide: BorderSide(width: 3.0)),
-);
+class AddNewBook extends StatefulWidget {
+  // final String bookTitle,
+  //     bookISBNCode,
+  //     bookBarcode,
+  //     bookGenre,
+  //     bookAuthor,
+  //     bookPublisher,
+  //     bookPublishedDate,
+  //     bookDescription,
+  //     bookStock;
 
-class AddNewBook extends StatelessWidget {
+  // const AddNewBook(
+  //     {Key key,
+  //     this.bookTitle,
+  //     this.bookISBNCode,
+  //     this.bookBarcode,
+  //     this.bookGenre,
+  //     this.bookAuthor,
+  //     this.bookPublisher,
+  //     this.bookPublishedDate,
+  //     this.bookDescription,
+  //     this.bookStock})
+  //     : super(key: key);
+
+  final Book newBook;
+  AddNewBook({Key key, @required this.newBook}) : super(key: key);
+  @override
+  _AddNewBookState createState() => _AddNewBookState();
+}
+
+class _AddNewBookState extends State<AddNewBook> {
+  String title,
+      isbnCode,
+      barcode,
+      genre,
+      author,
+      publisher,
+      publishedDate,
+      description,
+      stock;
+  // final TextEditingController bookGenreSelected = new TextEditingController();
+//   int _n = 0;
+// //add
+//   void add() {
+//     setState(() {
+//       _n++;
+//     });
+//   }
+
+// //minus function
+//   void minus() {
+//     setState(() {
+//       if (_n != 0) _n--;
+//     });
+//   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,90 +71,255 @@ class AddNewBook extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
           child: Form(
-              child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 20.0,
-              ),
-              TextFormField(
-                decoration:
-                    textInputDecoration.copyWith(labelText: "Book Title"),
-                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
-                //   setState(()=>)
-                // },
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              TextFormField(
-                decoration:
-                    textInputDecoration.copyWith(labelText: "Book ISBN Code"),
-                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
-                //   setState(()=>)
-                // },
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              TextFormField(
-                decoration:
-                    textInputDecoration.copyWith(labelText: "Description"),
-                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
-                //   setState(()=>)
-                // },
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              TextFormField(
-                decoration:
-                    textInputDecoration.copyWith(labelText: "Book Author"),
-                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
-                //   setState(()=>)
-                // },
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              TextFormField(
-                decoration:
-                    textInputDecoration.copyWith(labelText: "Book Publisher"),
-                // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
-                //   setState(()=>)
-                // },
-              ),
-              // SizedBox(
-              //   height: 20.0,
-              // ),
-              // TextFormField(
-              //   decoration:
-              //       textInputDecoration.copyWith(labelText: "Publish Date"),
-              //   // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
-              //   //   setState(()=>)
-              //   // },
-              // ),
-              // SizedBox(
-              //   height: 20.0,
-              // ),
-              // TextFormField(
-              //   decoration: textInputDecoration.copyWith(labelText: "Book Image"),
-              //   // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
-              //   //   setState(()=>)
-              //   // },
-              // ),
-              // SizedBox(
-              //   height: 20.0,
-              // ),
-              // TextFormField(
-              //   decoration: textInputDecoration.copyWith(labelText: "Barcode"),
-              //   // validator: (val) => val.isEmpty ? 'Please enter Book Title' : null, onChanged: (val) {
-              //   //   setState(()=>)
-              //   // },
-              // ),
-            ],
-          )),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Book Title ${newBook.title}",
+                    fixKeyboardToNum: false,
+                    onChange: (value) => title = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Book ISBN Code",
+                    fixKeyboardToNum: true,
+                    onChange: (value) => isbnCode = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Book Barcode",
+                    fixKeyboardToNum: true,
+                    onChange: (value) => barcode = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: DropdownButtonFormField(
+                    items: [
+                      DropdownMenuItem(
+                        value: "Fantasy",
+                        child: Text("Fantasy"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Education",
+                        child: Text("Education"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Drama",
+                        child: Text("Drama"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Action and Adventure",
+                        child: Text("Action and Adventure"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Historical Fiction",
+                        child: Text("Historical Fiction"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Horror",
+                        child: Text("Horror"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Romance",
+                        child: Text("Romance"),
+                      ),
+                    ],
+                    decoration: InputDecoration(
+                        labelText: "Book Genre",
+                        hintText: "Please select book genre",
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor))),
+                    onChanged: (value) => {genre},
+                    // onChange: (value) => bookGenre = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Author",
+                    fixKeyboardToNum: false,
+                    onChange: (value) => author = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Publisher",
+                    fixKeyboardToNum: false,
+                    onChange: (value) => publisher = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: TextField(
+                    // maxLength: 10,
+                    keyboardType: TextInputType.datetime,
+                    decoration: InputDecoration(
+                        labelText: 'Published Date',
+                        hintText: "DD/MM/YYYY",
+                        counterText: '',
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor))),
+
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp("[0-9/]")),
+                      LengthLimitingTextInputFormatter(10),
+                      _DateFormatter(),
+                    ],
+                    onChanged: (value) => publishedDate = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Book Description",
+                    fixKeyboardToNum: false,
+                    onChange: (value) => description = value,
+                  ),
+                ),
+                // Padding(
+                //   padding: EdgeInsets.all(20),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //     children: <Widget>[
+                //       new FloatingActionButton(
+                //         onPressed: add,
+                //         child: new Icon(
+                //           Icons.add,
+                //           color: Colors.black,
+                //         ),
+                //         backgroundColor: Colors.white,
+                //       ),
+                //       new Text('$_n', style: new TextStyle(fontSize: 20.0)),
+                //       new FloatingActionButton(
+                //         onPressed: minus,
+                //         child: new Icon(
+                //           const IconData(0xe15b, fontFamily: 'MaterialIcons'),
+                //         ),
+                //         backgroundColor: Colors.white,
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  // child: showMaterialNumberPicker(),
+                ),
+                CustomFlatButton(
+                  roundBorder: true,
+                  buttonText: "Add",
+                  onClick: () async {},
+                ),
+              ],
+            ),
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _DateFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue prevText, TextEditingValue currText) {
+    int selectionIndex;
+
+    // Get the previous and current input strings
+    String pText = prevText.text;
+    String cText = currText.text;
+    // Abbreviate lengths
+    int cLen = cText.length;
+    int pLen = pText.length;
+
+    if (cLen == 1) {
+      // Can only be 0, 1, 2 or 3
+      if (int.parse(cText) > 3) {
+        // Remove char
+        cText = '';
+      }
+    } else if (cLen == 2 && pLen == 1) {
+      // Days cannot be greater than 31
+      int dd = int.parse(cText.substring(0, 2));
+      if (dd == 0 || dd > 31) {
+        // Remove char
+        cText = cText.substring(0, 1);
+      } else {
+        // Add a / char
+        cText += '/';
+      }
+    } else if (cLen == 4) {
+      // Can only be 0 or 1
+      if (int.parse(cText.substring(3, 4)) > 1) {
+        // Remove char
+        cText = cText.substring(0, 3);
+      }
+    } else if (cLen == 5 && pLen == 4) {
+      // Month cannot be greater than 12
+      int mm = int.parse(cText.substring(3, 5));
+      if (mm == 0 || mm > 12) {
+        // Remove char
+        cText = cText.substring(0, 4);
+      } else {
+        // Add a / char
+        cText += '/';
+      }
+    } else if ((cLen == 3 && pLen == 4) || (cLen == 6 && pLen == 7)) {
+      // Remove / char
+      cText = cText.substring(0, cText.length - 1);
+    } else if (cLen == 3 && pLen == 2) {
+      if (int.parse(cText.substring(2, 3)) > 1) {
+        // Replace char
+        cText = cText.substring(0, 2) + '/';
+      } else {
+        // Insert / char
+        cText =
+            cText.substring(0, pLen) + '/' + cText.substring(pLen, pLen + 1);
+      }
+    } else if (cLen == 6 && pLen == 5) {
+      // Can only be 1 or 2 - if so insert a / char
+      int y1 = int.parse(cText.substring(5, 6));
+      if (y1 < 1 || y1 > 2) {
+        // Replace char
+        cText = cText.substring(0, 5) + '/';
+      } else {
+        // Insert / char
+        cText = cText.substring(0, 5) + '/' + cText.substring(5, 6);
+      }
+    } else if (cLen == 7) {
+      // Can only be 1 or 2
+      int y1 = int.parse(cText.substring(6, 7));
+      if (y1 < 1 || y1 > 2) {
+        // Remove char
+        cText = cText.substring(0, 6);
+      }
+    } else if (cLen == 8) {
+      // Can only be 19 or 20
+      int y2 = int.parse(cText.substring(6, 8));
+      if (y2 < 19 || y2 > 20) {
+        // Remove char
+        cText = cText.substring(0, 7);
+      }
+    }
+
+    selectionIndex = cText.length;
+    return TextEditingValue(
+      text: cText,
+      selection: TextSelection.collapsed(offset: selectionIndex),
     );
   }
 }
@@ -110,69 +327,192 @@ class AddNewBook extends StatelessWidget {
 
 
 
-Padding(
+
+//retriev display in textbox???
+class AddNewBook extends StatelessWidget {
+  // String title,
+  //     isbnCode,
+  //     barcode,
+  //     genre,
+  //     author,
+  //     publisher,
+  //     publishedDate,
+  //     description,
+  //     stock;
+  final Book newBook;
+  AddNewBook({Key key, @required this.newBook}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add New Book"),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+          child: Form(
+            child: Column(
+              children: <Widget>[
+                Padding(
                   padding: EdgeInsets.all(20),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: TextField(
-                              decoration: InputDecoration(
-                                  labelText: "Book Genre",
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).accentColor)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Theme.of(context).accentColor))
-                                              ),
-                              controller: _controller)),
-                      PopupMenuButton<String>(
-                        icon: const Icon(Icons.arrow_drop_down),
-                        onSelected: (String value) {
-                          _controller.text = value;
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return bookGenre
-                              .map<PopupMenuItem<String>>((String value) {
-                            return PopupMenuItem(
-                                child: Text(value), value: value);
-                          }).toList();
-                        },
-                      ),
-                    ],
+                  child: CustomTextField(
+                    text: "Book Title ${newBook.title}",
+                    fixKeyboardToNum: false,
+                    // onChange: (value) => title = value,
                   ),
                 ),
-
-
-                FormField<String>(
-          builder: (FormFieldState<String> state) {
-            return InputDecorator(
-              decoration: InputDecoration(
-                  labelStyle: textStyle,
-                  errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
-                  hintText: 'Please select expense',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
-              isEmpty: _currentSelectedValue == '',
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: _currentSelectedValue,
-                  isDense: true,
-                  onChanged: (String newValue) {
-                    setState(() {
-                      _currentSelectedValue = newValue;
-                      state.didChange(newValue);
-                    });
-                  },
-                  items: _currencies.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Book ISBN Code ${newBook.isbnCode}",
+                    fixKeyboardToNum: true,
+                    // onChange: (value) => isbnCode = value,
+                  ),
                 ),
-              ),
-            );
-          },
-        )
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Book Barcode ${newBook.barcode}",
+                    fixKeyboardToNum: true,
+                    // onChange: (value) => barcode = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: DropdownButtonFormField(
+                    items: [
+                      DropdownMenuItem(
+                        value: "Fantasy",
+                        child: Text("Fantasy"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Education",
+                        child: Text("Education"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Drama",
+                        child: Text("Drama"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Action and Adventure",
+                        child: Text("Action and Adventure"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Historical Fiction",
+                        child: Text("Historical Fiction"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Horror",
+                        child: Text("Horror"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Romance",
+                        child: Text("Romance"),
+                      ),
+                    ],
+                    decoration: InputDecoration(
+                        labelText: "Book Genre  ${newBook.genre}",
+                        hintText: "Please select book genre",
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor))),
+                    // onChanged: (value) => {genre},
+                    // onChange: (value) => bookGenre = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Author  ${newBook.author}",
+                    fixKeyboardToNum: false,
+                    // onChange: (value) => author = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Publisher  ${newBook.publisher}",
+                    fixKeyboardToNum: false,
+                    // onChange: (value) => publisher = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: TextField(
+                    // maxLength: 10,
+                    keyboardType: TextInputType.datetime,
+                    decoration: InputDecoration(
+                        labelText: 'Published Date  ${newBook.publishDate}',
+                        hintText: "DD/MM/YYYY",
+                        counterText: '',
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor))),
+
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp("[0-9/]")),
+                      LengthLimitingTextInputFormatter(10),
+                      _DateFormatter(),
+                    ],
+                    // onChanged: (value) => publishedDate = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Book Description  ${newBook.description}",
+                    fixKeyboardToNum: false,
+                    // onChange: (value) => description = value,
+                  ),
+                ),
+                // Padding(
+                //   padding: EdgeInsets.all(20),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //     children: <Widget>[
+                //       new FloatingActionButton(
+                //         onPressed: add,
+                //         child: new Icon(
+                //           Icons.add,
+                //           color: Colors.black,
+                //         ),
+                //         backgroundColor: Colors.white,
+                //       ),
+                //       new Text('$_n', style: new TextStyle(fontSize: 20.0)),
+                //       new FloatingActionButton(
+                //         onPressed: minus,
+                //         child: new Icon(
+                //           const IconData(0xe15b, fontFamily: 'MaterialIcons'),
+                //         ),
+                //         backgroundColor: Colors.white,
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  // child: showMaterialNumberPicker(),
+                ),
+                CustomFlatButton(
+                  roundBorder: true,
+                  buttonText: "Add",
+                  onClick: () async {
+                    await FirebaseFirestore.instance
+                        .collection("BookCatelogue")
+                        .add(newBook.toJson());
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

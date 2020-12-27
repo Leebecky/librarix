@@ -84,14 +84,3 @@ Future<void> updateBookStock(String docId, int stockCount) async {
       .then((value) => print("Book Stock has been updated!"))
       .catchError((onError) => print("An error has occurred: $onError"));
 }
-
-//Create new record for book catalogue
-Future<void> createBookCatalogue(Book bookCatelogueRecord) async {
-  FirebaseFirestore.instance
-      .collection("BookCatalogue")
-      .add(_bookToJson(bookCatelogueRecord))
-      .then(
-        (value) => print("New Book created successfully!"),
-      )
-      .catchError((onError) => print("An error was encountered: $onError"));
-}

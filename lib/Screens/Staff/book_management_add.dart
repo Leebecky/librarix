@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:librarix/Models/book.dart';
 import '../../Custom_Widget/buttons.dart';
 import '../../Custom_Widget/textfield.dart';
 
@@ -10,31 +10,16 @@ class AddNewBook extends StatefulWidget {
 }
 
 class _AddNewBookState extends State<AddNewBook> {
-  //Book genre
-  // final TextEditingController bookGenreSelected = new TextEditingController();
-  // List<String> bookGenre = [
-  //   "Fantasy",
-  //   "Education",
-  //   "Drama",
-  //   "Action and Adventure",
-  //   "Historical Fiction",
-  //   "Horror",
-  //   "Romance",
-  // ];
-  int _n = 0;
-//add
-  void add() {
-    setState(() {
-      _n++;
-    });
-  }
-
-//minus function
-  void minus() {
-    setState(() {
-      if (_n != 0) _n--;
-    });
-  }
+  String title,
+      isbnCode,
+      barcode,
+      genre,
+      author,
+      publisher,
+      publishedDate,
+      description,
+      stock,
+      image;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +38,7 @@ class _AddNewBookState extends State<AddNewBook> {
                   child: CustomTextField(
                     text: "Book Title",
                     fixKeyboardToNum: false,
-                    // onChange: () => $bookTitle(bookTitle),
+                    onChange: (value) => title = value,
                   ),
                 ),
                 Padding(
@@ -61,6 +46,15 @@ class _AddNewBookState extends State<AddNewBook> {
                   child: CustomTextField(
                     text: "Book ISBN Code",
                     fixKeyboardToNum: true,
+                    onChange: (value) => isbnCode = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "Book Barcode",
+                    fixKeyboardToNum: true,
+                    onChange: (value) => barcode = value,
                   ),
                 ),
                 Padding(
@@ -105,7 +99,12 @@ class _AddNewBookState extends State<AddNewBook> {
                         focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Theme.of(context).accentColor))),
-                    onChanged: (value) {},
+                    onChanged: (String value) {
+                      setState(() {
+                        genre = value;
+                      });
+                    },
+                    // onChange: (value) => bookGenre = value,
                   ),
                 ),
                 Padding(
@@ -113,6 +112,7 @@ class _AddNewBookState extends State<AddNewBook> {
                   child: CustomTextField(
                     text: "Author",
                     fixKeyboardToNum: false,
+                    onChange: (value) => author = value,
                   ),
                 ),
                 Padding(
@@ -120,6 +120,7 @@ class _AddNewBookState extends State<AddNewBook> {
                   child: CustomTextField(
                     text: "Publisher",
                     fixKeyboardToNum: false,
+                    onChange: (value) => publisher = value,
                   ),
                 ),
                 Padding(
@@ -143,6 +144,7 @@ class _AddNewBookState extends State<AddNewBook> {
                       LengthLimitingTextInputFormatter(10),
                       _DateFormatter(),
                     ],
+                    onChanged: (value) => publishedDate = value,
                   ),
                 ),
                 Padding(
@@ -150,36 +152,23 @@ class _AddNewBookState extends State<AddNewBook> {
                   child: CustomTextField(
                     text: "Book Description",
                     fixKeyboardToNum: false,
+                    onChange: (value) => description = value,
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      new FloatingActionButton(
-                        onPressed: add,
-                        child: new Icon(
-                          Icons.add,
-                          color: Colors.black,
-                        ),
-                        backgroundColor: Colors.white,
-                      ),
-                      new Text('$_n', style: new TextStyle(fontSize: 20.0)),
-                      new FloatingActionButton(
-                        onPressed: minus,
-                        child: new Icon(
-                          const IconData(0xe15b, fontFamily: 'MaterialIcons'),
-                        ),
-                        backgroundColor: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: EdgeInsets.all(20),
+                    child: CustomTextField(
+                      text: 'Stock',
+                      fixKeyboardToNum: true,
+                      onChange: (value) => stock = value,
+                    )),
                 CustomFlatButton(
                   roundBorder: true,
                   buttonText: "Add",
-                  onClick: () {},
+                  onClick: () async {
+                    createBookCatalogue();
+                    Navigator.of(context).pop();
+                  },
                 ),
               ],
             ),
@@ -187,6 +176,24 @@ class _AddNewBookState extends State<AddNewBook> {
         ),
       ),
     );
+  }
+
+//add bookImage and bookStock
+  Future createBookCatalogue() async {
+    DocumentReference ref =
+        await FirebaseFirestore.instance.collection("BookCatalogue").add({
+      'BookTitle': title,
+      'BookISBNCode': isbnCode,
+      'BookBarcode': barcode,
+      'BookGenre': genre, //problem
+      'BookAuthor': author,
+      'BookPublisher': publisher,
+      'BookPublishDate': publishedDate,
+      'BookDescription': description,
+      'BookImage':
+          "https://images-na.ssl-images-amazon.com/images/I/61bKTJvsWGL._SX334_BO1,204,203,200_.jpg",
+      'BookStock': stock, //problem
+    });
   }
 }
 
