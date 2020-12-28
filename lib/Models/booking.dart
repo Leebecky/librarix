@@ -66,7 +66,9 @@ Future<void> createBooking(Booking bookingRecord) async {
 }
 
 //? Returns all bookings of a given date
-Future<List<Booking>> getBookingsOf(String queryField, String queryItem) async {
+// Future<List<Booking>> getBookingsOf(String queryField, String queryItem) async {
+Stream<List<Booking>> getBookingsOf(
+    String queryField, String queryItem) async* {
   List<Booking> bookingsOf = [];
   QuerySnapshot bookings = await FirebaseFirestore.instance
       .collection("Booking")
@@ -80,5 +82,5 @@ Future<List<Booking>> getBookingsOf(String queryField, String queryItem) async {
       bookingsOf.add(bookingFromJson(doc.data()));
     });
   }
-  return bookingsOf;
+  yield bookingsOf;
 }

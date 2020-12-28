@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:librarix/Custom_Widget/general_alert_dialog.dart';
+import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/config.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:touchable/touchable.dart';
@@ -10,9 +10,9 @@ import '../../Models/study_table.dart';
 //TODO check floor plan sizing
 
 class FloorPlan extends StatefulWidget {
-  final List<String> tablesAvailable;
+  final List<String> bookedTables;
   final ValueNotifier<String> selectedStudyTable;
-  FloorPlan({this.tablesAvailable, this.selectedStudyTable});
+  FloorPlan({this.bookedTables, this.selectedStudyTable});
 
   @override
   _FloorPlanState createState() => _FloorPlanState();
@@ -82,7 +82,7 @@ class _FloorPlanState extends State<FloorPlan> {
                     width: MediaQuery.of(context).size.width,
                     child: FutureBuilder<List<StudyTable>>(
                         //~ Painter for the Floor Plan
-                        future: studyTableList(),
+                        future: getStudyTables(),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<StudyTable>> snapshot) {
                           if (snapshot.connectionState ==
@@ -101,8 +101,7 @@ class _FloorPlanState extends State<FloorPlan> {
                                             painter: PathPainter(
                                               context,
                                               tableList: snapshot.data,
-                                              bookedTables:
-                                                  widget.tablesAvailable,
+                                              bookedTables: widget.bookedTables,
                                               changeSelection: changeSelection,
                                               selectedTable: selectedTable,
                                             ),
@@ -153,12 +152,6 @@ class _FloorPlanState extends State<FloorPlan> {
             )),
       ],
     );
-  }
-
-//? Retrieves the study tables from the database
-  Future<List<StudyTable>> studyTableList() async {
-    tableList = await getStudyTables();
-    return tableList;
   }
 }
 

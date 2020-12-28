@@ -4,7 +4,7 @@ import 'package:librarix/Models/study_table.dart';
 import 'package:librarix/Screens/Booking/study_table_floor_plan.dart';
 import '../../Custom_Widget/buttons.dart';
 import '../../Models/booking.dart';
-import '../../Custom_Widget/general_alert_dialog.dart';
+import '../../Custom_Widget/custom_alert_dialog.dart';
 import '../../modules.dart';
 
 class BookingStudyTable extends StatefulWidget {
@@ -16,11 +16,17 @@ class BookingStudyTable extends StatefulWidget {
 }
 
 class _BookingStudyTableState extends State<BookingStudyTable> {
+  String initialStartTime, initialEndTime, initialDate;
   ValueNotifier<String> selectedStudyTable;
   ValueNotifier<bool> tablesFound;
+  ValueNotifier<bool> detailsChange;
   @override
   void initState() {
+    initialDate = widget.date;
+    initialEndTime = widget.endTime;
+    initialStartTime = widget.startTime;
     tablesFound = ValueNotifier(true);
+    detailsChange = ValueNotifier(false);
     selectedStudyTable = ValueNotifier<String>("Select a table");
     super.initState();
   }
@@ -29,30 +35,58 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        FutureBuilder<List<String>>(
-            future: getTablesAvailable(widget.date),
-            builder:
-                (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-              if (snapshot.hasData) {
-                return ValueListenableBuilder<String>(
-                    valueListenable: selectedStudyTable,
-                    builder:
-                        (BuildContext context, String value, Widget child) {
-                      return CustomOutlineButton(
+        ValueListenableBuilder(
+            valueListenable: detailsChange,
+            builder: (BuildContext context, bool value, Widget child) {
+              if (widget.startTime != initialStartTime ||
+                  widget.endTime != initialEndTime) {
+                value = !value;
+                selectedStudyTable.value = "Select a table";
+                initialStartTime = widget.startTime;
+                initialEndTime = widget.endTime;
+              }
+              if (widget.date != initialDate) {
+                value = !value;
+                initialDate = widget.date;
+                selectedStudyTable.value = "Select a table";
+              }
+              return ValueListenableBuilder<String>(
+                  valueListenable: selectedStudyTable,
+                  builder: (BuildContext context, String value, Widget child) {
+                    return CustomOutlineButton(
+                        buttonText: "Study Table: ${selectedStudyTable.value}",
+                        onClick: () => Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return StreamBuilder<List<String>>(
+                                  stream: getTablesAvailable(widget.date),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<List<String>> snapshot) {
+                                    if (snapshot.hasData) {
+                                      return FloorPlan(
+                                          bookedTables: snapshot.data,
+                                          selectedStudyTable:
+                                              selectedStudyTable);
+                                    }
+                                    // FutureBuilder<List<String>>(
+                                    //     future: getTablesAvailable(widget.date),
+
+                                    /*   return CustomOutlineButton(
                           buttonText:
                               "Study Table: ${selectedStudyTable.value}",
                           onClick: () => Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FloorPlan(
-                                      tablesAvailable: snapshot.data,
+                                      bookedTables: snapshot.data,
                                       selectedStudyTable:
-                                          selectedStudyTable))));
-                    });
-              }
-              return SpinKitWave(
-                color: Theme.of(context).accentColor,
-              );
+                                          selectedStudyTable))));*/
+
+                                    return SpinKitWave(
+                                      color: Theme.of(context).accentColor,
+                                    );
+                                  });
+                            })));
+                  });
             }),
         Padding(
             padding: EdgeInsets.only(top: 10),
@@ -68,6 +102,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                       if (completeBookingDetails(tablesFound.value)) {
                         createBooking(createMyBooking(widget.userId));
                         generalAlertDialog(context,
+                            navigateHome: true,
                             title: "Booking",
                             content: "Booking successfully created!");
                       } else {
@@ -96,25 +131,35 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
   //? Queries bookings if the user has any active bookings
   Future<bool> getUserBookings(ValueNotifier userId) async {
     String uid = userId.value;
-    List<Booking> userBookings = await getBookingsOf("UserId", uid);
+    // List<Booking> userBookings = await getBookingsOf("UserId", uid);
+    //! Testing StreamBuilder
+    List<Booking> userBookings = [];
+    await for (var booking in getBookingsOf("UserId", uid)) {
+      userBookings = booking;
+    }
+
     var existingBooking = userBookings.where((details) =>
         details.bookingStatus == "Active" &&
         details.bookingType == "Study Table");
     return existingBooking.isEmpty;
   }
 
-  //? Queries bookings, compares with rooms and returns list of available rooms
-  Future<List<String>> getTablesAvailable(String date) async {
+//? Queries bookings, compares with rooms and returns list of available rooms
+  Stream<List<String>> getTablesAvailable(String date) async* {
     String startTime = (widget.startTime.split(":").join("")),
         endTime = (widget.endTime.split(":").join(""));
     List<String> tablesAvailable = [];
     List<String> listOfBookedTables = [];
+    List<Booking> allBookings = [];
 
     //^ list of all study tables
     List<StudyTable> allTables = await getStudyTables();
 
     //^  list of all bookings on a given date
-    List<Booking> allBookings = await getBookingsOf("BookingDate", date);
+    // List<Booking> allBookings = await getBookingsOf("BookingDate", date);
+    await for (var booking in getBookingsOf("BookingDate", date)) {
+      allBookings = booking;
+    }
 
     //^ list of active/ongoing bookings on a given date
     List<Booking> clashingBookings = allBookings
@@ -144,7 +189,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
         listOfBookedTables.add(booking.roomOrTableNum);
       }
     }
-    return listOfBookedTables;
+    yield listOfBookedTables;
   }
 
 //? Creates the Booking object for study table bookings
