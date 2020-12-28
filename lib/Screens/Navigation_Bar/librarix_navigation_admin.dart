@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../test.dart';
-import '../Staff/booking_records.dart';
-import '../catalogue_view.dart';
-import '../Staff/book_management.dart';
 import 'package:librarix/config.dart';
-import '../booking_maker.dart';
+import '../test.dart';
+import '../catalogue_view.dart';
+import '../Booking/booking_maker.dart';
+import '../Staff/booking_records.dart';
+import '../Staff/book_management.dart';
 
-class LibrarianHome extends StatefulWidget {
+class AdminHome extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _LibrarianHomeState();
+    return _AdminHomeState();
   }
 }
 
-class _LibrarianHomeState extends State<LibrarianHome> {
+class _AdminHomeState extends State<AdminHome> {
   double screenWidth, screenHeight;
   int _currentIndex = 1;
   String currentProfilePic =
@@ -72,7 +72,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                 trailing: Icon(Icons.notifications),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
+                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
                 }),
             ListTile(
                 title: Text("Booking Records"),
@@ -107,6 +107,13 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
             ListTile(
+                title: Text("Librarian Management"),
+                trailing: Icon(Icons.camera_front),
+                onTap: () {
+                  //Navigator.of(context).pop();
+                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                }),
+            ListTile(
                 title: Text("Switch theme"),
                 trailing: Icon(Icons.toggle_off_rounded),
                 onTap: () {
@@ -129,15 +136,15 @@ class _LibrarianHomeState extends State<LibrarianHome> {
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            icon: new Icon(Icons.event_available),
+            icon: Icon(Icons.event_available),
             label: "Booking",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.library_books),
+            icon: Icon(Icons.library_books),
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.check_circle),
+            icon: Icon(Icons.check_circle),
             label: "Book Return",
           ),
         ],

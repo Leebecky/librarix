@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:librarix/config.dart';
 import '../test.dart';
-import '../catalogue_view.dart';
-import '../booking_maker.dart';
 import '../Staff/booking_records.dart';
+import '../catalogue_view.dart';
 import '../Staff/book_management.dart';
+import 'package:librarix/config.dart';
+import '../Booking/booking_maker.dart';
 
-class AdminHome extends StatefulWidget {
+class LibrarianHome extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _AdminHomeState();
+    return _LibrarianHomeState();
   }
 }
 
-class _AdminHomeState extends State<AdminHome> {
+class _LibrarianHomeState extends State<LibrarianHome> {
   double screenWidth, screenHeight;
   int _currentIndex = 1;
   String currentProfilePic =
@@ -72,7 +72,7 @@ class _AdminHomeState extends State<AdminHome> {
                 trailing: Icon(Icons.notifications),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
+                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
                 }),
             ListTile(
                 title: Text("Booking Records"),
@@ -107,13 +107,6 @@ class _AdminHomeState extends State<AdminHome> {
                   //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
             ListTile(
-                title: Text("Librarian Management"),
-                trailing: Icon(Icons.camera_front),
-                onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
-                }),
-            ListTile(
                 title: Text("Switch theme"),
                 trailing: Icon(Icons.toggle_off_rounded),
                 onTap: () {
@@ -136,15 +129,15 @@ class _AdminHomeState extends State<AdminHome> {
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.event_available),
+            icon: new Icon(Icons.event_available),
             label: "Booking",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.library_books),
+            icon: new Icon(Icons.library_books),
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
+            icon: new Icon(Icons.check_circle),
             label: "Book Return",
           ),
         ],

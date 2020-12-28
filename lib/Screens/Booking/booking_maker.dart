@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:librarix/Screens/booking_discussion_room.dart';
+import 'package:librarix/Screens/Booking/booking_discussion_room.dart';
 import 'package:librarix/modules.dart';
-import '../Custom_Widget/booking_list_wheel_scroll_view.dart';
-import '../Custom_Widget/user_id_field.dart';
-import '../Custom_Widget/buttons.dart';
+import '../../Custom_Widget/booking_list_wheel_scroll_view.dart';
+import '../../Custom_Widget/user_id_field.dart';
+import '../../Custom_Widget/buttons.dart';
+import './booking_study_table.dart';
 
 class BookingMaker extends StatefulWidget {
   @override
@@ -33,10 +34,12 @@ class _BookingMakerState extends State<BookingMaker> {
     dateSelected = parseDate(DateTime.now().toString());
     minutes = [Text("Minutes:"), Text("00"), Text("30")];
     hours = [Text("Hour:")];
+    startHour = "9";
+    startMin = "00";
     selectedHour = "9";
     selectedMin = "00";
-    startTimeString = "Select a start time";
-    endTimeString = "Select an end time";
+    startTimeString = "$selectedHour:$selectedMin";
+    endTimeString = "10:00";
     super.initState();
   }
 
@@ -81,11 +84,21 @@ class _BookingMakerState extends State<BookingMaker> {
         ),
         CustomOutlineButton(
           buttonText: "Start Time: $startTimeString",
-          onClick: () => timePicker("start", 9, 20, 11),
+          onClick: () => timePicker(
+            "start",
+            earliestTime: 9,
+            latestTime: 20,
+            maxHours: 11,
+          ),
         ),
         CustomOutlineButton(
           buttonText: "End Time: $endTimeString",
-          onClick: () => timePicker("end", (int.parse(startHour) + 1), 21, 4),
+          onClick: () => timePicker(
+            "end",
+            earliestTime: (int.parse(startHour) + 1),
+            latestTime: 21,
+            maxHours: 4,
+          ),
         ),
         //~ Specific Booking Type Details
         bookingMakerType(),
@@ -94,7 +107,8 @@ class _BookingMakerState extends State<BookingMaker> {
   }
 
   //? Start/End Time Picker
-  timePicker(String timeType, int earliestTime, int latestTime, int maxHours) {
+  timePicker(String timeType,
+      {int earliestTime, int latestTime, int maxHours}) {
     return showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -118,8 +132,9 @@ class _BookingMakerState extends State<BookingMaker> {
                           }),
                 ])),
                 //~ Buttons at the bottom of the scrollView
-                listScrollButtons(context, checkButtonClicked: () {
+                confirmationButtons(context, checkButtonClicked: () {
                   setTimeStrings(timeType, selectedHour, selectedMin);
+                  Navigator.of(context).pop();
                 }),
               ]));
         });
@@ -128,15 +143,12 @@ class _BookingMakerState extends State<BookingMaker> {
   Widget bookingMakerType() {
     //~ Build Method for Discussion Room Booking
     if (type == BookingType.discussionRoom) {
-      return BookingDiscussionRoom(type.index.toString(), userId, dateSelected,
-          startTimeString, endTimeString);
+      return BookingDiscussionRoom(
+          userId, dateSelected, startTimeString, endTimeString);
     } else {
       //~ Build Method for Study Table Booking
-      return Container(
-        height: 50,
-        color: Colors.red,
-        child: Text("Study Table"),
-      );
+      return BookingStudyTable(
+          userId, dateSelected, startTimeString, endTimeString);
     }
   }
 

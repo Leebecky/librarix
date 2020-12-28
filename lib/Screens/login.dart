@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Models/user.dart';
-import '../Custom_Widget/general_alert_dialog.dart';
+import '../Custom_Widget/custom_alert_dialog.dart';
 
 class Login extends StatefulWidget {
   @override

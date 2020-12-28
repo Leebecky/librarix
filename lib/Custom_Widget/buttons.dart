@@ -75,7 +75,7 @@ class CustomFlatButton extends StatelessWidget {
         ? buttonColorLight = Theme.of(context).accentColorBrightness
         : buttonColorLight = lightColor;
 
-    (roundBorder)
+    (roundBorder == true)
         ? borderShape =
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0))
         : borderShape =
@@ -90,4 +90,33 @@ class CustomFlatButton extends StatelessWidget {
             child: Text(buttonText),
             onPressed: () => onClick()));
   }
+}
+
+//? Row of Buttons for selection (Yes/No)
+Widget confirmationButtons(BuildContext context,
+    {Function checkButtonClicked}) {
+  return Row(
+    children: [
+      Expanded(
+        child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: FlatButton(
+              color: Colors.red,
+              textColor: Colors.white,
+              onPressed: () => Navigator.of(context).pop(),
+              child: Icon(Icons.clear),
+            )),
+      ),
+      Expanded(
+          child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: FlatButton(
+                  color: Colors.green,
+                  textColor: Colors.white,
+                  child: Icon(Icons.check),
+                  onPressed: () => {
+                        checkButtonClicked(),
+                      }))),
+    ],
+  );
 }
