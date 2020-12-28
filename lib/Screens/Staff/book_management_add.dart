@@ -270,7 +270,8 @@ class _AddNewBookState extends State<AddNewBook> {
         'BookPublisher': publisher,
         'BookPublishDate': publishedDate,
         'BookDescription': description,
-        'BookImage': image, //url
+        'BookImage':
+            "https://images-na.ssl-images-amazon.com/images/I/61bKTJvsWGL._SX334_BO1,204,203,200_.jpg", //temp
         'BookStock': stock,
       });
     } catch (e) {
