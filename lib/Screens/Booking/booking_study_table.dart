@@ -7,8 +7,6 @@ import '../../Models/booking.dart';
 import '../../Custom_Widget/general_alert_dialog.dart';
 import '../../modules.dart';
 
-//TODO check floor plan sizing
-//TODO prevent selection of booked tables
 class BookingStudyTable extends StatefulWidget {
   final String startTime, endTime, date;
   final ValueNotifier<String> userId;
@@ -141,28 +139,12 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
       }
     } else {
       //^ process allTables and remove rooms that are booked
-      //~ add to a list, the rooms that are in use
+      //~ add to a list, the tables that are in use
       for (var booking in clashingBookings) {
         listOfBookedTables.add(booking.roomOrTableNum);
       }
-      //~ remove from (all) table list, tables that are in use
-      for (var tableInUse in listOfBookedTables) {
-        allTables
-            .removeWhere((table) => table.tableNum == tableInUse.toString());
-        allTables.join(",");
-      }
-      //~ return list of available tables
-      for (var table in allTables) {
-        tablesAvailable.add(table.tableNum);
-      }
     }
-    //~ if therea are no tables available at all
-    (tablesAvailable.length == 0)
-        ? tablesAvailable
-            .add("Sorry, there are no available tables available right now")
-        : tablesAvailable = tablesAvailable;
-
-    return tablesAvailable;
+    return listOfBookedTables;
   }
 
 //? Creates the Booking object for study table bookings

@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Custom_Widget/general_alert_dialog.dart';
+import 'package:librarix/config.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:touchable/touchable.dart';
 import 'package:librarix/Custom_Widget/buttons.dart';
 import '../../Models/study_table.dart';
 //TODO check floor plan sizing
-//TODO prevent selection of booked tables
 
 class FloorPlan extends StatefulWidget {
   final List<String> tablesAvailable;
@@ -41,48 +41,81 @@ class _FloorPlanState extends State<FloorPlan> {
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Column(children: [
-              Container(
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.white)),
-                  child: Text("Entrance to Quiet Zone")),
-              Container(
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.white)),
-                //TODO consider sizing for other phones. Remove border once done with this
-                height: MediaQuery.of(context).size.height - 150,
-                width: MediaQuery.of(context).size.width,
-                child: FutureBuilder<List<StudyTable>>(
-                    //~ Painter for the Floor Plan
-                    future: studyTableList(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<StudyTable>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        return ValueListenableBuilder<List<String>>(
-                            valueListenable: selectedTable,
-                            builder: (BuildContext context,
-                                List<String> tableSelected, Widget child) {
-                              return ValueListenableBuilder<bool>(
-                                  valueListenable: changeSelection,
-                                  builder: (BuildContext context,
-                                      bool selectionChanged, Widget child) {
-                                    return Container(
-                                        child: CanvasTouchDetector(
-                                      builder: (context) => CustomPaint(
-                                        painter: PathPainter(
-                                          context,
-                                          tableList: snapshot.data,
-                                          availableTables:
-                                              widget.tablesAvailable,
-                                          changeSelection: changeSelection,
-                                          selectedTable: selectedTable,
-                                        ),
-                                      ),
-                                    ));
-                                  });
-                            });
-                      }
-                      return SpinKitWave(color: Theme.of(context).accentColor);
-                    }),
+              Stack(
+                children: [
+                  Positioned(
+                    right: 0,
+                    child: Container(
+                        padding: EdgeInsets.only(right: 20, left: 5),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white)),
+                        child: Text(
+                          "Entrance to Quiet Zone",
+                          style: TextStyle(fontSize: 15),
+                        )),
+                  ),
+                  Positioned(
+                      left: 10,
+                      top: 10,
+                      child: Container(
+                          width: MediaQuery.of(context).size.width / 4,
+                          child: Column(children: [
+                            floorPlanLegend(
+                                legendColor: (currentTheme.currentTheme() ==
+                                        ThemeMode.light)
+                                    ? Colors.black
+                                    : Colors.white,
+                                legendText: "Available"),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                              child: floorPlanLegend(
+                                  legendColor: Colors.red,
+                                  legendText: "Booked"),
+                            ),
+                            floorPlanLegend(
+                                legendColor: Theme.of(context).accentColor,
+                                legendText: "Selected"),
+                          ]))),
+                  Container(
+                    height: MediaQuery.of(context).size.height - 150,
+                    width: MediaQuery.of(context).size.width,
+                    child: FutureBuilder<List<StudyTable>>(
+                        //~ Painter for the Floor Plan
+                        future: studyTableList(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<StudyTable>> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return ValueListenableBuilder<List<String>>(
+                                valueListenable: selectedTable,
+                                builder: (BuildContext context,
+                                    List<String> tableSelected, Widget child) {
+                                  return ValueListenableBuilder<bool>(
+                                      valueListenable: changeSelection,
+                                      builder: (BuildContext context,
+                                          bool selectionChanged, Widget child) {
+                                        return Container(
+                                            child: CanvasTouchDetector(
+                                          builder: (context) => CustomPaint(
+                                            painter: PathPainter(
+                                              context,
+                                              tableList: snapshot.data,
+                                              bookedTables:
+                                                  widget.tablesAvailable,
+                                              changeSelection: changeSelection,
+                                              selectedTable: selectedTable,
+                                            ),
+                                          ),
+                                        ));
+                                      });
+                                });
+                          }
+                          return SpinKitWave(
+                              color: Theme.of(context).accentColor);
+                        }),
+                  ),
+                ],
               ),
               confirmationButtons(context,
                   checkButtonClicked: () => {
@@ -104,6 +137,24 @@ class _FloorPlanState extends State<FloorPlan> {
         ));
   }
 
+  //? Floor Plan Legend
+  Widget floorPlanLegend({String legendText, Color legendColor}) {
+    return Row(
+      children: [
+        Container(
+          height: 25,
+          width: 25,
+          decoration: BoxDecoration(color: legendColor),
+        ),
+        Padding(
+            padding: EdgeInsets.only(left: 5),
+            child: Text(
+              legendText,
+            )),
+      ],
+    );
+  }
+
 //? Retrieves the study tables from the database
   Future<List<StudyTable>> studyTableList() async {
     tableList = await getStudyTables();
@@ -114,15 +165,14 @@ class _FloorPlanState extends State<FloorPlan> {
 class PathPainter extends CustomPainter {
   final BuildContext context;
   final List<StudyTable> tableList;
-  final List<String> availableTables;
+  final List<String> bookedTables;
   ValueNotifier<List<String>> selectedTable;
-  String selection;
   ValueNotifier<bool> changeSelection;
-  List<String> bookedTables;
+  String selection;
 
   PathPainter(
     this.context, {
-    this.availableTables,
+    this.bookedTables,
     this.tableList,
     this.changeSelection,
     this.selectedTable,
@@ -148,16 +198,17 @@ class PathPainter extends CustomPainter {
     tableList.forEach((table) {
       Path path = parseSvgPathData(table.svgPath);
 
-      paintTables.color = Colors.white;
-
-      if (availableTables.contains(table.tableNum)) {
+      if (bookedTables.contains(table.tableNum)) {
         //^ Tables that have been booked
         paintTables.color = Colors.red;
         paintTables.style = PaintingStyle.fill;
       }
       //^ Available Tables
-      if (!availableTables.contains(table.tableNum)) {
-        paintTables.color = Colors.white;
+      if (!bookedTables.contains(table.tableNum)) {
+        //~ Checks the current theme and sets the paint color accordingly
+        (currentTheme.currentTheme() == ThemeMode.light)
+            ? paintTables.color = Colors.black
+            : paintTables.color = Colors.white;
         paintTables.style = PaintingStyle.stroke;
       }
 
@@ -178,7 +229,7 @@ class PathPainter extends CustomPainter {
           if (selectedTable.value.length > 1) {
             selectedTable.value.removeAt(0);
           }
-          for (var bookedTable in availableTables) {
+          for (var bookedTable in bookedTables) {
             if (selectedTable.value.contains(bookedTable)) {
               selectedTable.value.remove(bookedTable);
             }
@@ -191,5 +242,4 @@ class PathPainter extends CustomPainter {
 //? Method that triggers repainting of the canvas
   @override
   bool shouldRepaint(PathPainter oldDelegate) => true;
-  // changeSelection.value == oldDelegate.changeSelection.value;
 }
