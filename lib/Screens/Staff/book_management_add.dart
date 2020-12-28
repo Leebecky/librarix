@@ -1,6 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:async';
+import 'dart:io';
+import 'dart:math';
+import '../../Screens/Staff/book_management_select_image.dart';
 import '../../Custom_Widget/buttons.dart';
 import '../../Custom_Widget/textfield.dart';
 
@@ -21,6 +27,63 @@ class _AddNewBookState extends State<AddNewBook> {
       stock,
       image;
 
+  File bookImage;
+  final picker = ImagePicker();
+
+  Future getImageFromCamera() async {
+    PickedFile image = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (image != null) {
+        bookImage = File(image.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future getFromGallery() async {
+    PickedFile image = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (image != null) {
+        bookImage = File(image.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  void _showImagePicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: Text('Photo Library'),
+                      onTap: () {
+                        getFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: Text('Camera'),
+                    onTap: () {
+                      getImageFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +96,22 @@ class _AddNewBookState extends State<AddNewBook> {
           child: Form(
             child: Column(
               children: <Widget>[
+                bookImage == null
+                    ? Text('')
+                    : Image.file(bookImage,
+                        width: 300, height: 200, fit: BoxFit.cover),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomOutlineButton(
+                    buttonText: "Select Book Image",
+                    roundBorder: false,
+                    onClick: () => _showImagePicker(context),
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) {
+                    //   return AddBookImage();
+                    // }));
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.all(20),
                   child: CustomTextField(
@@ -178,22 +257,25 @@ class _AddNewBookState extends State<AddNewBook> {
     );
   }
 
-//add bookImage and bookStock
+  //add bookImage and bookStock
   Future createBookCatalogue() async {
-    DocumentReference ref =
-        await FirebaseFirestore.instance.collection("BookCatalogue").add({
-      'BookTitle': title,
-      'BookISBNCode': isbnCode,
-      'BookBarcode': barcode,
-      'BookGenre': genre, //problem
-      'BookAuthor': author,
-      'BookPublisher': publisher,
-      'BookPublishDate': publishedDate,
-      'BookDescription': description,
-      'BookImage':
-          "https://images-na.ssl-images-amazon.com/images/I/61bKTJvsWGL._SX334_BO1,204,203,200_.jpg",
-      'BookStock': stock, //problem
-    });
+    try {
+      DocumentReference ref =
+          await FirebaseFirestore.instance.collection("BookCatalogue").add({
+        'BookTitle': title,
+        'BookISBNCode': isbnCode,
+        'BookBarcode': barcode,
+        'BookGenre': genre,
+        'BookAuthor': author,
+        'BookPublisher': publisher,
+        'BookPublishDate': publishedDate,
+        'BookDescription': description,
+        'BookImage': image, //url
+        'BookStock': stock,
+      });
+    } catch (e) {
+      print(e.message);
+    }
   }
 }
 
