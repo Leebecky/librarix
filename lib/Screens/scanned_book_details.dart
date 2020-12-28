@@ -183,7 +183,6 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
     DateTime returnDate = startDate.add(Duration(days: 6));
 
     //^ Checks if the returnDate lands on a weekend and extends it to Monday if so
-
     if (returnDate.weekday == DateTime.saturday) {
       returnDate = returnDate.add(Duration(days: 2));
     } else if (returnDate.weekday == DateTime.sunday) {

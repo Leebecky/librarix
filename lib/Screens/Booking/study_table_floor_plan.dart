@@ -1,13 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
-import 'package:librarix/config.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:touchable/touchable.dart';
+import 'package:librarix/config.dart';
+import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Custom_Widget/buttons.dart';
 import '../../Models/study_table.dart';
-//TODO check floor plan sizing
 
 class FloorPlan extends StatefulWidget {
   final List<String> bookedTables;
@@ -41,61 +40,66 @@ class _FloorPlanState extends State<FloorPlan> {
           child: SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Column(children: [
-              Stack(
-                children: [
-                  Positioned(
-                    right: 0,
+              Stack(children: [
+                Positioned(
+                  right: 0,
+                  child: Container(
+                      //~ Floor Plan: indicates entrance of quiet zone
+                      padding: EdgeInsets.only(right: 20, left: 5),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white)),
+                      child: Text(
+                        "Entrance to Quiet Zone",
+                        style: TextStyle(fontSize: 15),
+                      )),
+                ),
+                Positioned(
+                    //~ Floor Plan legend
+                    left: 10,
+                    top: 10,
                     child: Container(
-                        padding: EdgeInsets.only(right: 20, left: 5),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white)),
-                        child: Text(
-                          "Entrance to Quiet Zone",
-                          style: TextStyle(fontSize: 15),
-                        )),
-                  ),
-                  Positioned(
-                      left: 10,
-                      top: 10,
-                      child: Container(
-                          width: MediaQuery.of(context).size.width / 4,
-                          child: Column(children: [
-                            floorPlanLegend(
-                                legendColor: (currentTheme.currentTheme() ==
-                                        ThemeMode.light)
-                                    ? Colors.black
-                                    : Colors.white,
-                                legendText: "Available"),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                              child: floorPlanLegend(
-                                  legendColor: Colors.red,
-                                  legendText: "Booked"),
-                            ),
-                            floorPlanLegend(
-                                legendColor: Theme.of(context).accentColor,
-                                legendText: "Selected"),
-                          ]))),
-                  Container(
+                        width: MediaQuery.of(context).size.width / 4,
+                        child: Column(children: [
+                          floorPlanLegend(
+                              legendColor: (currentTheme.currentTheme() ==
+                                      ThemeMode.light)
+                                  ? Colors.black
+                                  : Colors.white,
+                              legendText: "Available"),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                            child: floorPlanLegend(
+                                legendColor: Colors.red, legendText: "Booked"),
+                          ),
+                          floorPlanLegend(
+                              legendColor: Theme.of(context).accentColor,
+                              legendText: "Selected"),
+                        ]))),
+                Container(
+                    //~ Painter for the Floor Plan
                     height: MediaQuery.of(context).size.height - 150,
                     width: MediaQuery.of(context).size.width,
                     child: FutureBuilder<List<StudyTable>>(
-                        //~ Painter for the Floor Plan
+                        //The FutureBuilder passes the list of (all) study tables
                         future: getStudyTables(),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<StudyTable>> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
+                          if (snapshot.hasData) {
                             return ValueListenableBuilder<List<String>>(
+                                /*Listens to the value of selectedTable and updates whenever the value is changed. Used for returning 
+                              the selectedTable value to booking_study_table.dart */
                                 valueListenable: selectedTable,
                                 builder: (BuildContext context,
                                     List<String> tableSelected, Widget child) {
                                   return ValueListenableBuilder<bool>(
+                                      /* Listens for any change in the selected table. 
+                                      This value is used for triggering repaint of the floor plan */
                                       valueListenable: changeSelection,
                                       builder: (BuildContext context,
                                           bool selectionChanged, Widget child) {
                                         return Container(
+                                            //~ The floor plan painter
                                             child: CanvasTouchDetector(
                                           builder: (context) => CustomPaint(
                                             painter: PathPainter(
@@ -112,25 +116,20 @@ class _FloorPlanState extends State<FloorPlan> {
                           }
                           return SpinKitWave(
                               color: Theme.of(context).accentColor);
-                        }),
-                  ),
-                ],
-              ),
-              confirmationButtons(context,
-                  checkButtonClicked: () => {
-                        if (selectedTable.value.isNotEmpty)
-                          {
-                            widget.selectedStudyTable.value =
-                                selectedTable.value[0],
-                            Navigator.of(context).pop(),
-                          }
-                        else
-                          {
-                            generalAlertDialog(context,
-                                title: "Invalid Selection",
-                                content: "Please select an available table!")
-                          }
-                      })
+                        }))
+              ]),
+              //~ Accept/Decline buttons to confirm selection of study table
+              confirmationButtons(context, checkButtonClicked: () {
+                if (selectedTable.value.isNotEmpty) {
+                  widget.selectedStudyTable.value = selectedTable.value[0];
+                  Navigator.of(context).pop();
+                } else {
+                  //if the user attempted to select a booked table
+                  generalAlertDialog(context,
+                      title: "Invalid Selection",
+                      content: "Please select an available table!");
+                }
+              })
             ]),
           ),
         ));
@@ -155,6 +154,7 @@ class _FloorPlanState extends State<FloorPlan> {
   }
 }
 
+//? Painter for the Floor plan
 class PathPainter extends CustomPainter {
   final BuildContext context;
   final List<StudyTable> tableList;
@@ -191,11 +191,12 @@ class PathPainter extends CustomPainter {
     tableList.forEach((table) {
       Path path = parseSvgPathData(table.svgPath);
 
+      //^ Tables that have been booked
       if (bookedTables.contains(table.tableNum)) {
-        //^ Tables that have been booked
         paintTables.color = Colors.red;
         paintTables.style = PaintingStyle.fill;
       }
+
       //^ Available Tables
       if (!bookedTables.contains(table.tableNum)) {
         //~ Checks the current theme and sets the paint color accordingly
@@ -219,9 +220,12 @@ class PathPainter extends CustomPainter {
         onTapDown: (details) {
           selectedTable.value.add(table.tableNum);
           changeSelection.value = !changeSelection.value;
+
+          //^ Ensures that only one table can be selected at a time
           if (selectedTable.value.length > 1) {
             selectedTable.value.removeAt(0);
           }
+          //^ Prevents booked tables from being selected
           for (var bookedTable in bookedTables) {
             if (selectedTable.value.contains(bookedTable)) {
               selectedTable.value.remove(bookedTable);

@@ -16,7 +16,7 @@ StudyTable studyTableFromJson(Map<String, dynamic> json) {
   );
 }
 
-//? Retrieve data from the database
+//? Retrieve list of all study tables from the database
 Future<List<StudyTable>> getStudyTables() async {
   List<StudyTable> studyTable = [];
   QuerySnapshot snapshot =

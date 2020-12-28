@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:librarix/Models/study_table.dart';
 import 'package:librarix/Screens/Booking/study_table_floor_plan.dart';
 import '../../Custom_Widget/buttons.dart';
 import '../../Models/booking.dart';
@@ -11,6 +10,7 @@ class BookingStudyTable extends StatefulWidget {
   final String startTime, endTime, date;
   final ValueNotifier<String> userId;
   BookingStudyTable(this.userId, this.date, this.startTime, this.endTime);
+
   @override
   _BookingStudyTableState createState() => _BookingStudyTableState();
 }
@@ -18,14 +18,13 @@ class BookingStudyTable extends StatefulWidget {
 class _BookingStudyTableState extends State<BookingStudyTable> {
   String initialStartTime, initialEndTime, initialDate;
   ValueNotifier<String> selectedStudyTable;
-  ValueNotifier<bool> tablesFound;
   ValueNotifier<bool> detailsChange;
+
   @override
   void initState() {
     initialDate = widget.date;
     initialEndTime = widget.endTime;
     initialStartTime = widget.startTime;
-    tablesFound = ValueNotifier(true);
     detailsChange = ValueNotifier(false);
     selectedStudyTable = ValueNotifier<String>("Select a table");
     super.initState();
@@ -38,6 +37,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
         ValueListenableBuilder(
             valueListenable: detailsChange,
             builder: (BuildContext context, bool value, Widget child) {
+              //Validation Check: resets selected table value when date/time changes
               if (widget.startTime != initialStartTime ||
                   widget.endTime != initialEndTime) {
                 value = !value;
@@ -50,6 +50,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                 initialDate = widget.date;
                 selectedStudyTable.value = "Select a table";
               }
+              //~ All Validation checks are passed: build the floor plan widget
               return ValueListenableBuilder<String>(
                   valueListenable: selectedStudyTable,
                   builder: (BuildContext context, String value, Widget child) {
@@ -58,7 +59,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                         onClick: () => Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
                               return StreamBuilder<List<String>>(
-                                  stream: getTablesAvailable(widget.date),
+                                  stream: getBookedTables(widget.date),
                                   builder: (BuildContext context,
                                       AsyncSnapshot<List<String>> snapshot) {
                                     if (snapshot.hasData) {
@@ -67,20 +68,6 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                                           selectedStudyTable:
                                               selectedStudyTable);
                                     }
-                                    // FutureBuilder<List<String>>(
-                                    //     future: getTablesAvailable(widget.date),
-
-                                    /*   return CustomOutlineButton(
-                          buttonText:
-                              "Study Table: ${selectedStudyTable.value}",
-                          onClick: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => FloorPlan(
-                                      bookedTables: snapshot.data,
-                                      selectedStudyTable:
-                                          selectedStudyTable))));*/
-
                                     return SpinKitWave(
                                       color: Theme.of(context).accentColor,
                                     );
@@ -89,6 +76,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                   });
             }),
         Padding(
+            //~ Confirm Booking button
             padding: EdgeInsets.only(top: 10),
             child: CustomFlatButton(
                 roundBorder: true,
@@ -99,19 +87,22 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                     if (await getUserBookings(widget.userId))
                     //~ Check if User has active bookings
                     {
-                      if (completeBookingDetails(tablesFound.value)) {
+                      if (completeBookingDetails()) {
                         createBooking(createMyBooking(widget.userId));
+                        // All validation checks are passed: create the booking
                         generalAlertDialog(context,
                             navigateHome: true,
                             title: "Booking",
                             content: "Booking successfully created!");
                       } else {
+                        //Incomplete booking details
                         generalAlertDialog(context,
                             title: "Booking",
                             content:
                                 "Please fill in all booking details first!");
                       }
                     } else {
+                      //User has already booked a study table
                       generalAlertDialog(context,
                           title: "Active Booking Found",
                           content:
@@ -131,13 +122,14 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
   //? Queries bookings if the user has any active bookings
   Future<bool> getUserBookings(ValueNotifier userId) async {
     String uid = userId.value;
-    // List<Booking> userBookings = await getBookingsOf("UserId", uid);
-    //! Testing StreamBuilder
     List<Booking> userBookings = [];
+
+    //^ Retrieve all bookings belonging to the user
     await for (var booking in getBookingsOf("UserId", uid)) {
       userBookings = booking;
     }
 
+    //^ Process the user's bookings to filter out the active study table bookings
     var existingBooking = userBookings.where((details) =>
         details.bookingStatus == "Active" &&
         details.bookingType == "Study Table");
@@ -145,30 +137,25 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
   }
 
 //? Queries bookings, compares with rooms and returns list of available rooms
-  Stream<List<String>> getTablesAvailable(String date) async* {
+  Stream<List<String>> getBookedTables(String date) async* {
     String startTime = (widget.startTime.split(":").join("")),
         endTime = (widget.endTime.split(":").join(""));
-    List<String> tablesAvailable = [];
     List<String> listOfBookedTables = [];
     List<Booking> allBookings = [];
 
-    //^ list of all study tables
-    List<StudyTable> allTables = await getStudyTables();
-
     //^  list of all bookings on a given date
-    // List<Booking> allBookings = await getBookingsOf("BookingDate", date);
     await for (var booking in getBookingsOf("BookingDate", date)) {
       allBookings = booking;
     }
 
-    //^ list of active/ongoing bookings on a given date
+    //^ Filters for a list of active/ongoing bookings on a given date
     List<Booking> clashingBookings = allBookings
         .where((booking) =>
             booking.bookingStatus != "Cancelled" &&
             booking.bookingType == "Study Table")
         .toList();
 
-//? checks for any clashing bookings at the (user) selected time
+    //^ checks for any clashing bookings at the (user) selected time
     clashingBookings.removeWhere((booking) =>
         int.parse(startTime) >=
             int.parse(booking.bookingEndTime.split(":").join("")) ||
@@ -176,14 +163,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
             int.parse(booking.bookingStartTime.split(":").join("")));
     clashingBookings.join(",");
 
-    //^ if clashingBookings.isEmpty = true, no clashing bookings exist
-    if (clashingBookings.isEmpty) {
-      //~ return the list of available rooms
-      for (var tables in allTables) {
-        tablesAvailable.add(tables.tableNum);
-      }
-    } else {
-      //^ process allTables and remove rooms that are booked
+    if (clashingBookings.isNotEmpty) {
       //~ add to a list, the tables that are in use
       for (var booking in clashingBookings) {
         listOfBookedTables.add(booking.roomOrTableNum);
@@ -208,16 +188,9 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
   }
 
   //? Checks if all booking details have been filled
-  bool completeBookingDetails(bool tablesFound) {
-    String bookingStartTime = widget.startTime,
-        bookingEndTime = widget.endTime,
-        roomOrTableNum = selectedStudyTable.value;
+  bool completeBookingDetails() {
+    String roomOrTableNum = selectedStudyTable.value;
 
-    return (bookingStartTime == "Select a start time" ||
-            bookingEndTime == "Select an end time" ||
-            roomOrTableNum == "Select a table" ||
-            tablesFound == false)
-        ? false
-        : true;
+    return (roomOrTableNum == "Select a table") ? false : true;
   }
 }
