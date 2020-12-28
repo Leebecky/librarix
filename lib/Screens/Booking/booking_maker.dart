@@ -134,6 +134,7 @@ class _BookingMakerState extends State<BookingMaker> {
                 //~ Buttons at the bottom of the scrollView
                 confirmationButtons(context, checkButtonClicked: () {
                   setTimeStrings(timeType, selectedHour, selectedMin);
+                  Navigator.of(context).pop();
                 }),
               ]));
         });

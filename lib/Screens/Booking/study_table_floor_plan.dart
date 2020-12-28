@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:librarix/Custom_Widget/general_alert_dialog.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:touchable/touchable.dart';
 import 'package:librarix/Custom_Widget/buttons.dart';
 import '../../Models/study_table.dart';
+//TODO check floor plan sizing
+//TODO prevent selection of booked tables
 
 class FloorPlan extends StatefulWidget {
   final List<String> tablesAvailable;
@@ -83,8 +86,18 @@ class _FloorPlanState extends State<FloorPlan> {
               ),
               confirmationButtons(context,
                   checkButtonClicked: () => {
-                        widget.selectedStudyTable.value =
-                            selectedTable.value[0],
+                        if (selectedTable.value.isNotEmpty)
+                          {
+                            widget.selectedStudyTable.value =
+                                selectedTable.value[0],
+                            Navigator.of(context).pop(),
+                          }
+                        else
+                          {
+                            generalAlertDialog(context,
+                                title: "Invalid Selection",
+                                content: "Please select an available table!")
+                          }
                       })
             ]),
           ),
@@ -105,6 +118,7 @@ class PathPainter extends CustomPainter {
   ValueNotifier<List<String>> selectedTable;
   String selection;
   ValueNotifier<bool> changeSelection;
+  List<String> bookedTables;
 
   PathPainter(
     this.context, {
@@ -135,13 +149,14 @@ class PathPainter extends CustomPainter {
       Path path = parseSvgPathData(table.svgPath);
 
       paintTables.color = Colors.white;
-      if (!availableTables.contains(table.tableNum)) {
+
+      if (availableTables.contains(table.tableNum)) {
         //^ Tables that have been booked
         paintTables.color = Colors.red;
         paintTables.style = PaintingStyle.fill;
       }
       //^ Available Tables
-      if (availableTables.contains(table.tableNum)) {
+      if (!availableTables.contains(table.tableNum)) {
         paintTables.color = Colors.white;
         paintTables.style = PaintingStyle.stroke;
       }
@@ -163,13 +178,11 @@ class PathPainter extends CustomPainter {
           if (selectedTable.value.length > 1) {
             selectedTable.value.removeAt(0);
           }
-          /*   if (selectedTable.value.contains(table.tableNum)) {
-            selectedTable.value.remove(table.tableNum);
-          } */
-          /*  if (selectedTable.value
-              .contains(!availableTables.contains(table.tableNum))) {
-            selectedTable.value.remove(table.tableNum);
-          } */
+          for (var bookedTable in availableTables) {
+            if (selectedTable.value.contains(bookedTable)) {
+              selectedTable.value.remove(bookedTable);
+            }
+          }
         },
       );
     });

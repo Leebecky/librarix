@@ -124,12 +124,16 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                     listChildren: roomSizes,
                     itemChanged: (index) => numPeople = roomSizes[index].data),
                 confirmationButtons(context,
-                    checkButtonClicked: () => setState(() {
-                          selectedDiscussionRoom = "Select a room";
-                          (numPeople == "" || numPeople == "Number of people:")
-                              ? selectedRoomSize = "3"
-                              : selectedRoomSize = numPeople;
-                        })),
+                    checkButtonClicked: () => {
+                          setState(() {
+                            selectedDiscussionRoom = "Select a room";
+                            (numPeople == "" ||
+                                    numPeople == "Number of people:")
+                                ? selectedRoomSize = "3"
+                                : selectedRoomSize = numPeople;
+                          }),
+                          Navigator.of(context).pop(),
+                        }),
               ])));
         });
   }
@@ -157,12 +161,15 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                             itemChanged: (index) =>
                                 selectedRoom = roomList.data[index].data),
                         confirmationButtons(context,
-                            checkButtonClicked: () => setState(() {
-                                  (selectedRoom == "")
-                                      ? selectedDiscussionRoom =
-                                          roomList.data[0].data
-                                      : selectedDiscussionRoom = selectedRoom;
-                                })),
+                            checkButtonClicked: () => {
+                                  setState(() {
+                                    (selectedRoom == "")
+                                        ? selectedDiscussionRoom =
+                                            roomList.data[0].data
+                                        : selectedDiscussionRoom = selectedRoom;
+                                  }),
+                                  Navigator.of(context).pop(),
+                                }),
                       ]);
                     }
                     return SpinKitWave(

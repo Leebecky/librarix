@@ -116,7 +116,6 @@ Widget confirmationButtons(BuildContext context,
                   child: Icon(Icons.check),
                   onPressed: () => {
                         checkButtonClicked(),
-                        Navigator.of(context).pop(),
                       }))),
     ],
   );
