@@ -7,6 +7,8 @@ import '../../Models/booking.dart';
 import '../../Custom_Widget/general_alert_dialog.dart';
 import '../../modules.dart';
 
+//TODO check floor plan sizing
+//TODO prevent selection of booked tables
 class BookingStudyTable extends StatefulWidget {
   final String startTime, endTime, date;
   final ValueNotifier<String> userId;
@@ -20,7 +22,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
   ValueNotifier<bool> tablesFound;
   @override
   void initState() {
-    tablesFound = ValueNotifier(false);
+    tablesFound = ValueNotifier(true);
     selectedStudyTable = ValueNotifier<String>("Select a table");
     super.initState();
   }
@@ -39,7 +41,8 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                     builder:
                         (BuildContext context, String value, Widget child) {
                       return CustomOutlineButton(
-                          buttonText: "Study Table: $value",
+                          buttonText:
+                              "Study Table: ${selectedStudyTable.value}",
                           onClick: () => Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -185,7 +188,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
 
     return (bookingStartTime == "Select a start time" ||
             bookingEndTime == "Select an end time" ||
-            roomOrTableNum == "Select a study table" ||
+            roomOrTableNum == "Select a table" ||
             tablesFound == false)
         ? false
         : true;

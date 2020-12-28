@@ -123,7 +123,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                 bookingListWheelScrollView(context,
                     listChildren: roomSizes,
                     itemChanged: (index) => numPeople = roomSizes[index].data),
-                listScrollButtons(context,
+                confirmationButtons(context,
                     checkButtonClicked: () => setState(() {
                           selectedDiscussionRoom = "Select a room";
                           (numPeople == "" || numPeople == "Number of people:")
@@ -156,7 +156,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                             listChildren: roomList.data,
                             itemChanged: (index) =>
                                 selectedRoom = roomList.data[index].data),
-                        listScrollButtons(context,
+                        confirmationButtons(context,
                             checkButtonClicked: () => setState(() {
                                   (selectedRoom == "")
                                       ? selectedDiscussionRoom =
