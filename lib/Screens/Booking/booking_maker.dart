@@ -36,8 +36,8 @@ class _BookingMakerState extends State<BookingMaker> {
     hours = [Text("Hour:")];
     selectedHour = "9";
     selectedMin = "00";
-    startTimeString = "Select a start time";
-    endTimeString = "Select an end time";
+    startTimeString = "$selectedHour:$selectedMin";
+    endTimeString = "10:00";
     super.initState();
   }
 
@@ -133,7 +133,8 @@ class _BookingMakerState extends State<BookingMaker> {
           userId, dateSelected, startTimeString, endTimeString);
     } else {
       //~ Build Method for Study Table Booking
-      return BookingStudyTable(userId, dateSelected, startTimeString, endTimeString);
+      return BookingStudyTable(
+          userId, dateSelected, startTimeString, endTimeString);
     }
   }
 

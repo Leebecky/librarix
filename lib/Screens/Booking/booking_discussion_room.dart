@@ -233,8 +233,9 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
   Future<bool> getUserBookings(ValueNotifier userId) async {
     String uid = userId.value;
     List<Booking> userBookings = await getBookingsOf("UserId", uid);
-    var existingBooking =
-        userBookings.where((details) => details.bookingStatus == "Active");
+    var existingBooking = userBookings.where((details) =>
+        details.bookingStatus == "Active" &&
+        details.bookingType == "Discussion Room");
     return existingBooking.isEmpty;
   }
 
@@ -253,6 +254,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     return myBooking;
   }
 
+//? Checks if all booking details have been filled
   bool completeBookingDetails(bool roomsFound) {
     String bookingStartTime = widget.startTime,
         bookingEndTime = widget.endTime,

@@ -6,44 +6,67 @@ import 'package:touchable/touchable.dart';
 import '../../Models/study_table.dart';
 
 class FloorPlan extends StatefulWidget {
+  final List<String> tablesAvailable;
+  final ValueNotifier<String> selectedStudyTable;
+  FloorPlan({this.tablesAvailable, this.selectedStudyTable});
+
   @override
   _FloorPlanState createState() => _FloorPlanState();
 }
 
 class _FloorPlanState extends State<FloorPlan> {
-  List<String> tableNum = [];
   List<StudyTable> tableList = [];
-  ValueNotifier<String> selection;
+  ValueNotifier<bool> changeSelection;
+  ValueNotifier<List<String>> selectedTable;
 
   @override
   void initState() {
-    selection = ValueNotifier<String>("");
+    selectedTable = ValueNotifier<List<String>>([]);
+    changeSelection = ValueNotifier<bool>(false);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: FutureBuilder<List<StudyTable>>(
-            future: studyTableList(),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<StudyTable>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return ValueListenableBuilder<String>(
-                    valueListenable: selection,
-                    builder:
-                        (BuildContext context, String value, Widget child) {
-                      return Container(
-                          child: CanvasTouchDetector(
-                        builder: (context) => CustomPaint(
-                          painter: PathPainter(context,
-                              tableList: snapshot.data, a: selection),
-                        ),
-                      ));
-                    });
-              }
-              return SpinKitWave(color: Theme.of(context).accentColor);
-            }));
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Quiet Zone Floor Plan"),
+        ),
+        body: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: FutureBuilder<List<StudyTable>>(
+                future: studyTableList(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<StudyTable>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return ValueListenableBuilder<List<String>>(
+                        valueListenable: selectedTable,
+                        builder: (BuildContext context,
+                            List<String> tableSelected, Widget child) {
+                          return ValueListenableBuilder<bool>(
+                              valueListenable: changeSelection,
+                              builder: (BuildContext context,
+                                  bool selectionChanged, Widget child) {
+                                widget.selectedStudyTable.value =
+                                    tableSelected[0];
+                                return Container(
+                                    child: CanvasTouchDetector(
+                                  builder: (context) => CustomPaint(
+                                    painter: PathPainter(
+                                      context,
+                                      tableList: snapshot.data,
+                                      availableTables: widget.tablesAvailable,
+                                      changeSelection: changeSelection,
+                                      selectedTable: selectedTable,
+                                    ),
+                                  ),
+                                ));
+                              });
+                        });
+                  }
+                  return SpinKitWave(color: Theme.of(context).accentColor);
+                })));
   }
 
 //? Retrieves the study tables from the database
@@ -56,67 +79,82 @@ class _FloorPlanState extends State<FloorPlan> {
 class PathPainter extends CustomPainter {
   final BuildContext context;
   final List<StudyTable> tableList;
-  List<String> selectedTable = [];
-  ValueNotifier<String> a;
+  final List<String> availableTables;
+  ValueNotifier<List<String>> selectedTable;
+  String selection;
+  ValueNotifier<bool> changeSelection;
 
   PathPainter(
     this.context, {
+    this.availableTables,
     this.tableList,
-    this.a,
-  }) : super(repaint: a);
+    this.changeSelection,
+    this.selectedTable,
+  }) : super(repaint: selectedTable);
 
   @override
   void paint(Canvas canvas, Size size) {
     var myCanvas = TouchyCanvas(context, canvas);
-    // ValueNotifier<String> selection = ValueNotifier<String>(selectedTable);
 
-    Paint paint = Paint()
+//^ The paint object (sets the style and stroke width)
+    Paint paintTables = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
-    // Scale each path to match canvas size
+    //^ Scale each path to match canvas size
     var xScale = size.width / 190;
     var yScale = size.height / 230;
     final Matrix4 matrix4 = Matrix4.identity();
 
     matrix4.scale(xScale, yScale);
 
+//? Loops through the list of tables and paints the path of each table
     tableList.forEach((table) {
       Path path = parseSvgPathData(table.svgPath);
 
-      paint.color = Colors.white;
+      paintTables.color = Colors.white;
+      if (!availableTables.contains(table.tableNum)) {
+        //^ Tables that have been booked
+        paintTables.color = Colors.red;
+        paintTables.style = PaintingStyle.fill;
+      }
+      //^ Available Tables
+      if (availableTables.contains(table.tableNum)) {
+        paintTables.color = Colors.white;
+        paintTables.style = PaintingStyle.stroke;
+      }
 
-      if (selectedTable.contains(table.tableNum)) {
-        paint.color = Colors.red;
-        print("Hit");
+      //^ Selected Table
+      if (selectedTable.value.contains(table.tableNum)) {
+        paintTables.color = Theme.of(context).accentColor;
+        paintTables.style = PaintingStyle.fill;
       }
 
       path.transform(matrix4.storage);
 
       myCanvas.drawPath(
         path.transform(matrix4.storage),
-        paint,
+        paintTables,
         onTapDown: (details) {
-          /*    selectedTable.add(table.tableNum);
-          if (selectedTable.length > 1) {
-            selectedTable.removeAt(0);
-          } */
-          if (!selectedTable.contains(table.tableNum)) {
-            selectedTable.add(table.tableNum);
-            a.value = table.tableNum;
+          selectedTable.value.add(table.tableNum);
+          changeSelection.value = !changeSelection.value;
+          if (selectedTable.value.length > 1) {
+            selectedTable.value.removeAt(0);
           }
-          /* else {
-            selectedTable.remove(table.tableNum);
+          if (selectedTable.value.contains(table.tableNum)) {
+            selectedTable.value.remove(table.tableNum);
           }
-          if (selectedTable.length > 1) {
-            selectedTable.removeAt(0);
-          } */
-          print("${table.tableNum}");
+          if (selectedTable.value
+              .contains(!availableTables.contains(table.tableNum))) {
+            selectedTable.value.remove(table.tableNum);
+          }
         },
       );
     });
   }
 
+//? Method that triggers repainting of the canvas
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(PathPainter oldDelegate) => true;
+  // changeSelection.value == oldDelegate.changeSelection.value;
 }
