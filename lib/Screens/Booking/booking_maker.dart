@@ -34,6 +34,8 @@ class _BookingMakerState extends State<BookingMaker> {
     dateSelected = parseDate(DateTime.now().toString());
     minutes = [Text("Minutes:"), Text("00"), Text("30")];
     hours = [Text("Hour:")];
+    startHour = "9";
+    startMin = "00";
     selectedHour = "9";
     selectedMin = "00";
     startTimeString = "$selectedHour:$selectedMin";
@@ -82,11 +84,21 @@ class _BookingMakerState extends State<BookingMaker> {
         ),
         CustomOutlineButton(
           buttonText: "Start Time: $startTimeString",
-          onClick: () => timePicker("start", 9, 20, 11),
+          onClick: () => timePicker(
+            "start",
+            earliestTime: 9,
+            latestTime: 20,
+            maxHours: 11,
+          ),
         ),
         CustomOutlineButton(
           buttonText: "End Time: $endTimeString",
-          onClick: () => timePicker("end", (int.parse(startHour) + 1), 21, 4),
+          onClick: () => timePicker(
+            "end",
+            earliestTime: (int.parse(startHour) + 1),
+            latestTime: 21,
+            maxHours: 4,
+          ),
         ),
         //~ Specific Booking Type Details
         bookingMakerType(),
@@ -95,7 +107,8 @@ class _BookingMakerState extends State<BookingMaker> {
   }
 
   //? Start/End Time Picker
-  timePicker(String timeType, int earliestTime, int latestTime, int maxHours) {
+  timePicker(String timeType,
+      {int earliestTime, int latestTime, int maxHours}) {
     return showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -119,7 +132,7 @@ class _BookingMakerState extends State<BookingMaker> {
                           }),
                 ])),
                 //~ Buttons at the bottom of the scrollView
-                listScrollButtons(context, checkButtonClicked: () {
+                confirmationButtons(context, checkButtonClicked: () {
                   setTimeStrings(timeType, selectedHour, selectedMin);
                 }),
               ]));

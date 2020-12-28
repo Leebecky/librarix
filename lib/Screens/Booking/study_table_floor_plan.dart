@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_drawing/path_drawing.dart';
 import 'package:touchable/touchable.dart';
+import 'package:librarix/Custom_Widget/buttons.dart';
 import '../../Models/study_table.dart';
 
 class FloorPlan extends StatefulWidget {
@@ -21,7 +22,8 @@ class _FloorPlanState extends State<FloorPlan> {
 
   @override
   void initState() {
-    selectedTable = ValueNotifier<List<String>>([]);
+    selectedTable =
+        ValueNotifier<List<String>>([widget.selectedStudyTable.value]);
     changeSelection = ValueNotifier<bool>(false);
     super.initState();
   }
@@ -32,41 +34,61 @@ class _FloorPlanState extends State<FloorPlan> {
         appBar: AppBar(
           title: Text("Quiet Zone Floor Plan"),
         ),
-        body: Container(
-            height: MediaQuery.of(context).size.height,
+        body: SingleChildScrollView(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: FutureBuilder<List<StudyTable>>(
-                future: studyTableList(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<StudyTable>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return ValueListenableBuilder<List<String>>(
-                        valueListenable: selectedTable,
-                        builder: (BuildContext context,
-                            List<String> tableSelected, Widget child) {
-                          return ValueListenableBuilder<bool>(
-                              valueListenable: changeSelection,
-                              builder: (BuildContext context,
-                                  bool selectionChanged, Widget child) {
-                                widget.selectedStudyTable.value =
-                                    tableSelected[0];
-                                return Container(
-                                    child: CanvasTouchDetector(
-                                  builder: (context) => CustomPaint(
-                                    painter: PathPainter(
-                                      context,
-                                      tableList: snapshot.data,
-                                      availableTables: widget.tablesAvailable,
-                                      changeSelection: changeSelection,
-                                      selectedTable: selectedTable,
-                                    ),
-                                  ),
-                                ));
-                              });
-                        });
-                  }
-                  return SpinKitWave(color: Theme.of(context).accentColor);
-                })));
+            child: Column(children: [
+              Container(
+                  decoration:
+                      BoxDecoration(border: Border.all(color: Colors.white)),
+                  child: Text("Entrance to Quiet Zone")),
+              Container(
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.white)),
+                //TODO consider sizing for other phones. Remove border once done with this
+                height: MediaQuery.of(context).size.height - 150,
+                width: MediaQuery.of(context).size.width,
+                child: FutureBuilder<List<StudyTable>>(
+                    //~ Painter for the Floor Plan
+                    future: studyTableList(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<StudyTable>> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return ValueListenableBuilder<List<String>>(
+                            valueListenable: selectedTable,
+                            builder: (BuildContext context,
+                                List<String> tableSelected, Widget child) {
+                              return ValueListenableBuilder<bool>(
+                                  valueListenable: changeSelection,
+                                  builder: (BuildContext context,
+                                      bool selectionChanged, Widget child) {
+                                    return Container(
+                                        child: CanvasTouchDetector(
+                                      builder: (context) => CustomPaint(
+                                        painter: PathPainter(
+                                          context,
+                                          tableList: snapshot.data,
+                                          availableTables:
+                                              widget.tablesAvailable,
+                                          changeSelection: changeSelection,
+                                          selectedTable: selectedTable,
+                                        ),
+                                      ),
+                                    ));
+                                  });
+                            });
+                      }
+                      return SpinKitWave(color: Theme.of(context).accentColor);
+                    }),
+              ),
+              confirmationButtons(context,
+                  checkButtonClicked: () => {
+                        widget.selectedStudyTable.value =
+                            selectedTable.value[0],
+                      })
+            ]),
+          ),
+        ));
   }
 
 //? Retrieves the study tables from the database
@@ -141,13 +163,13 @@ class PathPainter extends CustomPainter {
           if (selectedTable.value.length > 1) {
             selectedTable.value.removeAt(0);
           }
-          if (selectedTable.value.contains(table.tableNum)) {
+          /*   if (selectedTable.value.contains(table.tableNum)) {
             selectedTable.value.remove(table.tableNum);
-          }
-          if (selectedTable.value
+          } */
+          /*  if (selectedTable.value
               .contains(!availableTables.contains(table.tableNum))) {
             selectedTable.value.remove(table.tableNum);
-          }
+          } */
         },
       );
     });
