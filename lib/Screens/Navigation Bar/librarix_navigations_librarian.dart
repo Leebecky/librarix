@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../test.dart';
+//import '../test.dart';
 import '../Staff/booking_records.dart';
 import '../catalogue_view.dart';
 import '../Staff/book_management.dart';
@@ -23,7 +23,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
   final List<Widget> _pages = [
     BookingMaker(),
     CatalogueView(),
-    HistoryView(),
+    //HistoryView(),
   ];
 
   @override

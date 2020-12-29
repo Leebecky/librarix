@@ -21,6 +21,15 @@ class Booking {
     this.userId,
   );
   Map<String, String> toJson() => _bookingToJson(this);
+
+  Booking.fromSnapshot(DocumentSnapshot snapshot) :
+    bookingDate = snapshot['BookingDate'],
+    bookingStartTime = snapshot['BookingStartTime'],
+    bookingEndTime = snapshot['BookingEndTime'],
+    userId = snapshot['UserId'],
+    roomOrTableNum = snapshot['Room/TableNum'],
+    bookingType = snapshot['BookingType'],
+    bookingStatus = snapshot['BookingStatus'];
 }
 
 Booking bookingFromJson(Map<String, dynamic> json) {
@@ -82,3 +91,4 @@ Future<List<Booking>> getBookingsOf(String queryField, String queryItem) async {
   }
   return bookingsOf;
 }
+
