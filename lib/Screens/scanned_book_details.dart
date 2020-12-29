@@ -5,7 +5,7 @@ import '../modules.dart';
 import '../Models/book.dart';
 import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
-import '../Custom_Widget/general_alert_dialog.dart';
+import '../Custom_Widget/custom_alert_dialog.dart';
 
 class ScannedBookDetails extends StatefulWidget {
   //^ Parameters were passed form borrow_book_scanner.dart
@@ -120,7 +120,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                           title: "Request Approved",
                           content:
                               "${booksFound[i].title} has been successfully borrowed!",
-                          returnHome: true);
+                          navigateHome: true);
                     }
                   },
                   child: Icon(Icons.check),
@@ -183,7 +183,6 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
     DateTime returnDate = startDate.add(Duration(days: 6));
 
     //^ Checks if the returnDate lands on a weekend and extends it to Monday if so
-
     if (returnDate.weekday == DateTime.saturday) {
       returnDate = returnDate.add(Duration(days: 2));
     } else if (returnDate.weekday == DateTime.sunday) {

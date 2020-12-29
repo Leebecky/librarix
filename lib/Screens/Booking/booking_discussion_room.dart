@@ -1,18 +1,17 @@
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
-import '../Models/discussion_room.dart';
-import '../Models/booking.dart';
-import '../Custom_Widget/booking_list_wheel_scroll_view.dart';
-import '../Custom_Widget/buttons.dart';
-import '../Custom_Widget/general_alert_dialog.dart';
-import '../modules.dart';
+import '../../Models/discussion_room.dart';
+import '../../Models/booking.dart';
+import '../../Custom_Widget/booking_list_wheel_scroll_view.dart';
+import '../../Custom_Widget/buttons.dart';
+import '../../Custom_Widget/custom_alert_dialog.dart';
+import '../../modules.dart';
 
 class BookingDiscussionRoom extends StatefulWidget {
   final ValueNotifier<String> userId;
-  final String startTime, endTime, date, bookingType;
+  final String startTime, endTime, date;
 
-  BookingDiscussionRoom(
-      this.bookingType, this.userId, this.date, this.startTime, this.endTime);
+  BookingDiscussionRoom(this.userId, this.date, this.startTime, this.endTime);
   @override
   _BookingDiscussionRoomState createState() => _BookingDiscussionRoomState();
 }
@@ -58,6 +57,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
       ValueListenableBuilder(
           valueListenable: detailsChange,
           builder: (BuildContext context, bool value, Widget child) {
+            // Validation check: Resets selected values if date/time is changed
             if (widget.startTime != initialStartTime ||
                 widget.endTime != initialEndTime) {
               value = !value;
@@ -89,15 +89,19 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                   {
                     if (completeBookingDetails(roomsFound.value)) {
                       createBooking(createMyBooking(widget.userId));
+                      // All validation checks are passed. Booking is created.
                       generalAlertDialog(context,
+                          navigateHome: true,
                           title: "Booking",
                           content: "Booking successfully created!");
                     } else {
+                      // Booking details are incomplete
                       generalAlertDialog(context,
                           title: "Booking",
                           content: "Please fill in all booking details first!");
                     }
                   } else {
+                    // The user already has an existing booking
                     generalAlertDialog(context,
                         title: "Active Booking Found",
                         content:
@@ -119,18 +123,25 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
         context: context,
         builder: (BuildContext context) {
           return Container(
+              //the height for the ModalBottomSheet must be set, else an error will be thrown
               height: MediaQuery.of(context).size.height / 2,
               child: (Column(children: [
                 bookingListWheelScrollView(context,
                     listChildren: roomSizes,
                     itemChanged: (index) => numPeople = roomSizes[index].data),
-                listScrollButtons(context,
-                    checkButtonClicked: () => setState(() {
-                          selectedDiscussionRoom = "Select a room";
-                          (numPeople == "" || numPeople == "Number of people:")
-                              ? selectedRoomSize = "3"
-                              : selectedRoomSize = numPeople;
-                        })),
+                confirmationButtons(context,
+                    checkButtonClicked: () => {
+                          setState(() {
+                            //Validation check: reset the selected room value because the room size has changed
+                            selectedDiscussionRoom = "Select a room";
+                            //Validation check: if the wheel is not scrolled, set a default value
+                            (numPeople == "" ||
+                                    numPeople == "Number of people:")
+                                ? selectedRoomSize = "3"
+                                : selectedRoomSize = numPeople;
+                          }),
+                          Navigator.of(context).pop(),
+                        }),
               ])));
         });
   }
@@ -142,13 +153,14 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
         builder: (BuildContext context) {
           return Container(
               height: MediaQuery.of(context).size.height / 2,
-              child: FutureBuilder<List<Text>>(
-                  future: getRoomsAvailable(widget.date),
+              //A streamBuilder is used to keep in sync with real time updates
+              child: StreamBuilder<List<Text>>(
+                  stream: getRoomsAvailable(widget.date),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Text>> roomList) {
                     if (roomList.hasData) {
-                      (roomList.data[0].data ==
-                              "Sorry, there are no available rooms right now")
+                      //Validation check: Ensures that there are rooms available, else set a default value
+                      (roomList.data[0].data == "No rooms available")
                           ? roomsFound.value = false
                           : roomsFound.value = true;
 
@@ -157,16 +169,20 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                             listChildren: roomList.data,
                             itemChanged: (index) =>
                                 selectedRoom = roomList.data[index].data),
-                        listScrollButtons(context,
-                            checkButtonClicked: () => setState(() {
-                                  (selectedRoom == "")
-                                      ? selectedDiscussionRoom =
-                                          roomList.data[0].data
-                                      : selectedDiscussionRoom = selectedRoom;
-                                })),
+                        confirmationButtons(context,
+                            checkButtonClicked: () => {
+                                  setState(() {
+                                    (selectedRoom == "")
+                                        ? selectedDiscussionRoom =
+                                            roomList.data[0].data
+                                        : selectedDiscussionRoom = selectedRoom;
+                                  }),
+                                  Navigator.of(context).pop(),
+                                }),
                       ]);
                     }
                     return SpinKitWave(
+                      //Loading Sequence
                       color: Theme.of(context).accentColor,
                     );
                   }));
@@ -174,31 +190,38 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
   }
 
   //? Queries bookings, compares with rooms and returns list of available rooms
-  Future<List<Text>> getRoomsAvailable(String date) async {
+  Stream<List<Text>> getRoomsAvailable(String date) async* {
+    //Removes the : from the string so that the time can be evaluated as an integer
     String startTime = (widget.startTime.split(":").join("")),
         endTime = (widget.endTime.split(":").join(""));
     List<Text> rooms = [];
     List<String> listOfRoomsInUse = [];
 
-    //^  list of all bookings on a given date
-    List<Booking> allBookings = await getBookingsOf("BookingDate", date);
+    //^ list of all bookings on a given date
+    List<Booking> allBookings = [];
+    await for (var booking in getBookingsOf("BookingDate", date)) {
+      allBookings = booking;
+    }
 
     //^ list of discussion rooms of selected size
     var roomsOfSize = await getRoomsOfSize(int.parse(selectedRoomSize));
 
-    //^ list of active/ongoing bookings on a given date
+    //^ filtering for a list of active/ongoing discussion room bookings on a given date
     List<Booking> clashingBookings = allBookings
-        .where((booking) => booking.bookingStatus != "Cancelled")
+        .where((booking) =>
+            booking.bookingStatus != "Cancelled" &&
+            booking.bookingType == "Discussion Room")
         .toList();
 
-//? checks for any clashing bookings at the (user) selected time
+    //^ checks for any clashing bookings at the (user) selected time
     clashingBookings.removeWhere((booking) =>
         int.parse(startTime) >=
             int.parse(booking.bookingEndTime.split(":").join("")) ||
         int.parse(endTime) <=
             int.parse(booking.bookingStartTime.split(":").join("")));
     clashingBookings.join(",");
-    //^ if clashingBookings.isEmpty = true, no clashing bookings exist
+
+    //^ if clashingBookings is empty => no clashing bookings exist
     if (clashingBookings.isEmpty) {
       //~ return the list of available rooms
       for (var room in roomsOfSize) {
@@ -220,21 +243,25 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
         rooms.add(Text(room.roomNum));
       }
 
-      //~ if therea are no rooms available at all
+      //~ if there are no rooms available at all
       (rooms.length == 0)
-          ? rooms.add(Text("Sorry, there are no available rooms right now"))
+          ? rooms.add(Text("No rooms available"))
           : rooms = rooms;
     }
-    print(initialDate);
-    return rooms;
+    yield rooms;
   }
 
   //? Queries bookings if the user has any active bookings
   Future<bool> getUserBookings(ValueNotifier userId) async {
     String uid = userId.value;
-    List<Booking> userBookings = await getBookingsOf("UserId", uid);
-    var existingBooking =
-        userBookings.where((details) => details.bookingStatus == "Active");
+    List<Booking> userBookings = [];
+    await for (var booking in getBookingsOf("UserId", uid)) {
+      userBookings = booking;
+    }
+
+    var existingBooking = userBookings.where((details) =>
+        details.bookingStatus == "Active" &&
+        details.bookingType == "Discussion Room");
     return existingBooking.isEmpty;
   }
 
@@ -243,13 +270,9 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     String bookingDate = widget.date,
         bookingEndTime = widget.endTime,
         bookingStartTime = widget.startTime,
-        bookingType,
+        bookingType = "Discussion Room",
         uid = userId.value,
         roomOrTableNum = selectedDiscussionRoom;
-
-    (widget.bookingType == "0")
-        ? bookingType = "Discussion Room"
-        : bookingType = "Study Table";
 
     Booking myBooking = Booking(bookingDate, bookingEndTime, bookingStartTime,
         "Active", bookingType, roomOrTableNum, uid);
@@ -257,6 +280,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     return myBooking;
   }
 
+//? Checks if all booking details have been filled
   bool completeBookingDetails(bool roomsFound) {
     String bookingStartTime = widget.startTime,
         bookingEndTime = widget.endTime,
