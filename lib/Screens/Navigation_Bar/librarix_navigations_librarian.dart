@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../test.dart';
+import '../Staff/booking_records.dart';
 import '../catalogue_view.dart';
+import '../Staff/book_management.dart';
 import 'package:librarix/config.dart';
-import 'package:librarix/Screens/booking_maker.dart';
+import '../Booking/booking_maker.dart';
 
-class Home extends StatefulWidget {
+class LibrarianHome extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _HomeState();
+    return _LibrarianHomeState();
   }
 }
 
-class _HomeState extends State<Home> {
+class _LibrarianHomeState extends State<LibrarianHome> {
   double screenWidth, screenHeight;
   int _currentIndex = 1;
   String currentProfilePic =
@@ -34,7 +36,7 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("LibrariX"),
-        actions: <Widget>[
+        actions: [
           IconButton(
             icon: Icon(Icons.search), 
             onPressed: () => Navigator.pushNamed(context, "/search"), 
@@ -70,21 +72,39 @@ class _HomeState extends State<Home> {
                 trailing: Icon(Icons.notifications),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
+                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
                 }),
             ListTile(
-                title: Text("Rewards"),
-                trailing: Icon(Icons.outlined_flag_rounded),
+                title: Text("Booking Records"),
+                trailing: Icon(Icons.book_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) =>  Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookingRecords();
+                  }));
                 }),
             ListTile(
-                title: Text("Fines"),
-                trailing: Icon(Icons.monetization_on_rounded),
+                title: Text("Book Management"),
+                trailing: Icon(Icons.book_online),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) =>  Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BookManagementListView();
+                  }));
+                }),
+            ListTile(
+                title: Text("Fines Management"),
+                trailing: Icon(Icons.attach_money),
+                onTap: () {
+                  //Navigator.of(context).pop();
+                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                }),
+            ListTile(
+                title: Text("Report Generator"),
+                trailing: Icon(Icons.bar_chart),
+                onTap: () {
+                  //Navigator.of(context).pop();
+                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
                 }),
             ListTile(
                 title: Text("Switch theme"),
@@ -92,7 +112,6 @@ class _HomeState extends State<Home> {
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
-            // SizedBox(height: screenHeight * 0.35),
             Divider(),
             ListTile(
               title: Text("Logout"),
@@ -110,16 +129,16 @@ class _HomeState extends State<Home> {
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.event_available),
+            icon: new Icon(Icons.event_available),
             label: "Booking",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.library_books),
+            icon: new Icon(Icons.library_books),
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: "History",
+            icon: new Icon(Icons.check_circle),
+            label: "Book Return",
           ),
         ],
       ),

@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:librarix/config.dart';
 import '../test.dart';
 import '../catalogue_view.dart';
-import '../booking_maker.dart';
-import '../Staff/booking_records.dart';
-import '../Staff/book_management.dart';
+import 'package:librarix/config.dart';
+import 'package:librarix/Screens/Booking/booking_maker.dart';
 
-class AdminHome extends StatefulWidget {
+class Home extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _AdminHomeState();
+    return _HomeState();
   }
 }
 
-class _AdminHomeState extends State<AdminHome> {
+class _HomeState extends State<Home> {
   double screenWidth, screenHeight;
   int _currentIndex = 1;
   String currentProfilePic =
@@ -36,7 +34,7 @@ class _AdminHomeState extends State<AdminHome> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("LibrariX"),
-        actions: [
+        actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search), 
             onPressed: () => Navigator.pushNamed(context, "/search"), 
@@ -75,43 +73,18 @@ class _AdminHomeState extends State<AdminHome> {
                   //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
                 }),
             ListTile(
-                title: Text("Booking Records"),
-                trailing: Icon(Icons.book_rounded),
+                title: Text("Rewards"),
+                trailing: Icon(Icons.outlined_flag_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return BookingRecords();
-                  }));
+                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) =>  Page("Second Page")));
                 }),
             ListTile(
-                title: Text("Book Management"),
-                trailing: Icon(Icons.book_online),
+                title: Text("Fines"),
+                trailing: Icon(Icons.monetization_on_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return BookManagementListView();
-                  }));
-                }),
-            ListTile(
-                title: Text("Fines Management"),
-                trailing: Icon(Icons.attach_money),
-                onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
-                }),
-            ListTile(
-                title: Text("Report Generator"),
-                trailing: Icon(Icons.bar_chart),
-                onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
-                }),
-            ListTile(
-                title: Text("Librarian Management"),
-                trailing: Icon(Icons.camera_front),
-                onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) =>  Page("Second Page")));
                 }),
             ListTile(
                 title: Text("Switch theme"),
@@ -119,11 +92,11 @@ class _AdminHomeState extends State<AdminHome> {
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
-            SizedBox(height: screenHeight * 0.04),
-            new Divider(),
-            new ListTile(
-              title: new Text("Logout"),
-              trailing: new Icon(Icons.logout),
+            // SizedBox(height: screenHeight * 0.35),
+            Divider(),
+            ListTile(
+              title: Text("Logout"),
+              trailing: Icon(Icons.logout),
               onTap: () => logout(),
             ),
           ],
@@ -145,8 +118,8 @@ class _AdminHomeState extends State<AdminHome> {
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
-            label: "Book Return",
+            icon: Icon(Icons.history),
+            label: "History",
           ),
         ],
       ),

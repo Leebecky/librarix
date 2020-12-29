@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:librarix/Screens/scanned_book_details.dart';
 import '../Models/borrow.dart';
-import '../Custom_Widget/general_alert_dialog.dart';
+import '../Custom_Widget/custom_alert_dialog.dart';
 import '../Custom_Widget/user_id_field.dart';
 import '../modules.dart';
 import '../Custom_Widget/textfield.dart';
