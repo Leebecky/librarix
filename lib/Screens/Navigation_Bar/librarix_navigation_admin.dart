@@ -89,7 +89,7 @@ class _AdminHomeState extends State<AdminHome> {
                 onTap: () {
                   //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return BookManagement();
+                    return BookManagementListView();
                   }));
                 }),
             ListTile(
@@ -119,10 +119,11 @@ class _AdminHomeState extends State<AdminHome> {
                 onTap: () {
                   currentTheme.switchTheme();
                 }),
-            Divider(),
-            ListTile(
-              title: Text("Logout"),
-              trailing: Icon(Icons.logout),
+            SizedBox(height: screenHeight * 0.04),
+            new Divider(),
+            new ListTile(
+              title: new Text("Logout"),
+              trailing: new Icon(Icons.logout),
               onTap: () => logout(),
             ),
           ],
