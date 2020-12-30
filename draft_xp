@@ -1,80 +1,102 @@
-class BookingRecords extends StatelessWidget {
-  List<DiscussionRoomBooking> myDiscussionRoomBooking = [];
-  List<StudyTableBooking> myStudyTableBooking = [];
+import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+
+class AddBookImage extends StatefulWidget {
+  @override
+  _AddBookImageState createState() => _AddBookImageState();
+}
+
+class _AddBookImageState extends State<AddBookImage> {
+  File bookImage;
+  final picker = ImagePicker();
+
+  //Cropper plugin
+  Future<void> _cropImage() async {
+    File cropped = await ImageCropper.cropImage(
+      sourcePath: bookImage.path,
+      // ratioX: 1.0,
+      // ratioY: 1.0,
+      // maxWidth: 512,
+      // maxHeight: 512,
+      // toolbarColor: Colors.purple,
+      // toolbarWidgetColor: Colors.white,
+      // toolbarTitle: 'Crop It'
+    );
+
+    setState(() {
+      bookImage = cropped ?? bookImage;
+    });
+  }
+
+  // Select an image via gallery or camera
+  Future getImage(ImageSource source) async {
+    final pickedFile = await picker.getImage(source: source);
+
+    setState(() {
+      if (pickedFile != null) {
+        bookImage = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  // Future<void> _pickImage(ImageSource source) async {
+  //   PickedFile selected = await picker.getImage(source: source);
+
+  //   setState(() {
+  //     bookImage = selected;
+  //   });
+  // }
+
+  /// Remove image
+  void _clear() {
+    setState(() => bookImage = null);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Booking Record"),
+        title: Text("Select Book Image"),
       ),
-      body: Column(children: [
-        FutureBuilder<QuerySnapshot>(
-            future: getDiscussionRoomBooking(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.data == null) {
-                return Center(child: Text("Loading ... "));
-              } else {
-                snapshot.data.docs.forEach((doc) {
-                  myDiscussionRoomBooking
-                      .add(discussionRoomBookingFromJson(doc.data()));
-                });
-                return ListView.builder(
-                  itemCount: myDiscussionRoomBooking.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      title: Text(myDiscussionRoomBooking[index].userId),
-                    );
-                  },
-                );
-              }
-            }),
-        FutureBuilder<QuerySnapshot>(
-            future: getStudyTableBooking(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.data == null) {
-                return Center(child: Text("Loading ... "));
-              } else {
-                snapshot.data.docs.forEach((doc) {
-                  myStudyTableBooking
-                      .add(bookingStudyTableFromJson(doc.data()));
-
-                  return ListView.builder(
-                    itemCount: myStudyTableBooking.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text(myStudyTableBooking[index].userId),
-                      );
-                    },
-                  );
-                });
-              }
-            }),
-      ]),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.photo_camera),
+              onPressed: () => getImage(ImageSource.camera),
+            ),
+            IconButton(
+              icon: Icon(Icons.photo_library),
+              onPressed: () => getImage(ImageSource.gallery),
+            ),
+          ],
+        ),
+      ),
+      body: ListView(
+        children: <Widget>[
+          if (bookImage != null) ...[
+            Image.file(bookImage),
+            Row(
+              children: <Widget>[
+                FlatButton(
+                  child: Icon(Icons.crop),
+                  onPressed: _cropImage,
+                ),
+                FlatButton(
+                  child: Icon(Icons.refresh),
+                  onPressed: _clear,
+                ),
+              ],
+            ),
+          ]
+        ],
+      ),
     );
   }
 }
-
-// FutureBuilder<QuerySnapshot>(
-//     future: getStudyTableBooking(),
-//     builder:
-//         (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-//       if (snapshot.data == null) {
-//         return Center(child: Text("Loading ... "));
-//       } else {
-//         snapshot.data.docs.forEach((doc) {
-//           myStudyTableBooking
-//               .add(bookingStudyTableFromJson(doc.data()));
-
-//           return ListView.builder(
-//             itemCount: myStudyTableBooking.length,
-//             itemBuilder: (BuildContext context, int index) {
-//               return ListTile(
-//                 title: Text(myStudyTableBooking[index].userId),
-//               );
-//             },
-//           );
-//         });
-//       }
-//     }),

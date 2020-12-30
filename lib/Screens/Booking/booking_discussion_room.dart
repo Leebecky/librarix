@@ -209,7 +209,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     //^ filtering for a list of active/ongoing discussion room bookings on a given date
     List<Booking> clashingBookings = allBookings
         .where((booking) =>
-            booking.bookingStatus != "Cancelled" &&
+            booking.bookingStatus == "Active" &&
             booking.bookingType == "Discussion Room")
         .toList();
 
