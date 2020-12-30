@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Staff/librarian_management.dart';
 import 'package:librarix/config.dart';
+import '../book_return.dart';
 import '../test.dart';
 import '../catalogue_view.dart';
 import '../Booking/booking_maker.dart';
@@ -23,7 +25,7 @@ class _AdminHomeState extends State<AdminHome> {
   final List<Widget> _pages = [
     BookingMaker(),
     CatalogueView(),
-    HistoryView(),
+    BookReturn(),
   ];
 
   @override
@@ -38,10 +40,9 @@ class _AdminHomeState extends State<AdminHome> {
         title: Text("LibrariX"),
         actions: [
           IconButton(
-            icon: Icon(Icons.search), 
-            onPressed: () => Navigator.pushNamed(context, "/search"), 
-            iconSize: 35.0
-          ),
+              icon: Icon(Icons.search),
+              onPressed: () => Navigator.pushNamed(context, "/search"),
+              iconSize: 35.0),
           IconButton(
             icon: Icon(Icons.auto_stories),
             onPressed: () => Navigator.pushNamed(context, "/scanner"),
@@ -111,7 +112,9 @@ class _AdminHomeState extends State<AdminHome> {
                 trailing: Icon(Icons.camera_front),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return LibrarianManagement();
+                  }));
                 }),
             ListTile(
                 title: Text("Switch theme"),

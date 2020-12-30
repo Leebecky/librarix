@@ -73,3 +73,15 @@ Future<Librarian> myLibrarian(myUser) async {
 
   return librarian;
 }
+
+//librarian management - list view
+Future<DocumentSnapshot> librarianData() async {
+  final librarianData = await FirebaseFirestore.instance
+      .collection("User")
+      .doc(FirebaseAuth.instance.currentUser.uid)
+      .collection("Librarian")
+      .doc("LibrarianDetails")
+      .get();
+
+  return librarianData;
+}
