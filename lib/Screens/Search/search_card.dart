@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:librarix/Screens/Search/search_details.dart';
 import '../../Models/book.dart';
 
-Widget buildTripCard(BuildContext context, DocumentSnapshot document) {
+Widget buildSearchCard(BuildContext context, DocumentSnapshot document) {
   final book = Book.fromSnapshot(document);
 
   return new Container(

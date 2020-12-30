@@ -93,7 +93,7 @@ class _SearchFunctionState extends State<SearchFunction> {
               child: ListView.builder(
                 itemCount: _resultsList.length,
                 itemBuilder: (BuildContext context, int index) =>
-                buildTripCard(context, _resultsList[index]),
+                buildSearchCard(context, _resultsList[index]),
               )
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:librarix/Screens/Booking/booking_study_table.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 //? Booking class
@@ -9,7 +10,8 @@ class Booking {
       userId,
       roomOrTableNum,
       bookingType,
-      bookingStatus;
+      bookingStatus,
+      bookingId;
 
   Booking(
     this.bookingDate,
@@ -19,8 +21,20 @@ class Booking {
     this.bookingType,
     this.roomOrTableNum,
     this.userId,
+    [this.bookingId]
   );
+  
   Map<String, String> toJson() => _bookingToJson(this);
+
+  Booking.fromSnapshot(QueryDocumentSnapshot snapshot) :
+    bookingDate = snapshot['BookingDate'],
+    bookingStartTime = snapshot['BookingStartTime'],
+    bookingEndTime = snapshot['BookingEndTime'],
+    userId = snapshot['UserId'],
+    roomOrTableNum = snapshot['Room/TableNum'],
+    bookingType = snapshot['BookingType'],
+    bookingStatus = snapshot['BookingStatus'],
+    bookingId = snapshot.id;
 }
 
 Booking bookingFromJson(Map<String, dynamic> json) {
@@ -83,3 +97,31 @@ Stream<List<Booking>> getBookingsOf(
   }
   yield bookingsOf;
 }
+Stream<List<Booking>> getBookingsWithDocIdOf(
+    String queryField, String queryItem) async* {
+  List<Booking> bookingsOf = [];
+  List<Booking> finalBooking = [];
+  List<String> bookingId = [];
+  QuerySnapshot bookings = await FirebaseFirestore.instance
+      .collection("Booking")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+
+  if (bookings.docs.isNotEmpty) {
+    bookings.docs.forEach((doc) {
+      bookingsOf.add(bookingFromJson(doc.data()));
+      bookingId.add(doc.id);
+    });
+  }
+for (var i =0; i<bookingsOf.length; i++){
+
+  finalBooking.add(Booking(bookingsOf[i].bookingDate, bookingsOf[i].bookingEndTime,bookingsOf[i].bookingStartTime, bookingsOf[i].bookingStatus,bookingsOf[i].bookingType,bookingsOf[i].roomOrTableNum,bookingsOf[i].userId, bookingId[i]));
+}
+
+  yield finalBooking;
+}
+
+
+

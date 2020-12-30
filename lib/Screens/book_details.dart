@@ -120,15 +120,13 @@ class _BookDetailsState extends State<BookDetails> {
   Widget verifyUser(ValueNotifier userId) {
     return FutureBuilder<bool>(
       future: isStaff(),
-      // ignore: missing_return
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        //^ if User is Staff, create a textfield
         if (snapshot.data == false) {
           return CustomOutlineButton(
             buttonText: "Placehold",
             onClick: () => _showMyDialog());
         }else
-          return SizedBox(height: 0.01);
+          return SizedBox(height: 0);
     });
   }  
 
@@ -171,8 +169,8 @@ class _BookDetailsState extends State<BookDetails> {
       .add({
         'BookId': widget.bookCatalogue.id,
         'BookTitle': widget.bookCatalogue["BookTitle"],
-        'BorrowDate': null,
-        'BorrowReturnedDate': null,
+        'BorrowDate': 'Not Available',
+        'BorrowReturnedDate': 'Not Available',
         'BorrowStatus': 'Reserved',
         'UserId': myUser.userId,
       });
