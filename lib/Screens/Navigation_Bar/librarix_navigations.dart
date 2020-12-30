@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../catalogue_view.dart';
-import '../history_view.dart';
+import '../History/history_view.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/Screens/Booking/booking_maker.dart';
 
