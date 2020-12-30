@@ -31,7 +31,11 @@ class _BookManagementDetailPageState extends State<BookManagementDetailPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => EditBook()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => EditBook(
+                        bookCatalogue: widget.bookCatalogue,
+                      )));
         },
         child: Icon(Icons.edit_outlined),
       ),

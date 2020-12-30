@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../Staff/librarian_management.dart';
 import 'package:librarix/config.dart';
 import '../book_return.dart';
-import '../test.dart';
 import '../catalogue_view.dart';
 import '../Booking/booking_maker.dart';
 import '../Staff/booking_records.dart';
 import '../Staff/book_management.dart';
+import '../update_booking_record.dart';
 
 class AdminHome extends StatefulWidget {
   @override
@@ -26,6 +26,7 @@ class _AdminHomeState extends State<AdminHome> {
     BookingMaker(),
     CatalogueView(),
     BookReturn(),
+    UpdateBooking(),
   ];
 
   @override
@@ -149,7 +150,11 @@ class _AdminHomeState extends State<AdminHome> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.check_circle),
-            label: "Book Return",
+            label: "Book Update", //return & reservation
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.check_circle),
+            label: "Booking Update", //study table & discussion room
           ),
         ],
       ),
