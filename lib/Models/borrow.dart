@@ -59,3 +59,22 @@ Future<List<Borrow>> getUserBorrowRecords(String userId) async {
   }
   return userRecords;
 }
+
+//? Returns all borrowed records of a given attribute
+Stream<List<Borrow>> getBorrowedOf(
+    String queryField, String queryItem) async* {
+  List<Borrow> borrowedOf = [];
+  QuerySnapshot borrowed = await FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+
+  if (borrowed.docs.isNotEmpty) {
+    borrowed.docs.forEach((doc) {
+      borrowedOf.add(borrowFromJson(doc.data()));
+    });
+  }
+  yield borrowedOf;
+}

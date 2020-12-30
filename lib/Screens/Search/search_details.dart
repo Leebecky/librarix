@@ -171,8 +171,8 @@ class _DetailBookViewState extends State<DetailBookView> {
       .add({
         'BookId': widget.book.id,
         'BookTitle': widget.book.title,
-        'BorrowDate': null,
-        'BorrowReturnedDate': null,
+        'BorrowDate': 'Not Available',
+        'BorrowReturnedDate': 'Not Available',
         'BorrowStatus': 'Reserved',
         'UserId': myUser.userId,
       });

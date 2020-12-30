@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'book_details.dart';
 
 class CatalogueView extends StatefulWidget {
@@ -32,7 +33,9 @@ class _CatalogueViewState extends State<CatalogueView> {
           builder: (_, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: Text("Loading..."),
+                child: SpinKitWave(
+                  color: Theme.of(context).accentColor,
+                ),
               );
             } else {
               return GridView.builder(
