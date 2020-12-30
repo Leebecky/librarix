@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class UpdateBooking extends StatefulWidget {
+class BookReturn extends StatefulWidget {
   @override
-  _UpdateBookingState createState() => _UpdateBookingState();
+  _BookReturnState createState() => _BookReturnState();
 }
 
-class _UpdateBookingState extends State<UpdateBooking>
+class _BookReturnState extends State<BookReturn>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
@@ -27,10 +27,10 @@ class _UpdateBookingState extends State<UpdateBooking>
               labelColor: Theme.of(context).accentColor,
               tabs: [
                 Tab(
-                  text: "Book Return",
+                  text: "Discussion Room",
                 ),
                 Tab(
-                  text: "Book Reservation",
+                  text: "Study Table Room",
                 )
               ],
               controller: _tabController,

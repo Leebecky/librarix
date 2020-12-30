@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Staff/librarian_management.dart';
 import 'package:librarix/config.dart';
-import '../book_return.dart';
+import '../update_book_record.dart';
 import '../catalogue_view.dart';
 import '../Booking/booking_maker.dart';
 import '../Staff/booking_records.dart';
