@@ -6,8 +6,6 @@ import '../Custom_Widget/buttons.dart';
 import '../modules.dart';
 
 class BookDetails extends StatefulWidget {
-
-
   final DocumentSnapshot bookCatalogue;
   BookDetails({this.bookCatalogue});
 
@@ -18,7 +16,6 @@ class BookDetails extends StatefulWidget {
 class _BookDetailsState extends State<BookDetails> {
   ValueNotifier get userId => null;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +25,8 @@ class _BookDetailsState extends State<BookDetails> {
             SliverAppBar(
               expandedHeight: 400.0,
               flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(widget.bookCatalogue["BookImage"], height: 300, fit: BoxFit.fill),
+                background: Image.network(widget.bookCatalogue["BookImage"],
+                    height: 300, fit: BoxFit.fill),
               ),
             ),
             SliverFixedExtentList(
@@ -119,30 +117,30 @@ class _BookDetailsState extends State<BookDetails> {
 
   Widget verifyUser(ValueNotifier userId) {
     return FutureBuilder<bool>(
-      future: isStaff(),
-      // ignore: missing_return
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        //^ if User is Staff, create a textfield
-        if (snapshot.data == false) {
-          return CustomOutlineButton(
-            buttonText: "Placehold",
-            onClick: () => _showMyDialog());
-        }else
-          return SizedBox(height: 0.01);
-    });
-  }  
+        future: isStaff(),
+        // ignore: missing_return
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          //^ if User is Staff, create a textfield
+          if (snapshot.data == false) {
+            return CustomOutlineButton(
+                buttonText: "Placehold", onClick: () => _showMyDialog());
+          } else
+            return SizedBox(height: 0.01);
+        });
+  }
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, 
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Reserve Book'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text("Do you want to reserve ${widget.bookCatalogue["BookTitle"]} ?"),
+                Text(
+                    "Do you want to reserve ${widget.bookCatalogue["BookTitle"]} ?"),
               ],
             ),
           ),
@@ -150,32 +148,32 @@ class _BookDetailsState extends State<BookDetails> {
             TextButton(
               child: Text("Yes"),
               onPressed: () async {
-                  createRecord();
-                  Navigator.of(context).pop();
+                createReservationRecord();
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.of(context).pop()
-              )
+                child: Text("Cancel"),
+                onPressed: () => Navigator.of(context).pop())
           ],
         );
       },
     );
   }
 
-  Future createRecord() async {
+  Future createReservationRecord() async {
     ActiveUser myUser = await myActiveUser();
 
-    DocumentReference ref = await FirebaseFirestore.instance.collection("BorrowedBook")
-      .add({
-        'BookId': widget.bookCatalogue.id,
-        'BookTitle': widget.bookCatalogue["BookTitle"],
-        'BorrowDate': null,
-        'BorrowReturnedDate': null,
-        'BorrowStatus': 'Reserved',
-        'UserId': myUser.userId,
-      });
+    DocumentReference ref =
+        await FirebaseFirestore.instance.collection("BorrowedBook").add({
+      'BookId': widget.bookCatalogue.id,
+      'BookTitle': widget.bookCatalogue["BookTitle"],
+      'BorrowDate': "Not available",
+      'BorrowRenewalTimes': 0,
+      'BorrowReturnedDate': "Not available",
+      'BorrowStatus': 'Reserved',
+      'UserId': myUser.userId,
+    });
     print(ref.id);
   }
 }
