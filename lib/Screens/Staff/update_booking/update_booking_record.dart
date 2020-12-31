@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:librarix/Models/booking.dart';
+import 'study_table_list.dart';
+import 'discussion_room_list.dart';
 
 class UpdateBooking extends StatefulWidget {
   @override
@@ -30,12 +34,46 @@ class _UpdateBookingState extends State<UpdateBooking>
                   text: "Discussion Room",
                 ),
                 Tab(
-                  text: "Study Table Room",
+                  text: "Study Table",
                 )
               ],
               controller: _tabController,
               indicatorSize: TabBarIndicatorSize.tab,
-            )
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  Container(
+                    child: FutureBuilder<Booking>(
+                        future: bookingStatus(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return DiscussionRoomList(
+                                roomList: snapshot.data.bookingStatus);
+                          }
+                          return Center(
+                              child: SpinKitWave(
+                            color: Theme.of(context).accentColor,
+                          ));
+                        }),
+                  ),
+                  Container(
+                    child: FutureBuilder<Booking>(
+                        future: bookingStatus(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return StudyTableList(
+                                tableList: snapshot.data.bookingStatus);
+                          }
+                          return Center(
+                              child: SpinKitWave(
+                            color: Theme.of(context).accentColor,
+                          ));
+                        }),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

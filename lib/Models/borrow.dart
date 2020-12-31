@@ -66,8 +66,7 @@ Future<List<Borrow>> getUserBorrowRecords(String userId) async {
 }
 
 //? Returns all borrowed records of a given attribute
-Stream<List<Borrow>> getBorrowedOf(
-    String queryField, String queryItem) async* {
+Stream<List<Borrow>> getBorrowedOf(String queryField, String queryItem) async* {
   List<Borrow> borrowedOf = [];
   QuerySnapshot borrowed = await FirebaseFirestore.instance
       .collection("BorrowedBook")
@@ -83,3 +82,6 @@ Stream<List<Borrow>> getBorrowedOf(
   }
   yield borrowedOf;
 }
+
+//?Retrieve data from Firestore
+Future borrowedStatus() async {}

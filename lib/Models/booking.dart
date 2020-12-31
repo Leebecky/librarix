@@ -121,3 +121,5 @@ Stream<List<Booking>> getBookingsWithDocIdOf(
 
   yield finalBooking;
 }
+
+Future bookingStatus() async {}
