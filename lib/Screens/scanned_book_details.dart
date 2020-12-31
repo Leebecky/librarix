@@ -153,8 +153,8 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
           textColor: Colors.black,
           onPressed: () => createBorrowRecord(createRecord(
               recordType: "Reserved",
-              startDate: "Not available",
-              returnDate: "Not available")),
+              startDate: "Not Available",
+              returnDate: "Not Available")),
         )
       ]);
     }
