@@ -41,14 +41,14 @@ class BookingView extends StatelessWidget {
   }
 }
 
-class HistoryView extends StatelessWidget {
+/*class HistoryView2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.purple,
     );
   }
-}
+}*/
 
 class TestProfile extends StatelessWidget {
   @override

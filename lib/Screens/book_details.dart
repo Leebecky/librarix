@@ -117,17 +117,16 @@ class _BookDetailsState extends State<BookDetails> {
 
   Widget verifyUser(ValueNotifier userId) {
     return FutureBuilder<bool>(
-        future: isStaff(),
-        // ignore: missing_return
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          //^ if User is Staff, create a textfield
-          if (snapshot.data == false) {
-            return CustomOutlineButton(
-                buttonText: "Placehold", onClick: () => _showMyDialog());
-          } else
-            return SizedBox(height: 0.01);
-        });
-  }
+      future: isStaff(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.data == false) {
+          return CustomOutlineButton(
+            buttonText: "Placehold",
+            onClick: () => _showMyDialog());
+        }else
+          return SizedBox(height: 0);
+    });
+  }  
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -168,9 +167,9 @@ class _BookDetailsState extends State<BookDetails> {
         await FirebaseFirestore.instance.collection("BorrowedBook").add({
       'BookId': widget.bookCatalogue.id,
       'BookTitle': widget.bookCatalogue["BookTitle"],
-      'BorrowDate': "Not available",
+      'BorrowDate': "Not Available",
       'BorrowRenewalTimes': 0,
-      'BorrowReturnedDate': "Not available",
+      'BorrowReturnedDate': "Not Available",
       'BorrowStatus': 'Reserved',
       'UserId': myUser.userId,
     });

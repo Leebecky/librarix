@@ -73,3 +73,45 @@ Future<Librarian> myLibrarian(myUser) async {
 
   return librarian;
 }
+
+//librarian management - list view
+Future<List<String>> librarianData() async {
+  List<String> docId = [];
+  final librarianData = await FirebaseFirestore.instance
+      .collection("User")
+      .where("UserRole", isEqualTo: "Librarian")
+      .get();
+
+  librarianData.docs.forEach((doc) {
+    docId.add(doc.id);
+  });
+  return docId;
+}
+
+Future<List<Librarian>> getLibrarianData(List<String> docId) async {
+  List<Librarian> librarianList = [];
+
+  for (var i = 0; i < docId.length; i++) {
+    var librarians = await FirebaseFirestore.instance
+        .collection("User")
+        .doc(docId[i])
+        .collection("Librarian")
+        .doc("LibrarianDetails")
+        .get();
+
+    //retrieve user details
+    var user = await myActiveUser(docId: docId[i]);
+    Map userDetails = user.toJson();
+    //Librarian specific Details
+    Map details = librarians.data();
+
+    //Map the two sets of key/values together
+    Map map = {};
+    map.addAll(userDetails);
+    map.addAll(details);
+
+    //Instantiate librarian based on that
+    librarianList.add(Librarian.fromJson(map));
+  }
+  return librarianList;
+}
