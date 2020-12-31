@@ -206,10 +206,10 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     //^ list of discussion rooms of selected size
     var roomsOfSize = await getRoomsOfSize(int.parse(selectedRoomSize));
 
-    //^ filtering for a list of active/ongoing discussion room bookings on a given date
+    //^ filtering for a list of all (non-cancelled) discussion room bookings on a given date
     List<Booking> clashingBookings = allBookings
         .where((booking) =>
-            booking.bookingStatus == "Active" &&
+            booking.bookingStatus != "Cancel" &&
             booking.bookingType == "Discussion Room")
         .toList();
 
@@ -260,7 +260,8 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     }
 
     var existingBooking = userBookings.where((details) =>
-        details.bookingStatus == "Active" &&
+        (details.bookingStatus == "Active" ||
+            details.bookingStatus == "Booked") &&
         details.bookingType == "Discussion Room");
     return existingBooking.isEmpty;
   }
@@ -275,7 +276,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
         roomOrTableNum = selectedDiscussionRoom;
 
     Booking myBooking = Booking(bookingDate, bookingEndTime, bookingStartTime,
-        "Active", bookingType, roomOrTableNum, uid);
+        "Booked", bookingType, roomOrTableNum, uid);
 
     return myBooking;
   }

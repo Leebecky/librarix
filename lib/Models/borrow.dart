@@ -5,10 +5,11 @@ import './book.dart';
 class Borrow {
   //^ Attributes
   String userId, bookId, bookTitle, borrowedDate, returnedDate, status;
+  int timesRenewed;
 
   //^ Constructor
   Borrow(this.userId, this.bookId, this.bookTitle, this.borrowedDate,
-      this.returnedDate, this.status);
+      this.timesRenewed, this.returnedDate, this.status);
 
   //? Converts the Borrow into a map of key/value pairs
   Map<String, String> toJson() => _borrowToJson(this);
@@ -21,6 +22,7 @@ Borrow borrowFromJson(Map<String, dynamic> json) {
     json["BookId"] as String,
     json["BookTitle"] as String,
     json["BorrowDate"] as String,
+    json["BorrowRenewalTimes"] as int,
     json["BorrowReturnedDate"] as String,
     json["BorrowStatus"] as String,
   );
@@ -32,18 +34,21 @@ Map<String, dynamic> _borrowToJson(Borrow instance) => <String, dynamic>{
       "BookId": instance.bookId,
       "BookTitle": instance.bookTitle,
       "BorrowDate": instance.borrowedDate,
+      "BorrowRenewalTimes": instance.timesRenewed,
       "BorrowReturnedDate": instance.returnedDate,
       "BorrowStatus": instance.status,
     };
 
 //? Creates a borrowed book record
 Future<void> createBorrowRecord(Borrow record) async {
+  int stock;
+  (record.status == "Borrowed") ? stock = -1 : stock = 0;
   FirebaseFirestore.instance
       .collection("BorrowedBook")
       .add(_borrowToJson(record))
       .then((value) {
     print("Book has been successfully borrowed!");
-    updateBookStock(record.bookId, -1);
+    updateBookStock(record.bookId, stock);
   }).catchError((onError) => print("An error has occurred: $onError"));
 }
 

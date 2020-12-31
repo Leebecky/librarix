@@ -100,3 +100,242 @@ class _AddBookImageState extends State<AddBookImage> {
     );
   }
 }
+
+
+
+// book management ListView
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter/cupertino.dart';
+import 'book_management_detail_page.dart';
+import 'book_management_add.dart';
+
+class BookManagementListView extends StatefulWidget {
+  @override
+  _BookManagementListViewState createState() => _BookManagementListViewState();
+}
+
+class _BookManagementListViewState extends State<BookManagementListView> {
+  // Stream getBook() async {
+  //   await Firebase.initializeApp();
+  //   var firestore = FirebaseFirestore.instance;
+  //   QuerySnapshot bookDetail =
+  //       await firestore.collection("BookCatalogue").get();
+  //   return bookDetail.docs;
+  // }
+  CollectionReference bookDb =
+      FirebaseFirestore.instance.collection("BookCatalogue");
+  navigateToBookManagementDetail(DocumentSnapshot bookCatalogue) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                BookManagementDetailPage(bookCatalogue: bookCatalogue)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Book Management"),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return AddNewBook();
+          }));
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
+      ),
+      body: Container(
+        child: StreamBuilder<QuerySnapshot>(
+            stream: bookDb.snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasData) {
+                // snapshot.data.docs.forEach((doc) {
+                //   myBook.add(bookFromJson(doc.data()));
+                // });
+                return ListView(
+                  children: snapshot.data.docs.map((DocumentSnapshot document) {
+                    print(document.data()["BookImage"]);
+                    return ListTile(
+                      leading: Container(
+                        padding: EdgeInsets.only(bottom: 15.0),
+                        child: Image.network(
+                          document.data()['BookImage'],
+                          // width: 150,
+                          height: 500,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
+                      title: Text(
+                        document.data()['BookTitle'],
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      subtitle: Text(
+                        document.data()['BookAuthor'],
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      onTap: () {
+                        navigateToBookManagementDetail(document);
+                      },
+                    );
+                  }).toList(),
+                );
+              }
+
+              return SpinKitWave(
+                color: Theme.of(context).accentColor,
+              );
+            }),
+      ),
+    );
+  }
+}
+
+
+//book detail page 
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'book_management_edit_book.dart';
+
+class BookManagementDetailPage extends StatefulWidget {
+  final DocumentSnapshot bookCatalogue;
+  BookManagementDetailPage({this.bookCatalogue});
+
+  @override
+  _BookManagementDetailPageState createState() =>
+      _BookManagementDetailPageState();
+}
+
+class _BookManagementDetailPageState extends State<BookManagementDetailPage> {
+  final primaryColor = const Color(0xFF7fbfe9);
+
+  // CollectionReference bookDb =
+  //     FirebaseFirestore.instance.collection("BookCatalogue");
+  // navigateToEditBook(DocumentSnapshot bookCatalogue) {
+  //   Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => EditBook(bookCatalogue: bookCatalogue)));
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.bookCatalogue["BookTitle"]),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.edit_outlined),
+      ),
+      body: Center(
+        child: CustomScrollView(
+          slivers: <Widget>[
+            // SliverAppBar(
+            //   backgroundColor: primaryColor,
+            //   expandedHeight: 350.0,
+            //   flexibleSpace: FlexibleSpaceBar(
+            //     background: Image.network(widget.bookCatalogue["BookImage"]),
+            //   ),
+            // ),
+            SliverFixedExtentList(
+              itemExtent: 60.00,
+              delegate: SliverChildListDelegate([
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.network(
+                    widget.bookCatalogue["BookImage"],
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(widget.bookCatalogue["BookTitle"],
+                      style: TextStyle(
+                          fontSize: 30.0, fontWeight: FontWeight.w500)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0, left: 8.0),
+                  child: Text(widget.bookCatalogue["BookAuthor"],
+                      style: TextStyle(
+                          fontSize: 20.0, fontStyle: FontStyle.italic)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: AutoSizeText(
+                    widget.bookCatalogue["BookDescription"],
+                    style: TextStyle(fontSize: 15.0),
+                    maxLines: 20,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30.0, left: 8.0),
+                  child: Row(
+                    children: [
+                      Text("Barcode: ", style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookBarcode"],
+                          style: TextStyle(fontSize: 15.0)),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, left: 8.0),
+                  child: Row(
+                    children: [
+                      Text("Genre: ", style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookGenre"],
+                          style: TextStyle(fontSize: 15.0)),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, left: 8.0),
+                  child: Row(
+                    children: [
+                      Text("Publish Year: ", style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookPublishDate"],
+                          style: TextStyle(fontSize: 15.0)),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, left: 8.0),
+                  child: Row(
+                    children: [
+                      Text("Publisher: ", style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookPublisher"],
+                          style: TextStyle(fontSize: 15.0)),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, left: 8.0),
+                  child: Row(
+                    children: [
+                      Text("Stock: ", style: TextStyle(fontSize: 15.0)),
+                      Text(widget.bookCatalogue["BookStock"].toString(),
+                          style: TextStyle(fontSize: 15.0)),
+                    ],
+                  ),
+                ),
+              ]),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

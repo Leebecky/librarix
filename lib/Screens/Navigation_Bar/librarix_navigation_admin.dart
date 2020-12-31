@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Staff/librarian_management.dart';
 import 'package:librarix/config.dart';
-//import '../test.dart';
+import '../update_book_record.dart';
 import '../catalogue_view.dart';
 import '../Booking/booking_maker.dart';
 import '../Staff/booking_records.dart';
 import '../Staff/book_management.dart';
+import '../update_booking_record.dart';
 
 class AdminHome extends StatefulWidget {
   @override
@@ -23,7 +25,8 @@ class _AdminHomeState extends State<AdminHome> {
   final List<Widget> _pages = [
     BookingMaker(),
     CatalogueView(),
-    //HistoryView(),
+    BookReturn(),
+    UpdateBooking(),
   ];
 
   @override
@@ -38,10 +41,9 @@ class _AdminHomeState extends State<AdminHome> {
         title: Text("LibrariX"),
         actions: [
           IconButton(
-            icon: Icon(Icons.search), 
-            onPressed: () => Navigator.pushNamed(context, "/search"), 
-            iconSize: 35.0
-          ),
+              icon: Icon(Icons.search),
+              onPressed: () => Navigator.pushNamed(context, "/search"),
+              iconSize: 35.0),
           IconButton(
             icon: Icon(Icons.auto_stories),
             onPressed: () => Navigator.pushNamed(context, "/scanner"),
@@ -111,7 +113,9 @@ class _AdminHomeState extends State<AdminHome> {
                 trailing: Icon(Icons.camera_front),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return LibrarianManagement();
+                  }));
                 }),
             ListTile(
                 title: Text("Switch theme"),
@@ -146,7 +150,11 @@ class _AdminHomeState extends State<AdminHome> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.check_circle),
-            label: "Book Return",
+            label: "Book Update", //return & reservation
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.check_circle),
+            label: "Booking Update", //study table & discussion room
           ),
         ],
       ),

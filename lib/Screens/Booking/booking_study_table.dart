@@ -131,7 +131,8 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
 
     //^ Process the user's bookings to filter out the active study table bookings
     var existingBooking = userBookings.where((details) =>
-        details.bookingStatus == "Active" &&
+        (details.bookingStatus == "Active" ||
+            details.bookingStatus == "Booked") &&
         details.bookingType == "Study Table");
     return existingBooking.isEmpty;
   }
@@ -151,7 +152,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
     //^ Filters for a list of active/ongoing bookings on a given date
     List<Booking> clashingBookings = allBookings
         .where((booking) =>
-            booking.bookingStatus == "Active" &&
+            (booking.bookingStatus != "Cancel") &&
             booking.bookingType == "Study Table")
         .toList();
 
@@ -182,7 +183,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
         roomOrTableNum = selectedStudyTable.value;
 
     Booking myBooking = Booking(bookingDate, bookingEndTime, bookingStartTime,
-        "Active", bookingType, roomOrTableNum, uid);
+        "Booked", bookingType, roomOrTableNum, uid);
 
     return myBooking;
   }

@@ -34,12 +34,12 @@ class _BookingMakerState extends State<BookingMaker> {
     dateSelected = parseDate(DateTime.now().toString());
     minutes = [Text("Minutes:"), Text("00"), Text("30")];
     hours = [Text("Hour:")];
-    startHour = "9";
+    startHour = setStartHour(dateSelected).toString();
     startMin = "00";
-    selectedHour = "9";
+    selectedHour = setStartHour(dateSelected).toString();
     selectedMin = "00";
-    startTimeString = "$selectedHour:$selectedMin";
-    endTimeString = "10:00";
+    startTimeString = "${setStartHour(dateSelected)}:$selectedMin";
+    endTimeString = "${setStartHour(dateSelected) + 1}:00";
     super.initState();
   }
 
@@ -72,7 +72,7 @@ class _BookingMakerState extends State<BookingMaker> {
         ),
         //~ Shared Booking Details
         CustomOutlineButton(
-          buttonText: "Select a date: $dateSelected",
+          buttonText: "Date: $dateSelected",
           onClick: () async => showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
@@ -80,13 +80,16 @@ class _BookingMakerState extends State<BookingMaker> {
                   lastDate: DateTime.now().add(Duration(days: 6)))
               .then((date) => setState(() {
                     dateSelected = parseDate(date.toString());
+                    startTimeString =
+                        "${setStartHour(dateSelected)}:$selectedMin";
+                    endTimeString = "${setStartHour(dateSelected) + 1}:00";
                   })),
         ),
         CustomOutlineButton(
           buttonText: "Start Time: $startTimeString",
           onClick: () => timePicker(
             "start",
-            earliestTime: 9,
+            earliestTime: setStartHour(dateSelected),
             latestTime: 20,
             maxHours: 11,
           ),
@@ -222,5 +225,13 @@ class _BookingMakerState extends State<BookingMaker> {
       h.add(Text("20"));
     }
     return hours = h;
+  }
+
+  int setStartHour(String dateSelected) {
+    String currentDate = parseDate(DateTime.now().toString());
+    int minStartHour = 9;
+    return (currentDate == dateSelected)
+        ? minStartHour = (TimeOfDay.now().hour + 1)
+        : minStartHour;
   }
 }
