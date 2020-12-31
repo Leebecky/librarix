@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import '../test.dart';
+import '../update_book_record.dart';
 import '../Staff/booking_records.dart';
 import '../catalogue_view.dart';
 import '../Staff/book_management.dart';
 import 'package:librarix/config.dart';
 import '../Booking/booking_maker.dart';
+import '../update_booking_record.dart';
 
 class LibrarianHome extends StatefulWidget {
   @override
@@ -23,7 +24,8 @@ class _LibrarianHomeState extends State<LibrarianHome> {
   final List<Widget> _pages = [
     BookingMaker(),
     CatalogueView(),
-    //HistoryView(),
+    BookReturn(),
+    UpdateBooking(),
   ];
 
   @override
@@ -38,10 +40,9 @@ class _LibrarianHomeState extends State<LibrarianHome> {
         title: Text("LibrariX"),
         actions: [
           IconButton(
-            icon: Icon(Icons.search), 
-            onPressed: () => Navigator.pushNamed(context, "/search"), 
-            iconSize: 35.0
-          ),
+              icon: Icon(Icons.search),
+              onPressed: () => Navigator.pushNamed(context, "/search"),
+              iconSize: 35.0),
           IconButton(
             icon: Icon(Icons.auto_stories),
             onPressed: () => Navigator.pushNamed(context, "/scanner"),
@@ -137,8 +138,12 @@ class _LibrarianHomeState extends State<LibrarianHome> {
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: new Icon(Icons.check_circle),
-            label: "Book Return",
+            icon: Icon(Icons.check_circle),
+            label: "Book Update", //return & reservation
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.check_circle),
+            label: "Booking Update", //study table & discussion room
           ),
         ],
       ),

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:librarix/Screens/Staff/book_management_edit_book.dart';
 import 'book_management_detail_page.dart';
 import 'book_management_add.dart';
 
@@ -19,14 +19,23 @@ class _BookManagementListViewState extends State<BookManagementListView> {
   //       await firestore.collection("BookCatalogue").get();
   //   return bookDetail.docs;
   // }
+
   CollectionReference bookDb =
       FirebaseFirestore.instance.collection("BookCatalogue");
+
   navigateToBookManagementDetail(DocumentSnapshot bookCatalogue) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
                 BookManagementDetailPage(bookCatalogue: bookCatalogue)));
+  }
+
+  navigateToEditBook(DocumentSnapshot bookCatalogue) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditBook(bookCatalogue: bookCatalogue)));
   }
 
   @override
@@ -79,6 +88,7 @@ class _BookManagementListViewState extends State<BookManagementListView> {
                       ),
                       onTap: () {
                         navigateToBookManagementDetail(document);
+                        // navigateToEditBook(document);
                       },
                     );
                   }).toList(),

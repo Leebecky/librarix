@@ -34,7 +34,10 @@ class BookingRecords extends StatelessWidget {
                         decoration: new BoxDecoration(
                             border:
                                 new Border(right: new BorderSide(width: 1.0))),
-                        child: Icon(Icons.meeting_room),
+                        child:
+                            (myBooking[index].bookingType == "Discussion Room")
+                                ? Icon(Icons.meeting_room)
+                                : Icon(Icons.self_improvement),
                       ),
                       title: Text(
                         myBooking[index].roomOrTableNum,
@@ -45,8 +48,7 @@ class BookingRecords extends StatelessWidget {
                           Expanded(
                               child: Padding(
                             padding: EdgeInsets.only(left: 10.0),
-                            child:
-                                Text(myBooking[index].userId + "  |  TeohXP"),
+                            child: Text(myBooking[index].userId),
                           )),
                           Text(
                             myBooking[index].bookingStartTime +
