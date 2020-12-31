@@ -84,7 +84,8 @@ class _HomeState extends State<Home> {
                 trailing: Icon(Icons.monetization_on_rounded),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) =>  Page("Second Page")));
+                  //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Fines(),))
+                  Navigator.of(context).pushNamed("/fines");
                 }),
             ListTile(
                 title: Text("Switch theme"),
