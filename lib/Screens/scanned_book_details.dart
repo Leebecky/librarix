@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../modules.dart';
 import '../Models/book.dart';
-import '../Custom_Widget/book_list_tile.dart';
 import '../Models/borrow.dart';
+import '../Custom_Widget/book_list_tile.dart';
 import '../Custom_Widget/custom_alert_dialog.dart';
 
 class ScannedBookDetails extends StatefulWidget {
@@ -113,8 +113,9 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                           content: "This book has already been borrowed!");
                     } else {
                       createBorrowRecord(createRecord(
-                          parseDate(DateTime.now().toString()),
-                          parseDate(calculateReturnDate()),
+                          recordType: "Borrowed",
+                          startDate: parseDate(DateTime.now().toString()),
+                          returnDate: parseDate(calculateReturnDate()),
                           i: i));
                       generalAlertDialog(context,
                           title: "Request Approved",
@@ -150,7 +151,10 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
           child: Text("Place Reservation"),
           color: Colors.yellow,
           textColor: Colors.black,
-          onPressed: () => print("Reserved!"),
+          onPressed: () => createBorrowRecord(createRecord(
+              recordType: "Reserved",
+              startDate: "Not Available",
+              returnDate: "Not Available")),
         )
       ]);
     }
@@ -192,14 +196,15 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   }
 
 //? Creates the new borrow record
-  Borrow createRecord(String startDate, String returnDate, {int i = 0}) {
+  Borrow createRecord(
+      {String recordType, String startDate, String returnDate, int i = 0}) {
     String userId = widget.userId;
     String borrowBookId = bookId[i];
     String borrowBookTitle = booksFound[i].title;
     Borrow newRecord;
 
-    newRecord = Borrow(userId, borrowBookId, borrowBookTitle, startDate,
-        returnDate, "Borrowed");
+    newRecord = Borrow(userId, borrowBookId, borrowBookTitle, startDate, 0,
+        returnDate, recordType);
     return newRecord;
   }
 
