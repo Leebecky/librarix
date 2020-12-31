@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../update_book_record.dart';
+import '../Staff/update_booking/update_booking_record.dart';
+import '../Staff/update_book/update_book_record.dart';
 import '../Staff/booking_records.dart';
 import '../catalogue_view.dart';
 import '../Staff/book_management.dart';
 import 'package:librarix/config.dart';
 import '../Booking/booking_maker.dart';
-import '../update_booking_record.dart';
 
 class LibrarianHome extends StatefulWidget {
   @override
@@ -24,7 +24,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
   final List<Widget> _pages = [
     BookingMaker(),
     CatalogueView(),
-    BookReturn(),
+    UpdateBook(),
     UpdateBooking(),
   ];
 

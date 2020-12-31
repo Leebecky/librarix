@@ -42,60 +42,78 @@ class _BookingListState extends State<BookingList> {
                                   Column(
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.delete), 
-                                        iconSize: 35.0,
-                                        onPressed: () {
-                                          return showDialog(
-                                            context: context,
-                                            barrierDismissible: false, 
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Text('Cancel Booking'),
-                                                content: SingleChildScrollView(
-                                                  child: ListBody(
-                                                    children: <Widget>[
-                                                      Text("Do you want to cancel this booking?"),
-                                                    ],
+                                          icon: Icon(Icons.delete),
+                                          iconSize: 35.0,
+                                          onPressed: () {
+                                            return showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text('Cancel Booking'),
+                                                  content:
+                                                      SingleChildScrollView(
+                                                    child: ListBody(
+                                                      children: <Widget>[
+                                                        Text(
+                                                            "Do you want to cancel this booking?"),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    child: Text("Yes"),
-                                                    onPressed: () async { 
-                                                      if(snapshot.data[index].bookingStatus == "Active"){
-                                                        updateBookingStatus(snapshot.data[index].bookingId);
-                                                        Navigator.of(context).pop();
-                                                      }else{
-                                                        showDialog(
-                                                          context: context,
-                                                          barrierDismissible: false, 
-                                                          builder: (BuildContext context) {
-                                                            return AlertDialog(
-                                                              title: Text("Warning!"),
-                                                              content: Text("You are not valid to cancel this booking because it's over time"),
-                                                              actions: <Widget>[
-                                                                TextButton(
-                                                                  child: Text("OK"),
-                                                                  onPressed: () {
-                                                                    Navigator.of(context).pop();
-                                                                  },
-                                                                ),
-                                                              ]
-                                                            );
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                        child: Text("Yes"),
+                                                        onPressed: () async {
+                                                          if (snapshot
+                                                                  .data[index]
+                                                                  .bookingStatus ==
+                                                              "Active") {
+                                                            updateBookingStatus(
+                                                                snapshot
+                                                                    .data[index]
+                                                                    .bookingId);
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          } else {
+                                                            showDialog(
+                                                                context:
+                                                                    context,
+                                                                barrierDismissible:
+                                                                    false,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return AlertDialog(
+                                                                      title: Text(
+                                                                          "Warning!"),
+                                                                      content: Text(
+                                                                          "You are not valid to cancel this booking because it's over time"),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        TextButton(
+                                                                          child:
+                                                                              Text("OK"),
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                        ),
+                                                                      ]);
+                                                                });
                                                           }
-                                                        );
-                                                      }
-                                                    }
-                                                  ),
-                                                  TextButton(
-                                                    child: Text("Cancel"),
-                                                    onPressed: () => Navigator.of(context).pop()
-                                                    )
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        }),
+                                                        }),
+                                                    TextButton(
+                                                        child: Text("Cancel"),
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop())
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          }),
                                     ],
                                   )
                                 ]),
@@ -155,11 +173,11 @@ class _BookingListState extends State<BookingList> {
   }
 
   Future<void> updateBookingStatus(String docId) async {
-  FirebaseFirestore.instance
-      .collection("Booking")
-      .doc(docId)
-      .update({"BookingStatus": "Cancel"})
-      .then((value) => print("Booking has been cancelled successfully!"))
-      .catchError((onError) => print("An error has occurred: $onError"));
-  }                                                                                                             
+    FirebaseFirestore.instance
+        .collection("Booking")
+        .doc(docId)
+        .update({"BookingStatus": "Cancel"})
+        .then((value) => print("Booking has been cancelled successfully!"))
+        .catchError((onError) => print("An error has occurred: $onError"));
+  }
 }

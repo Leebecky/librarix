@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class BookReturn extends StatefulWidget {
+class UpdateBooking extends StatefulWidget {
   @override
-  _BookReturnState createState() => _BookReturnState();
+  _UpdateBookingState createState() => _UpdateBookingState();
 }
 
-class _BookReturnState extends State<BookReturn>
+class _UpdateBookingState extends State<UpdateBooking>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
