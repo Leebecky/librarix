@@ -107,7 +107,6 @@ class _BookManagementListViewState extends State<BookManagementListView> {
                   }).toList(),
                 );
               }
-
               return SpinKitWave(
                 color: Theme.of(context).accentColor,
               );

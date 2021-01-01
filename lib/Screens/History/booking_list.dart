@@ -4,9 +4,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/booking.dart';
 
 class BookingList extends StatefulWidget {
-  final Booking booking;
   final String bList;
-  const BookingList({Key key, this.bList, this.booking}) : super(key: key);
+  const BookingList({Key key, this.bList}) : super(key: key);
 
   @override
   _BookingListState createState() => _BookingListState();

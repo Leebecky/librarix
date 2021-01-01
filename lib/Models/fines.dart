@@ -1,45 +1,65 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Fines {
-  //^ Attributes
-  String dueDate, reason, status, total, userId;
+class Fine {
+  String total, dueDate, reason, status, userId, finesId;
 
-  //^ Constructor
-  Fines(this.dueDate, this.reason, this.status, this.total, this.userId);
+  Fine(
+    this.dueDate,
+    this.finesId,
+    this.reason,
+    this.status,
+    this.total,
+    this.userId
+  );
 
-  Map<String, String> toJson() => _finesToJson(this);
+  Map<String, String> toJson() => _fineToJson(this);
+
+  Fine.fromSnapshot(DocumentSnapshot snapshot) :
+  dueDate = snapshot['FinesDue'],
+  finesId = snapshot.id,
+  reason = snapshot['FinesReason'],
+  status = snapshot['FinesStatus'],
+  total = snapshot['FinesTotal'],
+  userId = snapshot['Userid'];
 }
 
-//? Converts data from Firestore to a Fines instance
-Fines finesFromJson(Map<String, dynamic> json) {
-  return Fines(
-    json["FinesDue"] as String,
-    json["FinesReason"] as String,
-    json["FinesStatus"] as String,
-    json["FinesTotal"] as String,
-    json["UserId"] as String,
+//? Converts map of values from Firestore into Fine object.
+Fine fineFromJson(Map<String, dynamic> json) {
+  return Fine(
+      json["FinesDue"] as String,
+      json["FinesId"] as String,
+      json["FinesReason"] as String,
+      json["FinesStatus"] as String,
+      json["FinesTotal"] as String,
+      json["UserId"] as String,
   );
 }
 
-//? Converts data from Fines instance to map of key/value for sending to Firestore
-Map<String, dynamic> _finesToJson(Fines instance) => <String, dynamic>{
+//? Converts the Fine class into key/value pairs
+Map<String, dynamic> _fineToJson(Fine instance) => <String, dynamic>{
       "FinesDue": instance.dueDate,
       "FinesReason": instance.reason,
       "FinesStatus": instance.status,
       "FinesTotal": instance.total,
       "UserId": instance.userId,
-    };
+};
 
-Future<List<Fines>> getFinesOf(String queryField, String queryItem) async {
-  List<Fines> finesList = [];
-  await FirebaseFirestore.instance
+//? Returns all fines of a given attribute
+Stream<List<Fine>> getFinesOf(
+    String queryField, String queryItem) async* {
+  List<Fine> finesOf = [];
+  QuerySnapshot fines = await FirebaseFirestore.instance
       .collection("Fines")
       .where(queryField, isEqualTo: queryItem)
       .get()
-      .then((value) => value.docs.forEach((doc) {
-            finesList.add(finesFromJson(doc.data()));
-          }))
       .catchError((onError) =>
-          print("Error retrieving data from Fines database: $onError"));
-  return finesList;
+          print("Error retrieving booking data from database: $onError"));
+
+  if (fines.docs.isNotEmpty) {
+    fines.docs.forEach((doc) {
+      finesOf.add(fineFromJson(doc.data()));
+    });
+  }
+  yield finesOf;
 }
+
