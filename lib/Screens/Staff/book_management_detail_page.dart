@@ -25,9 +25,6 @@ class _BookManagementDetailPageState extends State<BookManagementDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.bookCatalogue["BookTitle"]),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -42,25 +39,16 @@ class _BookManagementDetailPageState extends State<BookManagementDetailPage> {
       body: Center(
         child: CustomScrollView(
           slivers: <Widget>[
-            // SliverAppBar(
-            //   backgroundColor: primaryColor,
-            //   expandedHeight: 350.0,
-            //   flexibleSpace: FlexibleSpaceBar(
-            //     background: Image.network(widget.bookCatalogue["BookImage"]),
-            //   ),
-            // ),
+            SliverAppBar(
+              expandedHeight: 400.0,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Image.network(widget.bookCatalogue["BookImage"],
+                    height: 300, fit: BoxFit.fill),
+              ),
+            ),
             SliverFixedExtentList(
               itemExtent: 60.00,
               delegate: SliverChildListDelegate([
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.network(
-                    widget.bookCatalogue["BookImage"],
-                    height: 100,
-                    width: 100,
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(widget.bookCatalogue["BookTitle"],

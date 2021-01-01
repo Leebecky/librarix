@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/Models/user.dart';
 import '../Staff/librarian_management.dart';
 import 'package:librarix/config.dart';
 import '../update_book_record.dart';
@@ -19,8 +20,6 @@ class AdminHome extends StatefulWidget {
 class _AdminHomeState extends State<AdminHome> {
   double screenWidth, screenHeight;
   int _currentIndex = 1;
-  String currentProfilePic =
-      "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 
   final List<Widget> _pages = [
     BookingMaker(),
@@ -54,21 +53,27 @@ class _AdminHomeState extends State<AdminHome> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text("Bramvbilsen"),
-              accountEmail: Text("bramvbilsen@gmail.com"),
-              currentAccountPicture: GestureDetector(
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(currentProfilePic),
-                ),
-                onTap: () => print("This is your current account."),
-              ),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(
-                          "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
-                      fit: BoxFit.fill)),
-            ),
+            // Retrieve the data of the user that currently login
+            FutureBuilder<ActiveUser>(
+                future: myActiveUser(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<ActiveUser> user) {
+                  return UserAccountsDrawerHeader(
+                    accountName: Text(user.data.name),
+                    accountEmail: Text(user.data.email),
+                    currentAccountPicture: GestureDetector(
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(user.data.avatar),
+                      ),
+                      onTap: () => print("This is your current account."),
+                    ),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
+                            fit: BoxFit.fill)),
+                  );
+                }),
             ListTile(
                 title: Text("Notifications"),
                 trailing: Icon(Icons.notifications),

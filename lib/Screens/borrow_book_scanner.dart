@@ -82,13 +82,13 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                               content:
                                   "No more than three books can be borrowed at a time. Please return the books that are currently borrowed!")
                         }
-                      else if (await hasFines())
+                      /*else if (await hasFines())
                         {
                           generalAlertDialog(context,
                               title: "Unpaid Fines",
                               content:
                                   "Unpaid fines must be paid before new books can be borrowed")
-                        }
+                        }*/
                       else
                         //~ if the user has not exceeded the limit, proceed
                         {
@@ -156,12 +156,12 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
     return currentBorrows = [];
   }
 
-  Future<bool> hasFines() async {
-    List<Fines> finesList = [];
+  // Future<bool> hasFines() async {
+  //   List<Fines> finesList = [];
 
-    finesList = await getFinesOf("UserId", userId.value);
-    finesList.removeWhere((fine) => fine.status == "Paid");
-    finesList.join(",");
-    return (finesList.isNotEmpty);
-  }
+  //   finesList = await getFinesOf("UserId", userId.value);
+  //   finesList.removeWhere((fine) => fine.status == "Paid");
+  //   finesList.join(",");
+  //   return (finesList.isNotEmpty);
+  //}
 }

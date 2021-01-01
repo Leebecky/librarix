@@ -67,34 +67,60 @@ class _BookManagementListViewState extends State<BookManagementListView> {
                 return ListView(
                   children: snapshot.data.docs.map((DocumentSnapshot document) {
                     print(document.data()["BookImage"]);
-                    return ListTile(
-                      leading: Container(
-                        padding: EdgeInsets.only(bottom: 15.0),
-                        child: Image.network(
-                          document.data()['BookImage'],
-                          // width: 150,
-                          height: 500,
-                          fit: BoxFit.fitHeight,
+                    return Container(
+                      child: GestureDetector(
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: [
+                                      Image.network(
+                                        document.data()['BookImage'],
+                                        width: 170,
+                                        height: 150,
+                                        fit: BoxFit.fitHeight,
+                                      ),
+                                      Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 2.0),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  document.data()['BookTitle'],
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+                        onTap: () {
+                          navigateToBookManagementDetail(document);
+                          // navigateToEditBook(document);
+                        },
                       ),
-                      title: Text(
-                        document.data()['BookTitle'],
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      subtitle: Text(
-                        document.data()['BookAuthor'],
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      onTap: () {
-                        navigateToBookManagementDetail(document);
-                        // navigateToEditBook(document);
-                      },
                     );
                   }).toList(),
                 );
               }
-
               return SpinKitWave(
                 color: Theme.of(context).accentColor,
               );
