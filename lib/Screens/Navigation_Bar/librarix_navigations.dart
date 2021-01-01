@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/Models/user.dart';
 import 'package:librarix/Screens/Fines/fines_view.dart';
 import 'package:librarix/Screens/rewards_view.dart';
 import '../catalogue_view.dart';
@@ -17,8 +19,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   double screenWidth, screenHeight;
   int _currentIndex = 1;
-  String currentProfilePic =
-      "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
 
   final List<Widget> _pages = [
     BookingMaker(),
@@ -38,10 +38,9 @@ class _HomeState extends State<Home> {
         title: Text("LibrariX"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search), 
-            onPressed: () => Navigator.pushNamed(context, "/search"), 
-            iconSize: 35.0
-          ),
+              icon: Icon(Icons.search),
+              onPressed: () => Navigator.pushNamed(context, "/search"),
+              iconSize: 35.0),
           IconButton(
             icon: Icon(Icons.auto_stories),
             onPressed: () => Navigator.pushNamed(context, "/scanner"),
@@ -52,21 +51,27 @@ class _HomeState extends State<Home> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text("Bramvbilsen"),
-              accountEmail: Text("bramvbilsen@gmail.com"),
-              currentAccountPicture: GestureDetector(
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(currentProfilePic),
-                ),
-                onTap: () => print("This is your current account."),
-              ),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(
-                          "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
-                      fit: BoxFit.fill)),
-            ),
+            // Retrieve the data of the user that currently login
+            FutureBuilder<ActiveUser>(
+                future: myActiveUser(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<ActiveUser> user) {
+                  return UserAccountsDrawerHeader(
+                    accountName: Text(user.data.name),
+                    accountEmail: Text(user.data.email),
+                    currentAccountPicture: GestureDetector(
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(user.data.avatar),
+                      ),
+                      onTap: () => print("This is your current account."),
+                    ),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
+                            fit: BoxFit.fill)),
+                  );
+                }),
             ListTile(
                 title: Text("Notifications"),
                 trailing: Icon(Icons.notifications),
@@ -140,5 +145,16 @@ class _HomeState extends State<Home> {
   void logout() async {
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
+  }
+
+  Future findCurrentUser() async {
+    ActiveUser myUser = await myActiveUser();
+
+    Future<QuerySnapshot> ref = FirebaseFirestore.instance
+        .collection("User")
+        .where("UserId", isEqualTo: myUser)
+        .get();
+    print(ref);
+    return ref;
   }
 }

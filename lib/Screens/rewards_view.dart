@@ -4,20 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:librarix/Custom_Widget/buttons.dart';
 import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Models/borrow.dart';
-import 'package:librarix/Models/reward.dart';
 import 'package:librarix/Models/user.dart';
 import 'package:librarix/Screens/rewards_details.dart';
 
 class Rewards extends StatefulWidget {
-  final Reward reward;
-  const Rewards({Key key, this.reward}) : super(key: key);
-
   @override
   _RewardsState createState() => _RewardsState();
 }
 
 class _RewardsState extends State<Rewards> {
-  //List<Borrow> snapshot;
   List<Borrow> records = [];
 
   @override
