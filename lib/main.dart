@@ -10,7 +10,6 @@ import './Screens/login.dart';
 import './Screens/borrow_book_scanner.dart';
 import './Models/user.dart';
 import 'Screens/Search/search_view.dart';
-import 'Screens/fines_view.dart';
 
 main() async {
   //? initialises firebase instances for authentication and Cloud FireStore
@@ -56,7 +55,6 @@ class _MyAppState extends State<MyApp> {
           "/adminHome": (context) => AdminHome(),
           "/scanner": (context) => BarcodeScanner(),
           "/search": (context) => SearchFunction(),
-          "/fines": (context) => Fines(),
         });
   }
 }

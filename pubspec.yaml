@@ -78,6 +78,12 @@ flutter:
   assets:
     - assets/Icon/library.png
     - assets/FloorPlan.svg
+    - assets/Rewards/avid_reader.png
+    - assets/Rewards/bibliophile.png
+    - assets/Rewards/book_lover.png
+    - assets/Rewards/bookworm.png
+    - assets/Rewards/just_starting_out.png
+    - assets/Rewards/scholar.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

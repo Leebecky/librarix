@@ -42,5 +42,24 @@ Map<String, dynamic> _fineToJson(Fine instance) => <String, dynamic>{
       "FinesStatus": instance.status,
       "FinesTotal": instance.total,
       "UserId": instance.userId,
-    };
+};
+
+//? Returns all fines of a given attribute
+Stream<List<Fine>> getFinesOf(
+    String queryField, String queryItem) async* {
+  List<Fine> finesOf = [];
+  QuerySnapshot fines = await FirebaseFirestore.instance
+      .collection("Fines")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+
+  if (fines.docs.isNotEmpty) {
+    fines.docs.forEach((doc) {
+      finesOf.add(fineFromJson(doc.data()));
+    });
+  }
+  yield finesOf;
+}
 
