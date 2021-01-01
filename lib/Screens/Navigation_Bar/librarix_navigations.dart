@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/Screens/Fines/fines_view.dart';
+import 'package:librarix/Screens/rewards_view.dart';
 import '../catalogue_view.dart';
 import '../History/history_view.dart';
 import 'package:librarix/config.dart';
@@ -76,15 +78,17 @@ class _HomeState extends State<Home> {
                 title: Text("Rewards"),
                 trailing: Icon(Icons.outlined_flag_rounded),
                 onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) =>  Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return Rewards();
+                  }));
                 }),
             ListTile(
                 title: Text("Fines"),
                 trailing: Icon(Icons.monetization_on_rounded),
                 onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) =>  Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return Fines();
+                  }));
                 }),
             ListTile(
                 title: Text("Switch theme"),
