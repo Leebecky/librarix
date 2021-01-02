@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../modules.dart';
-import '../Models/book.dart';
-import '../Models/borrow.dart';
-import '../Custom_Widget/book_list_tile.dart';
-import '../Custom_Widget/custom_alert_dialog.dart';
+import '../../modules.dart';
+import '../../Models/book.dart';
+import '../../Models/borrow.dart';
+import '../../Custom_Widget/book_list_tile.dart';
+import '../../Custom_Widget/custom_alert_dialog.dart';
 
 class ScannedBookDetails extends StatefulWidget {
   //^ Parameters were passed form borrow_book_scanner.dart
@@ -108,7 +108,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                     var existingRecord = await hasBorrowed(index: i);
 
                     if (existingRecord.isNotEmpty) {
-                      generalAlertDialog(context,
+                      customAlertDialog(context,
                           title: "Request Cancelled",
                           content: "This book has already been borrowed!");
                     } else {
@@ -117,7 +117,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                           startDate: parseDate(DateTime.now().toString()),
                           returnDate: parseDate(calculateReturnDate()),
                           i: i));
-                      generalAlertDialog(context,
+                      customAlertDialog(context,
                           title: "Request Approved",
                           content:
                               "${booksFound[i].title} has been successfully borrowed!",
