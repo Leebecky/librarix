@@ -4,19 +4,29 @@ import './book.dart';
 //? Model for the BorrowedBook database records
 class Borrow {
   //^ Attributes
-  String userId, bookId, bookTitle, borrowedDate, returnedDate, status;
+  String userId, bookId, bookTitle, borrowedDate, returnedDate, status, borrowedId;
   int timesRenewed;
 
   //^ Constructor
   Borrow(this.userId, this.bookId, this.bookTitle, this.borrowedDate,
-      this.timesRenewed, this.returnedDate, this.status);
+      this.timesRenewed, this.returnedDate, this.status, [this.borrowedId]);
 
   //? Converts the Borrow into a map of key/value pairs
   Map<String, String> toJson() => _borrowToJson(this);
+
+  Borrow.fromSnapshot(DocumentSnapshot snapshot) :
+    userId = snapshot["UserId"],
+    bookId = snapshot["BookId"],
+    bookTitle = snapshot["BookTitle"],
+    borrowedDate = snapshot["BorrowDate"],
+    returnedDate = snapshot["BorrowReturnedDate"],
+    status = snapshot["BorrowStatus"],
+    timesRenewed = snapshot["BorrowRenewedTime"],
+    borrowedId = snapshot.id;
 }
 
 //? Converts map of values from Firestore into Borrow object.
-Borrow borrowFromJson(Map<String, dynamic> json) {
+Borrow borrowFromJson(Map<String, dynamic> json, [SetOptions options]) {
   return Borrow(
     json["UserId"] as String,
     json["BookId"] as String,
@@ -82,4 +92,37 @@ Stream<List<Borrow>> getBorrowedOf(
     });
   }
   yield borrowedOf;
+}
+
+Stream<List<Borrow>> getBorrowedWithDocIdOf(
+    String queryField, String queryItem) async* {
+  List<Borrow> borrowedOf = [];
+  List<Borrow> finalBorrowed = [];
+  List<String> borowedId = [];
+  QuerySnapshot borrowed = await FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+
+  if (borrowed .docs.isNotEmpty) {
+    borrowed.docs.forEach((doc) {
+      borrowedOf.add(borrowFromJson(doc.data()));
+      borowedId.add(doc.id);
+    });
+  }
+  for (var i = 0; i < borrowedOf.length; i++) {
+    finalBorrowed.add(Borrow(
+        borrowedOf[i].userId,
+        borrowedOf[i].bookId,
+        borrowedOf[i].bookTitle,
+        borrowedOf[i].borrowedDate,
+        borrowedOf[i].timesRenewed,
+        borrowedOf[i].returnedDate,
+        borrowedOf[i].status,
+        borowedId[i]));
+  }
+
+  yield finalBorrowed;
 }
