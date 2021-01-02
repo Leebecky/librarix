@@ -31,64 +31,80 @@ class _FinesListState extends State<FinesList> {
                           child: Column(
                             children: <Widget>[
                               Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                padding: const EdgeInsets.only(
+                                    top: 8.0, bottom: 4.0),
                                 child: Row(
                                   children: [
-                                    Text("RM ${snapshot.data[index].total}", style: TextStyle(fontSize: 35.0),),
+                                    Text(
+                                      "RM ${snapshot.data[index].total}",
+                                      style: TextStyle(fontSize: 35.0),
+                                    ),
                                     Spacer(),
                                     Column(
                                       children: [
                                         IconButton(
-                                          icon: Icon(Icons.info_outline), 
+                                          icon: Icon(Icons.info_outline),
                                           iconSize: 35.0,
-                                          onPressed: () async{
-                                            if(snapshot.data[index].status == "Unpaid"){
-                                              return generalAlertDialog(
-                                                context,
-                                                title: "Reminder",
-                                                content: "You need to settle your payment at the counter before the due date."
-                                              );
-                                            }else if(snapshot.data[index].status == "Paid"){
-                                              return generalAlertDialog(
-                                                context,
-                                                title: "Info",
-                                                content: "You have paid the fines successfully!"
-                                                );
-                                            }else{
-                                              return generalAlertDialog(
-                                                context,
-                                                title: "Warning",
-                                                content: "Your fee is overdue, please settle it as soon as possible.");
+                                          onPressed: () async {
+                                            if (snapshot.data[index].status ==
+                                                "Unpaid") {
+                                              return customAlertDialog(context,
+                                                  title: "Reminder",
+                                                  content:
+                                                      "You need to settle your payment at the counter before the due date.");
+                                            } else if (snapshot
+                                                    .data[index].status ==
+                                                "Paid") {
+                                              return customAlertDialog(context,
+                                                  title: "Info",
+                                                  content:
+                                                      "You have paid the fines successfully!");
+                                            } else {
+                                              return customAlertDialog(context,
+                                                  title: "Warning",
+                                                  content:
+                                                      "Your fee is overdue, please settle it as soon as possible.");
                                             }
-                                          },)
+                                          },
+                                        )
                                       ],
                                     ),
                                   ],
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                padding: const EdgeInsets.only(
+                                    top: 4.0, bottom: 4.0),
                                 child: Row(
                                   children: [
-                                    Text(snapshot.data[index].reason, style: TextStyle(fontSize: 25.0),),
+                                    Text(
+                                      snapshot.data[index].reason,
+                                      style: TextStyle(fontSize: 25.0),
+                                    ),
                                     Spacer(),
                                   ],
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 4.0, bottom: 30.0),
+                                padding: const EdgeInsets.only(
+                                    top: 4.0, bottom: 30.0),
                                 child: Row(
                                   children: [
-                                    Text(snapshot.data[index].status, style: TextStyle(fontSize: 18.0),),
+                                    Text(
+                                      snapshot.data[index].status,
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
                                     Spacer(),
                                   ],
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                                padding: const EdgeInsets.only(
+                                    top: 8.0, bottom: 8.0),
                                 child: Row(
                                   children: [
-                                    Text(snapshot.data[index].dueDate, style: TextStyle(fontSize: 30.0)),
+                                    Text(snapshot.data[index].dueDate,
+                                        style: TextStyle(fontSize: 30.0)),
                                     Spacer(),
                                   ],
                                 ),

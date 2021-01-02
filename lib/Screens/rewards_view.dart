@@ -60,7 +60,7 @@ class _RewardsState extends State<Rewards> {
                         records = await borrowedRecords(),
                         if (records.length > 40)
                           {
-                            generalAlertDialog(context,
+                            customAlertDialog(context,
                                 title: "Bibliophile",
                                 imageContent: Image(
                                     image: AssetImage(
@@ -68,7 +68,7 @@ class _RewardsState extends State<Rewards> {
                           }
                         else if (records.length > 30 && records.length <= 40)
                           {
-                            generalAlertDialog(context,
+                            customAlertDialog(context,
                                 title: "Scholar",
                                 imageContent: Image(
                                     image: AssetImage(
@@ -76,7 +76,7 @@ class _RewardsState extends State<Rewards> {
                           }
                         else if (records.length > 20 && records.length <= 30)
                           {
-                            generalAlertDialog(context,
+                            customAlertDialog(context,
                                 title: "Bookworm",
                                 imageContent: Image(
                                     image: AssetImage(
@@ -84,7 +84,7 @@ class _RewardsState extends State<Rewards> {
                           }
                         else if (records.length > 10 && records.length <= 20)
                           {
-                            generalAlertDialog(context,
+                            customAlertDialog(context,
                                 title: "Book Lover",
                                 imageContent: Image(
                                     image: AssetImage(
@@ -92,7 +92,7 @@ class _RewardsState extends State<Rewards> {
                           }
                         else if (records.length > 3 && records.length <= 10)
                           {
-                            generalAlertDialog(context,
+                            customAlertDialog(context,
                                 title: "Avid Reader",
                                 imageContent: Image(
                                     image: AssetImage(
@@ -100,7 +100,7 @@ class _RewardsState extends State<Rewards> {
                           }
                         else if (records.length == 3)
                           {
-                            generalAlertDialog(context,
+                            customAlertDialog(context,
                                 title: "Just Starting Out",
                                 imageContent: Image(
                                     image: AssetImage(
@@ -108,7 +108,7 @@ class _RewardsState extends State<Rewards> {
                           }
                         else if (records.length < 3)
                           {
-                            generalAlertDialog(context,
+                            customAlertDialog(context,
                                 title:
                                     "You don't have any achievements yet. Try your best to unlock it!",
                                 imageContent: Image.network(
