@@ -228,7 +228,7 @@ class _LoginState extends State<Login> {
     }
 
     //^ Build method for AlertDialog
-    generalAlertDialog(context, title: "Error logging in", content: errorMsg);
+    customAlertDialog(context, title: "Error logging in", content: errorMsg);
   }
 
   //? Disposes of the widget once login is completed

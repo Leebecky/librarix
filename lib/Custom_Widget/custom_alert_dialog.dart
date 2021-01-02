@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/Models/user.dart';
 
-generalAlertDialog(BuildContext context,
+customAlertDialog(BuildContext context,
     {String title = "", String content = "", navigateHome = false}) {
   return showDialog(
       context: context,
