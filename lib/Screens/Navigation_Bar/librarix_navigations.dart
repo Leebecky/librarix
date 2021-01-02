@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/Models/user.dart';
@@ -145,16 +144,5 @@ class _HomeState extends State<Home> {
   void logout() async {
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
-  }
-
-  Future findCurrentUser() async {
-    ActiveUser myUser = await myActiveUser();
-
-    Future<QuerySnapshot> ref = FirebaseFirestore.instance
-        .collection("User")
-        .where("UserId", isEqualTo: myUser)
-        .get();
-    print(ref);
-    return ref;
   }
 }

@@ -1,23 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../../Models/borrow.dart';
+import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
+import 'package:librarix/modules.dart';
+import 'package:librarix/Models/borrow.dart';
 
 class BorrowedList extends StatefulWidget {
+  final DocumentSnapshot borrow;
+
   final String borrowedList;
-  const BorrowedList({Key key, this.borrowedList}) : super(key: key);
+  const BorrowedList({Key key, this.borrowedList, this.borrow}) : super(key: key);
 
   @override
   _BorrowedListState createState() => _BorrowedListState();
 }
 
 class _BorrowedListState extends State<BorrowedList> {
-  var unreturnedBooks;
-  ValueNotifier<String> userId = ValueNotifier("");
+  List<Borrow> records = [];
+  
   
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Borrow>>(
-        stream: getBorrowedOf("UserId", widget.borrowedList),
+        stream: getBorrowedWithDocIdOf("UserId", widget.borrowedList),
         builder: (BuildContext context, AsyncSnapshot<List<Borrow>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
@@ -64,7 +69,20 @@ class _BorrowedListState extends State<BorrowedList> {
                                                     child: Text("Yes"),
                                                     onPressed: () async { 
                                                       if(snapshot.data[index].status == "Borrowed"){
-                                                        
+                                                        if(snapshot.data[index].timesRenewed < 2){
+                                                          updateBookRenewedTimes(snapshot.data[index].borrowedId);
+                                                          updateBorrowedBookReturnedDate(snapshot.data[index].borrowedId);
+                                                          generalAlertDialog(
+                                                            context,
+                                                            title: "Renew Borrowed Book",
+                                                            content: "You have renewed your borrowed book period sucessfully"
+                                                          );
+                                                        }else if(records.length >= 2){
+                                                          generalAlertDialog(
+                                                            context,
+                                                            title: "Failed To Renew Borrowed Book",
+                                                            content: "You are not able to renew your borrowed book period because already over the renew times limit.");
+                                                        }
                                                       }else{
                                                         showDialog(
                                                           context: context,
@@ -141,5 +159,40 @@ class _BorrowedListState extends State<BorrowedList> {
             color: Theme.of(context).accentColor,
           );
         });
-  }                                                                                                       
+  } 
+
+  //? Update the BorrowRenewTimes
+  Future<void> updateBookRenewedTimes(String docId) async {
+    FirebaseFirestore.instance
+        .collection("BorrowedBook")
+        .doc(docId)
+        .update({"BorrowedRenewedTimes":  FieldValue.increment(1) })
+        .then((value) => print("Borrowed book renew times has been updated successfully!"))
+        .catchError((onError) => print("An error has occurred: $onError"));
+  }
+
+  //?Update the BorrowReturnedDate
+  Future<void> updateBorrowedBookReturnedDate(String docId) async {
+    FirebaseFirestore.instance
+        .collection("BorrowedBook")
+        .doc(docId)
+        .update({"BorrowReturnedDate" : parseDate(calculateReturnDate())})
+        .then((value) => print("Borrowed book returned date has been renewed successfully!"))
+        .catchError((onError) => print("An error has occurred: $onError"));
+  }
+
+
+  //?Calculate the return date 
+  String calculateReturnDate() {
+    DateTime startDate = DateTime.now();
+    DateTime returnDate = startDate.add(Duration(days: 6));
+
+    //^ Checks if the returnDate lands on a weekend and extends it to Monday if so
+    if (returnDate.weekday == DateTime.saturday) {
+      returnDate = returnDate.add(Duration(days: 2));
+    } else if (returnDate.weekday == DateTime.sunday) {
+      returnDate = returnDate.add(Duration(days: 1));
+    }
+    return returnDate.toString();
+  }                                                                                                          
 }
