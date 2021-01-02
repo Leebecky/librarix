@@ -36,10 +36,9 @@ class _HomeState extends State<Home> {
         title: Text("LibrariX"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search), 
-            onPressed: () => Navigator.pushNamed(context, "/search"), 
-            iconSize: 35.0
-          ),
+              icon: Icon(Icons.search),
+              onPressed: () => Navigator.pushNamed(context, "/search"),
+              iconSize: 35.0),
           IconButton(
             icon: Icon(Icons.auto_stories),
             onPressed: () => Navigator.pushNamed(context, "/scanner"),
@@ -69,8 +68,7 @@ class _HomeState extends State<Home> {
                 title: Text("Notifications"),
                 trailing: Icon(Icons.notifications),
                 onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
+                  Navigator.popAndPushNamed(context, "/notifications");
                 }),
             ListTile(
                 title: Text("Rewards"),

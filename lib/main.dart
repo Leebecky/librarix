@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/Screens/Notifications/local_notifications_initializer.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
 import 'Screens/Navigation_Bar/librarix_navigations.dart';
 import 'Screens/Navigation_Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation_Bar/librarix_navigation_admin.dart';
 import './Screens/login.dart';
-import './Screens/borrow_book_scanner.dart';
+import './Screens/Borrow_Books/borrow_book_scanner.dart';
 import './Models/user.dart';
 import 'Screens/Search/search_view.dart';
+import 'Screens/Notifications/test2.dart';
+import 'package:get/get.dart';
 
 main() async {
   //? initialises firebase instances for authentication and Cloud FireStore
@@ -17,6 +20,8 @@ main() async {
   await Firebase.initializeApp();
   FirebaseAuth.instance;
   String myRoute = await checkLoggedIn();
+  initializePlatformSpecifics();
+  // initialiseTimeZones();
   runApp(MyApp(myRoute));
 }
 
@@ -35,12 +40,12 @@ class _MyAppState extends State<MyApp> {
       print('Changes');
       setState(() {});
     });
-      super.initState();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
         title: "LibrariX",
         theme: ThemeData.light(),
         darkTheme: ThemeData.dark(),
@@ -55,6 +60,7 @@ class _MyAppState extends State<MyApp> {
           "/adminHome": (context) => AdminHome(),
           "/scanner": (context) => BarcodeScanner(),
           "/search": (context) => SearchFunction(),
+          "/notifications": (context) => BookReturnNotification(),
         });
   }
 }
