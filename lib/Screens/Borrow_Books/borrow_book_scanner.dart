@@ -3,7 +3,6 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import './scanned_book_details.dart';
 import '../../modules.dart';
 import '../../Models/borrow.dart';
-import '../../Models/fines.dart';
 import '../../Custom_Widget/custom_alert_dialog.dart';
 import '../../Custom_Widget/user_id_field.dart';
 import '../../Custom_Widget/textfield.dart';
