@@ -55,21 +55,24 @@ class _HomeState extends State<Home> {
                 future: myActiveUser(),
                 builder:
                     (BuildContext context, AsyncSnapshot<ActiveUser> user) {
-                  return UserAccountsDrawerHeader(
-                    accountName: Text(user.data.name),
-                    accountEmail: Text(user.data.email),
-                    currentAccountPicture: GestureDetector(
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(user.data.avatar),
+                  if (user.hasData) {
+                    return UserAccountsDrawerHeader(
+                      accountName: Text(user.data.name),
+                      accountEmail: Text(user.data.email),
+                      currentAccountPicture: GestureDetector(
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(user.data.avatar),
+                        ),
+                        onTap: () => print("This is your current account."),
                       ),
-                      onTap: () => print("This is your current account."),
-                    ),
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
-                            fit: BoxFit.fill)),
-                  );
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
+                              fit: BoxFit.fill)),
+                    );
+                  }
+                  return LinearProgressIndicator();
                 }),
             ListTile(
                 title: Text("Notifications"),
