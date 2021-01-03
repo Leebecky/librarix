@@ -34,12 +34,12 @@ class _BookingMakerState extends State<BookingMaker> {
     dateSelected = parseDate(DateTime.now().toString());
     minutes = [Text("Minutes:"), Text("00"), Text("30")];
     hours = [Text("Hour:")];
-    startHour = setStartHour(dateSelected).toString();
+    startHour = setStartHour().toString();
     startMin = "00";
-    selectedHour = setStartHour(dateSelected).toString();
+    selectedHour = setStartHour().toString();
     selectedMin = "00";
-    startTimeString = "${setStartHour(dateSelected)}:$selectedMin";
-    endTimeString = "${setStartHour(dateSelected) + 1}:00";
+    startTimeString = "${setStartHour()}:$selectedMin";
+    endTimeString = "${setStartHour() + 1}:00";
     super.initState();
   }
 
@@ -75,21 +75,22 @@ class _BookingMakerState extends State<BookingMaker> {
           buttonText: "Date: $dateSelected",
           onClick: () async => showDatePicker(
                   context: context,
-                  initialDate: DateTime.now(),
+                  initialDate: (TimeOfDay.now().hour > 19)
+                      ? DateTime.now().add(Duration(days: 1))
+                      : DateTime.now(),
                   firstDate: DateTime.now(),
                   lastDate: DateTime.now().add(Duration(days: 6)))
               .then((date) => setState(() {
                     dateSelected = parseDate(date.toString());
-                    startTimeString =
-                        "${setStartHour(dateSelected)}:$selectedMin";
-                    endTimeString = "${setStartHour(dateSelected) + 1}:00";
+                    startTimeString = "${setStartHour()}:$selectedMin";
+                    endTimeString = "${setStartHour() + 1}:00";
                   })),
         ),
         CustomOutlineButton(
           buttonText: "Start Time: $startTimeString",
           onClick: () => timePicker(
             "start",
-            earliestTime: setStartHour(dateSelected),
+            earliestTime: setStartHour(),
             latestTime: 20,
             maxHours: 11,
           ),
@@ -227,11 +228,26 @@ class _BookingMakerState extends State<BookingMaker> {
     return hours = h;
   }
 
-  int setStartHour(String dateSelected) {
+  int setStartHour() {
     String currentDate = parseDate(DateTime.now().toString());
     int minStartHour = 9;
-    return (currentDate == dateSelected)
-        ? minStartHour = (TimeOfDay.now().hour + 1)
-        : minStartHour;
+
+    if (currentDate == dateSelected) {
+      minStartHour = (TimeOfDay.now().hour + 1);
+      if (minStartHour < 9) {
+        minStartHour = 9;
+      } else if (minStartHour > 19) {
+        setState(() {
+          var date = DateTime.now();
+          date = date.add(Duration(days: 1));
+          print(date.toString());
+          dateSelected = parseDate(date.toString());
+        });
+        minStartHour = 9;
+      }
+    } else {
+      minStartHour = minStartHour;
+    }
+    return minStartHour;
   }
 }

@@ -117,16 +117,15 @@ class _BookDetailsState extends State<BookDetails> {
 
   Widget verifyUser(ValueNotifier userId) {
     return FutureBuilder<bool>(
-      future: isStaff(),
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        if (snapshot.data == false) {
-          return CustomOutlineButton(
-            buttonText: "Placehold",
-            onClick: () => _showMyDialog());
-        }else
-          return SizedBox(height: 0);
-    });
-  }  
+        future: isStaff(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.data == false) {
+            return CustomOutlineButton(
+                buttonText: "Placehold", onClick: () => _showMyDialog());
+          } else
+            return SizedBox(height: 0);
+        });
+  }
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -168,7 +167,7 @@ class _BookDetailsState extends State<BookDetails> {
       'BookId': widget.bookCatalogue.id,
       'BookTitle': widget.bookCatalogue["BookTitle"],
       'BorrowDate': "Not Available",
-      'BorrowRenewalTimes': 0,
+      'BorrowRenewedTime': 0,
       'BorrowReturnedDate': "Not Available",
       'BorrowStatus': 'Reserved',
       'UserId': myUser.userId,

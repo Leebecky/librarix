@@ -90,27 +90,27 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                       if (completeBookingDetails()) {
                         createBooking(createMyBooking(widget.userId));
                         // All validation checks are passed: create the booking
-                        generalAlertDialog(context,
+                        customAlertDialog(context,
                             navigateHome: true,
                             title: "Booking",
                             content: "Booking successfully created!");
                       } else {
                         //Incomplete booking details
-                        generalAlertDialog(context,
+                        customAlertDialog(context,
                             title: "Booking",
                             content:
                                 "Please fill in all booking details first!");
                       }
                     } else {
                       //User has already booked a study table
-                      generalAlertDialog(context,
+                      customAlertDialog(context,
                           title: "Active Booking Found",
                           content:
                               "Please clear your current booking before making another one!");
                     }
                   } else {
                     //~ UserId is invalid
-                    generalAlertDialog(context,
+                    customAlertDialog(context,
                         title: "Invalid User",
                         content: "No user with this ID has been found!");
                   }
@@ -152,7 +152,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
     //^ Filters for a list of active/ongoing bookings on a given date
     List<Booking> clashingBookings = allBookings
         .where((booking) =>
-            (booking.bookingStatus != "Cancel") &&
+            (booking.bookingStatus != "Cancelled") &&
             booking.bookingType == "Study Table")
         .toList();
 

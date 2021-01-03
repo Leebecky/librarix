@@ -22,7 +22,7 @@ class Booking {
         bookingStartTime = snapshot['BookingStartTime'],
         bookingEndTime = snapshot['BookingEndTime'],
         userId = snapshot['UserId'],
-        roomOrTableNum = snapshot['Room/TableNum'],
+        roomOrTableNum = snapshot['RoomOrTableNum'],
         bookingType = snapshot['BookingType'],
         bookingStatus = snapshot['BookingStatus'],
         bookingId = snapshot.id;
@@ -35,7 +35,7 @@ Booking bookingFromJson(Map<String, dynamic> json) {
     json["BookingStartTime"] as String,
     json["BookingStatus"] as String,
     json["BookingType"] as String,
-    json["Room/TableNum"] as String,
+    json["RoomOrTableNum"] as String,
     json["UserId"] as String,
   );
 }
@@ -46,7 +46,7 @@ Map<String, String> _bookingToJson(Booking instance) => <String, String>{
       "BookingStartTime": instance.bookingStartTime,
       "BookingStatus": instance.bookingStatus,
       "BookingType": instance.bookingType,
-      "Room/TableNum": instance.roomOrTableNum,
+      "RoomOrTableNum": instance.roomOrTableNum,
       "UserId": instance.userId,
     };
 
