@@ -31,6 +31,7 @@ class _BookReturnNotificationState extends State<BookReturnNotification> {
         onResume: (Map<String, dynamic> message) async {
           print("onResume: $message");
         });
+    basicNotification();
     super.initState();
   }
 
@@ -79,10 +80,12 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   if (message.containsKey('data')) {
     // Handle data message
     final dynamic data = message['data'];
+    print(data);
   }
 
   if (message.containsKey('notification')) {
     // Handle notification message
     final dynamic notification = message['notification'];
+    print(notification);
   }
 }

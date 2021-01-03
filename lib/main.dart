@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/Screens/Notifications/local_notifications_initializer.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
+import 'package:librarix/modules.dart';
 import 'Screens/Navigation_Bar/librarix_navigations.dart';
 import 'Screens/Navigation_Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation_Bar/librarix_navigation_admin.dart';
@@ -11,7 +12,7 @@ import './Screens/login.dart';
 import './Screens/Borrow_Books/borrow_book_scanner.dart';
 import './Models/user.dart';
 import 'Screens/Search/search_view.dart';
-import 'Screens/Notifications/test2.dart';
+import 'Screens/Notifications/notifications_display.dart';
 import 'package:get/get.dart';
 
 main() async {
@@ -20,8 +21,15 @@ main() async {
   await Firebase.initializeApp();
   FirebaseAuth.instance;
   String myRoute = await checkLoggedIn();
+
+  //? Initializing stuff for notifications
   initializePlatformSpecifics();
-  // initialiseTimeZones();
+  initialiseTimeZones();
+  fcmConfiguration();
+  if (await isStaff()) {
+    staffTopicSubscription();
+  }
+  saveDeviceToken();
   runApp(MyApp(myRoute));
 }
 
@@ -40,6 +48,7 @@ class _MyAppState extends State<MyApp> {
       print('Changes');
       setState(() {});
     });
+
     super.initState();
   }
 
@@ -60,7 +69,7 @@ class _MyAppState extends State<MyApp> {
           "/adminHome": (context) => AdminHome(),
           "/scanner": (context) => BarcodeScanner(),
           "/search": (context) => SearchFunction(),
-          "/notifications": (context) => BookReturnNotification(),
+          "/notifications": (context) => NotificationsDisplay(),
         });
   }
 }
