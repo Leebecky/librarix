@@ -45,7 +45,7 @@ class _BookReturnNotificationState extends State<BookReturnNotification> {
         children: [
           CustomFlatButton(
             buttonText: "Basic Notification",
-            onClick: () => basicNotification(),
+            onClick: () async => basicNotification(),
           ),
           ListTile(
             leading: Icon(Icons.my_library_books),

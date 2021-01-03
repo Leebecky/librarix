@@ -6,7 +6,6 @@ import '../Models/user.dart';
 import '../Custom_Widget/custom_alert_dialog.dart';
 import './Notifications/local_notifications_initializer.dart';
 
-//TODO add a loggedInAs clause
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -163,17 +162,17 @@ class _LoginState extends State<Login> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: userIdCtrl.text, password: passwordCtrl.text);
 
+      saveDeviceToken();
+      saveRole(dropdownValue);
+
       //^ Routing based on type of user
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
         Navigator.popAndPushNamed(context, "/home");
-        saveDeviceToken();
       } else if (dropdownValue == "Librarian") {
         Navigator.popAndPushNamed(context, "/librarianHome");
-        saveDeviceToken();
         staffTopicSubscription();
       } else if (dropdownValue == "Admin") {
         Navigator.popAndPushNamed(context, "/adminHome");
-        saveDeviceToken();
         staffTopicSubscription();
       } else {
         loginError(context, "invalidRole");

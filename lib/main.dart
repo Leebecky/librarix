@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:librarix/Screens/Notifications/local_notifications_initializer.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
@@ -10,12 +11,9 @@ import 'Screens/Navigation_Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation_Bar/librarix_navigation_admin.dart';
 import './Screens/login.dart';
 import './Screens/Borrow_Books/borrow_book_scanner.dart';
-import './Models/user.dart';
 import 'Screens/Search/search_view.dart';
 import 'Screens/Notifications/notifications_display.dart';
 import 'package:get/get.dart';
-
-//TODO when a staff member is logged in as a non staff member!
 
 main() async {
   //? initialises firebase instances for authentication and Cloud FireStore
@@ -77,16 +75,23 @@ class _MyAppState extends State<MyApp> {
 }
 
 Future<String> checkLoggedIn() async {
-  String myRoute = "/home";
+  String myRoute = "/home", currentRole;
   try {
     User currentUserId = FirebaseAuth.instance.currentUser;
     if (currentUserId == null) {
       myRoute = "/";
     } else {
-      ActiveUser currentUser = await myActiveUser(docId: currentUserId.uid);
-      (currentUser.role == "Admin")
+      await FirebaseFirestore.instance
+          .collection("User")
+          .doc(currentUserId.uid)
+          .collection("Login")
+          .doc("LoginRole")
+          .get()
+          .then((value) => currentRole = value.data()["LoggedInAs"]);
+
+      (currentRole == "Admin")
           ? myRoute = "/adminHome" //~ (if admin)
-          : (currentUser.role == "Librarian")
+          : (currentRole == "Librarian")
               ? myRoute = "/librarianHome" //~ (if librarian)
               : myRoute = "/home"; //~ (if user)
     }

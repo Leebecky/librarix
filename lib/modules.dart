@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import './Models/user.dart';
 //^ Common Functions that can be reused
 
 //? Takes the dateTime string and extracts only the day/month/year
@@ -24,15 +23,20 @@ DateTime parseStringToDate(String date) {
 }
 
 //? Checks if the User is a library staff member
-Future<bool> isStaff() async {
-  bool isStaff;
-  String currentUserId = FirebaseAuth.instance.currentUser.uid;
-  ActiveUser currentUser = await myActiveUser(docId: currentUserId);
-
-  (currentUser.role == "Librarian" || currentUser.role == "Admin")
-      ? isStaff = true
-      : isStaff = false;
-  return isStaff;
+Future isStaff() async {
+  String currentUserId = FirebaseAuth.instance.currentUser.uid, currentRole;
+  if (currentUserId != null) {
+    await FirebaseFirestore.instance
+        .collection("User")
+        .doc(currentUserId)
+        .collection("Login")
+        .doc("LoginRole")
+        .get()
+        .then((value) => currentRole = value.data()["LoggedInAs"]);
+    return (currentRole == "Librarian" || currentRole == "Admin")
+        ? true
+        : false;
+  }
 }
 
 //? Checks if the entered UserId belongs to a valid user
