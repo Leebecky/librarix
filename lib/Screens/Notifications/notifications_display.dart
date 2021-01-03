@@ -5,17 +5,18 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../Models/notifications.dart';
 import 'package:librarix/modules.dart';
 
+//TODO sort by date / unread
 class NotificationsDisplay extends StatefulWidget {
   @override
   _NotificationsDisplayState createState() => _NotificationsDisplayState();
 }
 
 class _NotificationsDisplayState extends State<NotificationsDisplay> {
+  Stream<QuerySnapshot> database;
   CollectionReference notificationDb = FirebaseFirestore.instance
       .collection("User")
       .doc(FirebaseAuth.instance.currentUser.uid)
       .collection("Notifications");
-
   CollectionReference staffNotificationDb =
       FirebaseFirestore.instance.collection("StaffNotifications");
 
@@ -25,38 +26,46 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
       appBar: AppBar(
         title: Text("Notifications"),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: (isStaff())
-            ? staffNotificationDb.snapshots()
-            : notificationDb.snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasData) {
-            List<Notifications> notificationsList = [];
-            snapshot.data.docs.forEach((notif) {
-              notificationsList.add(notificationsFromJson(notif.data()));
-            });
-            notificationsList.removeWhere((notif) =>
-                parseStringToDate(notif.displayDate).isAfter(DateTime.now()));
-            notificationsList.join(",");
+      body: FutureBuilder(
+          future: getDbType(),
+          builder: (BuildContext context, AsyncSnapshot dbType) {
+            if (dbType.hasData) {
+              return StreamBuilder<QuerySnapshot>(
+                stream: database,
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasData) {
+                    List<Notifications> notificationsList = [];
+                    snapshot.data.docs.forEach((notif) {
+                      notificationsList
+                          .add(notificationsFromJson(notif.data()));
+                    });
+                    notificationsList.removeWhere((notif) =>
+                        parseStringToDate(notif.displayDate)
+                            .isAfter(DateTime.now()));
+                    notificationsList.join(",");
 
-            if (notificationsList.isNotEmpty) {
-              return ListView.builder(
-                itemCount: notificationsList.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: setIcon(notificationsList[index].type),
-                    title: Text(notificationsList[index].title),
-                    subtitle: Text(notificationsList[index].content),
-                  );
+                    if (notificationsList.isNotEmpty) {
+                      return ListView.builder(
+                        itemCount: notificationsList.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            leading: setIcon(notificationsList[index].type),
+                            title: Text(notificationsList[index].title),
+                            subtitle: Text(notificationsList[index].content),
+                          );
+                        },
+                      );
+                    } else if (notificationsList.isEmpty) {
+                      return Center(child: Text("No notifications found"));
+                    }
+                  }
+                  return SpinKitWave(color: Theme.of(context).accentColor);
                 },
               );
-            } else if (notificationsList.isEmpty) {
-              return Center(child: Text("No notifications found"));
             }
-          }
-          return SpinKitWave(color: Theme.of(context).accentColor);
-        },
-      ),
+            return LinearProgressIndicator();
+          }),
     );
   }
 
@@ -71,6 +80,7 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
         icon = Icon(Icons.self_improvement);
         break;
       case "Book Return":
+      case "Book Reservation":
         icon = Icon(Icons.auto_stories);
         break;
       case "Fines":
@@ -79,5 +89,13 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
       default:
     }
     return icon;
+  }
+
+  Future getDbType() async {
+    bool staff = await isStaff();
+
+    return (staff)
+        ? database = staffNotificationDb.snapshots()
+        : database = notificationDb.snapshots();
   }
 }
