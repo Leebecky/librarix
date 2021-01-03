@@ -260,7 +260,7 @@ class _AddNewBookState extends State<AddNewBook> {
   //add bookImage and bookStock
   Future createBookCatalogue() async {
     try {
-      DocumentReference ref =
+      // DocumentReference ref =
           await FirebaseFirestore.instance.collection("BookCatalogue").add({
         'BookTitle': title,
         'BookISBNCode': isbnCode,

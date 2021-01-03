@@ -79,9 +79,16 @@ Future<String> findUser(String queryField, String queryItem) async {
   return docId;
 }
 
-/* //? Checks for subcollections to determine if User is also a Librarian/Admin
-Future<bool> checkRole(String docid, String role) async {
-  var userRole =
-      await FirebaseFirestore.instance.collection("User").doc(docid).get();
-  return userRole.data()
-} */
+//? Saves the role that the user is logged in as
+Future<void> saveRole(String role) async {
+  String userId = FirebaseAuth.instance.currentUser.uid;
+  if (userId != null) {
+    var loggedInAs = FirebaseFirestore.instance
+        .collection("User")
+        .doc(userId)
+        .collection("Login")
+        .doc("LoginRole");
+    await loggedInAs.set({"LoggedInAs": role});
+  }
+  print("You are logged in as a $role");
+}

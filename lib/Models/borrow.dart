@@ -39,7 +39,7 @@ Borrow borrowFromJson(Map<String, dynamic> json, [SetOptions options]) {
     json["BookId"] as String,
     json["BookTitle"] as String,
     json["BorrowDate"] as String,
-    json["BorrowRenewalTimes"] as int,
+    json["BorrowRenewedTime"] as int,
     json["BorrowReturnedDate"] as String,
     json["BorrowStatus"] as String,
   );
@@ -51,7 +51,7 @@ Map<String, dynamic> _borrowToJson(Borrow instance) => <String, dynamic>{
       "BookId": instance.bookId,
       "BookTitle": instance.bookTitle,
       "BorrowDate": instance.borrowedDate,
-      "BorrowRenewalTimes": instance.timesRenewed,
+      "BorrowRenewedTime": instance.timesRenewed,
       "BorrowReturnedDate": instance.returnedDate,
       "BorrowStatus": instance.status,
     };

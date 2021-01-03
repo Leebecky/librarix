@@ -90,26 +90,26 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                     if (completeBookingDetails(roomsFound.value)) {
                       createBooking(createMyBooking(widget.userId));
                       // All validation checks are passed. Booking is created.
-                      generalAlertDialog(context,
+                      customAlertDialog(context,
                           navigateHome: true,
                           title: "Booking",
                           content: "Booking successfully created!");
                     } else {
                       // Booking details are incomplete
-                      generalAlertDialog(context,
+                      customAlertDialog(context,
                           title: "Booking",
                           content: "Please fill in all booking details first!");
                     }
                   } else {
                     // The user already has an existing booking
-                    generalAlertDialog(context,
+                    customAlertDialog(context,
                         title: "Active Booking Found",
                         content:
                             "Please clear your current booking before making another one!");
                   }
                 } else {
                   //~ UserId is invalid
-                  generalAlertDialog(context,
+                  customAlertDialog(context,
                       title: "Invalid User",
                       content: "No user with this ID has been found!");
                 }
@@ -209,7 +209,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     //^ filtering for a list of all (non-cancelled) discussion room bookings on a given date
     List<Booking> clashingBookings = allBookings
         .where((booking) =>
-            booking.bookingStatus != "Cancel" &&
+            booking.bookingStatus != "Cancelled" &&
             booking.bookingType == "Discussion Room")
         .toList();
 

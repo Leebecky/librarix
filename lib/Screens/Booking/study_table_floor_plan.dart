@@ -8,7 +8,7 @@ import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Custom_Widget/buttons.dart';
 import '../../Models/study_table.dart';
 
-//TODO indicate selected table number
+// !  indicate selected table number
 class FloorPlan extends StatefulWidget {
   final List<String> bookedTables;
   final ValueNotifier<String> selectedStudyTable;
@@ -126,7 +126,7 @@ class _FloorPlanState extends State<FloorPlan> {
                   Navigator.of(context).pop();
                 } else {
                   //if the user attempted to select a booked table
-                  generalAlertDialog(context,
+                  customAlertDialog(context,
                       title: "Invalid Selection",
                       content: "Please select an available table!");
                 }

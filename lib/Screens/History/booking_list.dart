@@ -169,4 +169,13 @@ class _BookingListState extends State<BookingList> {
           );
         });
   }
+
+  Future<void> updateBookingStatus(String docId) async {
+    FirebaseFirestore.instance
+        .collection("Booking")
+        .doc(docId)
+        .update({"BookingStatus": "Cancelled"})
+        .then((value) => print("Booking has been cancelled successfully!"))
+        .catchError((onError) => print("An error has occurred: $onError"));
+  }
 }

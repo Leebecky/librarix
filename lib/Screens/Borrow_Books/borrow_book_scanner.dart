@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:librarix/Screens/scanned_book_details.dart';
-import '../modules.dart';
-import '../Models/borrow.dart';
-import '../Models/fines.dart';
-import '../Custom_Widget/custom_alert_dialog.dart';
-import '../Custom_Widget/user_id_field.dart';
-import '../Custom_Widget/textfield.dart';
+import './scanned_book_details.dart';
+import '../../modules.dart';
+import '../../Models/fines.dart';
+import '../../Models/borrow.dart';
+import '../../Custom_Widget/custom_alert_dialog.dart';
+import '../../Custom_Widget/user_id_field.dart';
+import '../../Custom_Widget/textfield.dart';
 
 class BarcodeScanner extends StatefulWidget {
   @override
@@ -77,18 +77,18 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                       unreturnedBooks = await activeBorrows(),
                       if (unreturnedBooks.length == 3)
                         {
-                          generalAlertDialog(context,
+                          customAlertDialog(context,
                               title: "Book Borrow Limit Reached",
                               content:
                                   "No more than three books can be borrowed at a time. Please return the books that are currently borrowed!")
                         }
-                      /*else if (await hasFines())
+                      else if (await hasFines())
                         {
-                          generalAlertDialog(context,
+                          customAlertDialog(context,
                               title: "Unpaid Fines",
                               content:
                                   "Unpaid fines must be paid before new books can be borrowed")
-                        }*/
+                        }
                       else
                         //~ if the user has not exceeded the limit, proceed
                         {
@@ -102,7 +102,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
                   else
                     {
                       //~ Invalid User ID entered
-                      generalAlertDialog(context,
+                      customAlertDialog(context,
                           title: "Invalid User",
                           content: "No user with this ID has been found!")
                     }
@@ -156,12 +156,14 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
     return currentBorrows = [];
   }
 
-  // Future<bool> hasFines() async {
-  //   List<Fines> finesList = [];
+  Future<bool> hasFines() async {
+    List<Fines> finesList = [];
 
-  //   finesList = await getFinesOf("UserId", userId.value);
-  //   finesList.removeWhere((fine) => fine.status == "Paid");
-  //   finesList.join(",");
-  //   return (finesList.isNotEmpty);
-  //}
+    await for (var fines in getFinesOf("UserId", userId.value)) {
+      finesList = fines;
+    }
+    finesList.removeWhere((fine) => fine.status == "Paid");
+    finesList.join(",");
+    return (finesList.isNotEmpty);
+  }
 }

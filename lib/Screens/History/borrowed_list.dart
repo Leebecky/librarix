@@ -89,7 +89,7 @@ class _BorrowedListState extends State<BorrowedList> {
                                                                       .data[
                                                                           index]
                                                                       .borrowedId);
-                                                              generalAlertDialog(
+                                                              customAlertDialog(
                                                                   context,
                                                                   title:
                                                                       "Renew Borrowed Book",
@@ -98,7 +98,7 @@ class _BorrowedListState extends State<BorrowedList> {
                                                             } else if (records
                                                                     .length >=
                                                                 2) {
-                                                              generalAlertDialog(
+                                                              customAlertDialog(
                                                                   context,
                                                                   title:
                                                                       "Failed To Renew Borrowed Book",
