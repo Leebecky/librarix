@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/Models/user.dart';
-import 'package:librarix/Screens/Booking/booking_maker.dart';
-import 'package:librarix/Screens/Staff/book_management.dart';
-import 'package:librarix/Screens/Staff/update_booking/update_booking_record.dart';
+import '../Booking/booking_maker.dart';
+import '../Staff/book_management.dart';
+import '../Staff/fines_management.dart';
+import '../Staff/update_booking/update_booking_record.dart';
 import '../../config.dart';
 import '../Staff/update_book/update_book_record.dart';
 import '../Staff/booking_records.dart';
@@ -103,7 +104,9 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                 trailing: Icon(Icons.attach_money),
                 onTap: () {
                   //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return FinesManagement();
+                  }));
                 }),
             ListTile(
                 title: Text("Report Generator"),

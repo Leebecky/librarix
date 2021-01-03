@@ -61,48 +61,62 @@ class _BookManagementListViewState extends State<BookManagementListView> {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasData) {
+                // snapshot.data.docs.forEach((doc) {
+                //   myBook.add(bookFromJson(doc.data()));
+                // });
                 return ListView(
                   children: snapshot.data.docs.map((DocumentSnapshot document) {
-                    return Column(
-                      children: [
-                        Container(
+                    print(document.data()["BookImage"]);
+                    return Container(
+                      child: GestureDetector(
+                        child: Card(
                           child: Padding(
-                            padding: const EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(14.0),
                             child: Column(
                               children: <Widget>[
-                                Card(
-                                  child: ListTile(
-                                    leading: Container(
-                                      // print(document.data()["BookImage"]);
-                                      padding: EdgeInsets.only(bottom: 15.0),
-                                      child: Image.network(
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: [
+                                      Image.network(
                                         document.data()['BookImage'],
-                                        // width: 150,
-                                        height: 500,
+                                        width: 150,
+                                        height: 130,
                                         fit: BoxFit.fitHeight,
                                       ),
-                                    ),
-                                    title: Text(
-                                      document.data()['BookTitle'],
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20),
-                                    ),
-                                    subtitle: Text(
-                                      document.data()['BookAuthor'],
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                    onTap: () {
-                                      navigateToBookManagementDetail(document);
-                                      // navigateToEditBook(document);
-                                    },
+                                      Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 2.0),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  document.data()['BookTitle'],
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
-                        )
-                      ],
+                        ),
+                        onTap: () {
+                          navigateToBookManagementDetail(document);
+                          // navigateToEditBook(document);
+                        },
+                      ),
                     );
                   }).toList(),
                 );

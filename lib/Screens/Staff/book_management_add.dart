@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+// import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
-import '../../Screens/Staff/book_management_select_image.dart';
+// import 'dart:math';
+// import '../../Screens/Staff/book_management_select_image.dart';
 import '../../Custom_Widget/buttons.dart';
 import '../../Custom_Widget/textfield.dart';
 

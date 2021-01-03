@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:librarix/Models/booking.dart';
-import 'study_table_list.dart';
 import 'discussion_room_list.dart';
+import 'study_table_list.dart';
 
 class UpdateBooking extends StatefulWidget {
   @override
@@ -42,34 +40,13 @@ class _UpdateBookingState extends State<UpdateBooking>
             ),
             Expanded(
               child: TabBarView(
+                controller: _tabController,
                 children: [
                   Container(
-                    child: FutureBuilder<Booking>(
-                        future: bookingStatus(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return DiscussionRoomList(
-                                roomList: snapshot.data.bookingStatus);
-                          }
-                          return Center(
-                              child: SpinKitWave(
-                            color: Theme.of(context).accentColor,
-                          ));
-                        }),
+                    child: DiscussionRoomList(),
                   ),
                   Container(
-                    child: FutureBuilder<Booking>(
-                        future: bookingStatus(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return StudyTableList(
-                                tableList: snapshot.data.bookingStatus);
-                          }
-                          return Center(
-                              child: SpinKitWave(
-                            color: Theme.of(context).accentColor,
-                          ));
-                        }),
+                    child: StudyTableList(),
                   ),
                 ],
               ),

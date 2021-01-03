@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:librarix/Models/borrow.dart';
-import 'package:librarix/Screens/Staff/update_book/book_reservation_list.dart';
-import 'package:librarix/Screens/Staff/update_book/book_return_list.dart';
+
+import 'book_reservation_list.dart';
+import 'book_return_list.dart';
 
 class UpdateBook extends StatefulWidget {
   @override
@@ -42,35 +41,10 @@ class _UpdateBookState extends State<UpdateBook>
             ),
             Expanded(
               child: TabBarView(
+                controller: _tabController,
                 children: [
-                  Container(
-                    child: FutureBuilder<Borrow>(
-                        future: borrowedStatus(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return BookReturnList(
-                                returnList: snapshot.data.status);
-                          }
-                          return Center(
-                              child: SpinKitWave(
-                            color: Theme.of(context).accentColor,
-                          ));
-                        }),
-                  ),
-                  Container(
-                    child: FutureBuilder<Borrow>(
-                        future: borrowedStatus(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return BookReservationList(
-                                reservationList: snapshot.data.status);
-                          }
-                          return Center(
-                              child: SpinKitWave(
-                            color: Theme.of(context).accentColor,
-                          ));
-                        }),
-                  ),
+                  BookReturnList(),
+                  BookReservationList(),
                 ],
               ),
             ),
