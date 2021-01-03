@@ -69,15 +69,15 @@ fcmConfiguration() {
   FirebaseMessaging().configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        await standardNotification(message);
+        // await standardNotification(message);
       },
       onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-        await standardNotification(message);
+        // await standardNotification(message);
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
-        await standardNotification(message);
+        // await standardNotification(message);
       });
 }

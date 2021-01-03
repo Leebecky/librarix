@@ -6,6 +6,7 @@ import '../Models/user.dart';
 import '../Custom_Widget/custom_alert_dialog.dart';
 import './Notifications/local_notifications_initializer.dart';
 
+//TODO add a loggedInAs clause
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
