@@ -152,7 +152,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
     //^ Filters for a list of active/ongoing bookings on a given date
     List<Booking> clashingBookings = allBookings
         .where((booking) =>
-            (booking.bookingStatus != "Cancel") &&
+            (booking.bookingStatus != "Cancelled") &&
             booking.bookingType == "Study Table")
         .toList();
 

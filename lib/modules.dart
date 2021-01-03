@@ -24,8 +24,7 @@ DateTime parseStringToDate(String date) {
 }
 
 //? Checks if the User is a library staff member
-// Future<bool> isStaff() async {
-isStaff() async {
+Future<bool> isStaff() async {
   bool isStaff;
   String currentUserId = FirebaseAuth.instance.currentUser.uid;
   ActiveUser currentUser = await myActiveUser(docId: currentUserId);

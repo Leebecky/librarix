@@ -17,7 +17,7 @@ class _FinesListState extends State<FinesList> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: getFinesOf("UserId", widget.finesList),
-      builder: (BuildContext context, AsyncSnapshot<List<Fine>> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<Fines>> snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
               itemCount: snapshot.data.length,

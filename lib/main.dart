@@ -15,6 +15,8 @@ import 'Screens/Search/search_view.dart';
 import 'Screens/Notifications/notifications_display.dart';
 import 'package:get/get.dart';
 
+//TODO when a staff member is logged in as a non staff member!
+
 main() async {
   //? initialises firebase instances for authentication and Cloud FireStore
   WidgetsFlutterBinding.ensureInitialized();
