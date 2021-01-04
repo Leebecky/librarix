@@ -96,7 +96,7 @@ class _HomeState extends State<Home> {
                 trailing: Icon(Icons.monetization_on_rounded),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return Fines();
+                    return FinesDisplay();
                   }));
                 }),
             ListTile(
