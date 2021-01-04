@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
+import 'package:librarix/Models/notifications.dart';
+import 'package:librarix/Screens/Notifications/notifications_build.dart';
 import 'package:librarix/modules.dart';
 import 'package:librarix/Models/borrow.dart';
 
@@ -63,7 +65,7 @@ class _BorrowedListState extends State<BorrowedList> {
                                                     child: ListBody(
                                                       children: <Widget>[
                                                         Text(
-                                                            "Do you want to extends the borrow period?"),
+                                                            "Do you want to extend the borrow period?"),
                                                       ],
                                                     ),
                                                   ),
@@ -71,6 +73,20 @@ class _BorrowedListState extends State<BorrowedList> {
                                                     TextButton(
                                                         child: Text("Yes"),
                                                         onPressed: () async {
+                                                          //~ Obtain notification Id
+                                                          int notifId = await searchNotification(
+                                                                  widget
+                                                                      .borrowedList,
+                                                                  "NotificationAdditionalDetail",
+                                                                  snapshot
+                                                                      .data[
+                                                                          index]
+                                                                      .bookId)
+                                                              .then((value) =>
+                                                                  value[0]
+                                                                      .id
+                                                                      .hashCode);
+                                                          //~ Renew Book
                                                           if (snapshot
                                                                   .data[index]
                                                                   .status ==
@@ -89,6 +105,40 @@ class _BorrowedListState extends State<BorrowedList> {
                                                                       .data[
                                                                           index]
                                                                       .borrowedId);
+
+                                                              //~ Resets notifications for book return
+                                                              cancelNotification(
+                                                                  notifId);
+                                                              //~ Schedules a new notification
+                                                              bookReturnNotification(
+                                                                  returnDate:
+                                                                      parseDate(
+                                                                          calculateReturnDate()),
+                                                                  title: snapshot
+                                                                      .data[
+                                                                          index]
+                                                                      .bookTitle,
+                                                                  notificationId:
+                                                                      notifId);
+
+                                                              //~ Updates the notification record
+                                                              updateBookReturnNotification(
+                                                                  userId: widget
+                                                                      .borrowedList,
+                                                                  newDate: parseDate(parseStringToDate(
+                                                                          parseDate(
+                                                                              calculateReturnDate()))
+                                                                      .subtract(
+                                                                          Duration(
+                                                                              days:
+                                                                                  3))
+                                                                      .toString()),
+                                                                  bookId: snapshot
+                                                                      .data[
+                                                                          index]
+                                                                      .bookId);
+
+                                                              //~ Message
                                                               customAlertDialog(
                                                                   context,
                                                                   title:
@@ -196,7 +246,7 @@ class _BorrowedListState extends State<BorrowedList> {
     FirebaseFirestore.instance
         .collection("BorrowedBook")
         .doc(docId)
-        .update({"BorrowedRenewedTimes": FieldValue.increment(1)})
+        .update({"BorrowRenewedTimes": FieldValue.increment(1)})
         .then((value) =>
             print("Borrowed book renew times has been updated successfully!"))
         .catchError((onError) => print("An error has occurred: $onError"));

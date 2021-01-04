@@ -1,5 +1,6 @@
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
+import 'package:librarix/Screens/Notifications/notifications_build.dart';
 import '../../Models/discussion_room.dart';
 import '../../Models/booking.dart';
 import '../../Custom_Widget/booking_list_wheel_scroll_view.dart';
@@ -88,8 +89,26 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                   //~ Check if User has active bookings
                   {
                     if (completeBookingDetails(roomsFound.value)) {
-                      createBooking(createMyBooking(widget.userId));
                       // All validation checks are passed. Booking is created.
+                      createBooking(createMyBooking(widget.userId));
+                      // Schedule Notifications: on day of booking
+                      if (widget.date != parseDate(DateTime.now().toString())) {
+                        bookingNotificationOnDay(
+                            bookingType: "Discussion Room",
+                            tableRoomNumber: selectedDiscussionRoom,
+                            endTime: widget.endTime,
+                            startTime: widget.startTime,
+                            bookingDate: widget.date);
+                      }
+                      //Schedule Notifications: 15 minutes before booking time
+                      bookingNotificationBeforeStartTime(
+                          bookingType: "Discussion Room",
+                          tableRoomNumber: selectedDiscussionRoom,
+                          endTime: widget.endTime,
+                          startTime: widget.startTime,
+                          bookingDate: widget.date);
+
+                      //Display message
                       customAlertDialog(context,
                           navigateHome: true,
                           title: "Booking",
