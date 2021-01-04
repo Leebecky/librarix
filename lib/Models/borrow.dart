@@ -4,25 +4,32 @@ import './book.dart';
 //? Model for the BorrowedBook database records
 class Borrow {
   //^ Attributes
-  String userId, bookId, bookTitle, borrowedDate, returnedDate, status, borrowedId;
+  String userId,
+      bookId,
+      bookTitle,
+      borrowedDate,
+      returnedDate,
+      status,
+      borrowedId;
   int timesRenewed;
 
   //^ Constructor
   Borrow(this.userId, this.bookId, this.bookTitle, this.borrowedDate,
-      this.timesRenewed, this.returnedDate, this.status, [this.borrowedId]);
+      this.timesRenewed, this.returnedDate, this.status,
+      [this.borrowedId]);
 
   //? Converts the Borrow into a map of key/value pairs
   Map<String, String> toJson() => _borrowToJson(this);
 
-  Borrow.fromSnapshot(DocumentSnapshot snapshot) :
-    userId = snapshot["UserId"],
-    bookId = snapshot["BookId"],
-    bookTitle = snapshot["BookTitle"],
-    borrowedDate = snapshot["BorrowDate"],
-    returnedDate = snapshot["BorrowReturnedDate"],
-    status = snapshot["BorrowStatus"],
-    timesRenewed = snapshot["BorrowRenewedTime"],
-    borrowedId = snapshot.id;
+  Borrow.fromSnapshot(DocumentSnapshot snapshot)
+      : userId = snapshot["UserId"],
+        bookId = snapshot["BookId"],
+        bookTitle = snapshot["BookTitle"],
+        borrowedDate = snapshot["BorrowDate"],
+        returnedDate = snapshot["BorrowReturnedDate"],
+        status = snapshot["BorrowStatus"],
+        timesRenewed = snapshot["BorrowRenewedTime"],
+        borrowedId = snapshot.id;
 }
 
 //? Converts map of values from Firestore into Borrow object.
@@ -32,7 +39,7 @@ Borrow borrowFromJson(Map<String, dynamic> json, [SetOptions options]) {
     json["BookId"] as String,
     json["BookTitle"] as String,
     json["BorrowDate"] as String,
-    json["BorrowRenewalTimes"] as int,
+    json["BorrowRenewedTime"] as int,
     json["BorrowReturnedDate"] as String,
     json["BorrowStatus"] as String,
   );
@@ -44,7 +51,7 @@ Map<String, dynamic> _borrowToJson(Borrow instance) => <String, dynamic>{
       "BookId": instance.bookId,
       "BookTitle": instance.bookTitle,
       "BorrowDate": instance.borrowedDate,
-      "BorrowRenewalTimes": instance.timesRenewed,
+      "BorrowRenewedTime": instance.timesRenewed,
       "BorrowReturnedDate": instance.returnedDate,
       "BorrowStatus": instance.status,
     };
@@ -76,8 +83,7 @@ Future<List<Borrow>> getUserBorrowRecords(String userId) async {
 }
 
 //? Returns all borrowed records of a given attribute
-Stream<List<Borrow>> getBorrowedOf(
-    String queryField, String queryItem) async* {
+Stream<List<Borrow>> getBorrowedOf(String queryField, String queryItem) async* {
   List<Borrow> borrowedOf = [];
   QuerySnapshot borrowed = await FirebaseFirestore.instance
       .collection("BorrowedBook")
@@ -94,6 +100,8 @@ Stream<List<Borrow>> getBorrowedOf(
   yield borrowedOf;
 }
 
+//?Retrieve data from Firestore
+
 Stream<List<Borrow>> getBorrowedWithDocIdOf(
     String queryField, String queryItem) async* {
   List<Borrow> borrowedOf = [];
@@ -106,7 +114,7 @@ Stream<List<Borrow>> getBorrowedWithDocIdOf(
       .catchError((onError) =>
           print("Error retrieving booking data from database: $onError"));
 
-  if (borrowed .docs.isNotEmpty) {
+  if (borrowed.docs.isNotEmpty) {
     borrowed.docs.forEach((doc) {
       borrowedOf.add(borrowFromJson(doc.data()));
       borowedId.add(doc.id);
@@ -125,4 +133,26 @@ Stream<List<Borrow>> getBorrowedWithDocIdOf(
   }
 
   yield finalBorrowed;
+}
+
+//update book reservation list --- reserve => borrow
+Future<void> updateBorrowStatus(String docId) async {
+  FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .doc(docId)
+      .update({"BorrowStatus": "Borrowed"})
+      .then((value) =>
+          print("Completed Status for Discussion Room update successfully!"))
+      .catchError((onError) => print("An error has occurred: $onError"));
+}
+
+//update book reservation list  --- reserve => borrow
+Future<void> updateCancelStatus(String docId) async {
+  FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .doc(docId)
+      .update({"BorrowStatus": "Cancelled"})
+      .then((value) =>
+          print("Completed Status for Discussion Room update successfully!"))
+      .catchError((onError) => print("An error has occurred: $onError"));
 }

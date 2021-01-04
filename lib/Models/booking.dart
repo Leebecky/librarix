@@ -22,7 +22,7 @@ class Booking {
         bookingStartTime = snapshot['BookingStartTime'],
         bookingEndTime = snapshot['BookingEndTime'],
         userId = snapshot['UserId'],
-        roomOrTableNum = snapshot['Room/TableNum'],
+        roomOrTableNum = snapshot['RoomOrTableNum'],
         bookingType = snapshot['BookingType'],
         bookingStatus = snapshot['BookingStatus'],
         bookingId = snapshot.id;
@@ -35,7 +35,7 @@ Booking bookingFromJson(Map<String, dynamic> json) {
     json["BookingStartTime"] as String,
     json["BookingStatus"] as String,
     json["BookingType"] as String,
-    json["Room/TableNum"] as String,
+    json["RoomOrTableNum"] as String,
     json["UserId"] as String,
   );
 }
@@ -46,7 +46,7 @@ Map<String, String> _bookingToJson(Booking instance) => <String, String>{
       "BookingStartTime": instance.bookingStartTime,
       "BookingStatus": instance.bookingStatus,
       "BookingType": instance.bookingType,
-      "Room/TableNum": instance.roomOrTableNum,
+      "RoomOrTableNum": instance.roomOrTableNum,
       "UserId": instance.userId,
     };
 
@@ -120,4 +120,34 @@ Stream<List<Booking>> getBookingsWithDocIdOf(
   }
 
   yield finalBooking;
+}
+
+Future<void> updateBookingCompletedStatus(String docId) async {
+  FirebaseFirestore.instance
+      .collection("Booking")
+      .doc(docId)
+      .update({"BookingStatus": "Completed"})
+      .then((value) =>
+          print("Completed Status for Discussion Room update successfully!"))
+      .catchError((onError) => print("An error has occurred: $onError"));
+}
+
+Future<void> updateBookingCancelledStatus(String docId) async {
+  FirebaseFirestore.instance
+      .collection("Booking")
+      .doc(docId)
+      .update({"BookingStatus": "Cancelled"})
+      .then((value) =>
+          print("Cancelled Status for Discussion Room update successfully!"))
+      .catchError((onError) => print("An error has occurred: $onError"));
+}
+
+Future<void> updateBookingActiveStatus(String docId) async {
+  FirebaseFirestore.instance
+      .collection("Booking")
+      .doc(docId)
+      .update({"BookingStatus": "Active"})
+      .then((value) =>
+          print("Active Status for Discussion Room update successfully!"))
+      .catchError((onError) => print("An error has occurred: $onError"));
 }

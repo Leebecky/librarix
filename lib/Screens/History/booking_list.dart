@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/booking.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BookingList extends StatefulWidget {
   final String bList;
@@ -67,7 +67,7 @@ class _BookingListState extends State<BookingList> {
                                                                   .data[index]
                                                                   .bookingStatus ==
                                                               "Active") {
-                                                            updateBookingStatus(
+                                                            updateBookingCancelledStatus(
                                                                 snapshot
                                                                     .data[index]
                                                                     .bookingId);
@@ -175,7 +175,7 @@ class _BookingListState extends State<BookingList> {
     FirebaseFirestore.instance
         .collection("Booking")
         .doc(docId)
-        .update({"BookingStatus": "Cancel"})
+        .update({"BookingStatus": "Cancelled"})
         .then((value) => print("Booking has been cancelled successfully!"))
         .catchError((onError) => print("An error has occurred: $onError"));
   }

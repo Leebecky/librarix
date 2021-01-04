@@ -3,12 +3,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/user.dart';
 import 'fines_list.dart';
 
-class Fines extends StatefulWidget{
+class FinesDisplay extends StatefulWidget {
   @override
-  _FinesState createState() => _FinesState();
+  _FinesDisplayState createState() => _FinesDisplayState();
 }
 
-class _FinesState extends State<Fines> {
+class _FinesDisplayState extends State<FinesDisplay> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,14 +18,14 @@ class _FinesState extends State<Fines> {
       body: Container(
         child: FutureBuilder(
           future: myActiveUser(),
-          builder: (context, snapshot){
-            if(snapshot.hasData){
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
               return FinesList(finesList: snapshot.data.userId);
-            }
-            else{
+            } else {
               return SpinKitWave(color: Theme.of(context).accentColor);
             }
-          },),
+          },
+        ),
       ),
     );
   }

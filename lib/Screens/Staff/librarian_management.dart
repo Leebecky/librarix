@@ -26,13 +26,48 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                     builder: (BuildContext context,
                         AsyncSnapshot<List<Librarian>> snapshot) {
                       if (snapshot.hasData) {
-                        return Container(
-                          child: Column(
-                            children: [
-                              Text(snapshot.data[0].name),
-                              Text(snapshot.data[1].phoneNum)
-                            ],
-                          ),
+                        return ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Column(
+                              children: [
+                                Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Card(
+                                          child: ListTile(
+                                            title: Text(
+                                              snapshot.data[index].name,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                            subtitle: Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                    child: Padding(
+                                                  padding:
+                                                      EdgeInsets.only(top: 5),
+                                                  child: Text(
+                                                    snapshot.data[index].userId,
+                                                    style:
+                                                        TextStyle(fontSize: 18),
+                                                  ),
+                                                )),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            );
+                          },
                         );
                       }
                       return SpinKitWave(
@@ -40,9 +75,10 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                       );
                     });
               }
-              return SpinKitWave(
+              return Center(
+                  child: SpinKitWave(
                 color: Theme.of(context).accentColor,
-              );
+              ));
             }),
       ),
     );

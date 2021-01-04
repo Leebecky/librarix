@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Screens/Booking/study_table_floor_plan.dart';
+import 'package:librarix/Screens/Notifications/notifications_build.dart';
 import '../../Custom_Widget/buttons.dart';
 import '../../Models/booking.dart';
 import '../../Custom_Widget/custom_alert_dialog.dart';
@@ -88,29 +89,45 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                     //~ Check if User has active bookings
                     {
                       if (completeBookingDetails()) {
-                        createBooking(createMyBooking(widget.userId));
                         // All validation checks are passed: create the booking
-                        generalAlertDialog(context,
+                        createBooking(createMyBooking(widget.userId));
+
+                        // Schedule Notifications: on day of booking
+                        bookingNotificationOnDay(
+                            bookingType: "Study Table",
+                            tableRoomNumber: selectedStudyTable.value,
+                            endTime: widget.endTime,
+                            startTime: widget.startTime,
+                            bookingDate: widget.date);
+                        //Schedule Notifications: 15 minutes before booking time
+                        bookingNotificationBeforeStartTime(
+                            bookingType: "Study Table",
+                            tableRoomNumber: selectedStudyTable.value,
+                            endTime: widget.endTime,
+                            startTime: widget.startTime,
+                            bookingDate: widget.date);
+
+                        customAlertDialog(context,
                             navigateHome: true,
                             title: "Booking",
                             content: "Booking successfully created!");
                       } else {
                         //Incomplete booking details
-                        generalAlertDialog(context,
+                        customAlertDialog(context,
                             title: "Booking",
                             content:
                                 "Please fill in all booking details first!");
                       }
                     } else {
                       //User has already booked a study table
-                      generalAlertDialog(context,
+                      customAlertDialog(context,
                           title: "Active Booking Found",
                           content:
                               "Please clear your current booking before making another one!");
                     }
                   } else {
                     //~ UserId is invalid
-                    generalAlertDialog(context,
+                    customAlertDialog(context,
                         title: "Invalid User",
                         content: "No user with this ID has been found!");
                   }
@@ -152,7 +169,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
     //^ Filters for a list of active/ongoing bookings on a given date
     List<Booking> clashingBookings = allBookings
         .where((booking) =>
-            (booking.bookingStatus != "Cancel") &&
+            (booking.bookingStatus != "Cancelled") &&
             booking.bookingType == "Study Table")
         .toList();
 

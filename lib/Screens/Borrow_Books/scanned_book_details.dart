@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../modules.dart';
-import '../Models/book.dart';
-import '../Models/borrow.dart';
-import '../Custom_Widget/book_list_tile.dart';
-import '../Custom_Widget/custom_alert_dialog.dart';
+import 'package:librarix/Models/notifications.dart';
+import 'package:librarix/Screens/Notifications/notifications_build.dart';
+import '../../modules.dart';
+import '../../Models/book.dart';
+import '../../Models/borrow.dart';
+import '../../Custom_Widget/book_list_tile.dart';
+import '../../Custom_Widget/custom_alert_dialog.dart';
 
 class ScannedBookDetails extends StatefulWidget {
   //^ Parameters were passed form borrow_book_scanner.dart
@@ -108,7 +110,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                     var existingRecord = await hasBorrowed(index: i);
 
                     if (existingRecord.isNotEmpty) {
-                      generalAlertDialog(context,
+                      customAlertDialog(context,
                           title: "Request Cancelled",
                           content: "This book has already been borrowed!");
                     } else {
@@ -117,7 +119,30 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                           startDate: parseDate(DateTime.now().toString()),
                           returnDate: parseDate(calculateReturnDate()),
                           i: i));
-                      generalAlertDialog(context,
+
+                      //~ Save Notification to database
+                      await saveNotification(createInstance(
+                          details: bookId[i],
+                          title: "Book Return",
+                          content:
+                              "${booksFound[i].title} is due to be returned on ${parseDate(calculateReturnDate())}",
+                          displayDate: parseDate(parseStringToDate(
+                                  parseDate(calculateReturnDate()))
+                              .subtract(Duration(days: 3))
+                              .toString()),
+                          type: "Book Return"));
+
+                      //~ Schedule Book Return Notification
+                      bookReturnNotification(
+                          notificationId: await searchNotification(
+                                  widget.userId,
+                                  "NotificationAdditionalDetail",
+                                  bookId[i])
+                              .then((value) => value[0].id.hashCode),
+                          returnDate: parseDate(calculateReturnDate()),
+                          title: booksFound[i].title);
+
+                      customAlertDialog(context,
                           title: "Request Approved",
                           content:
                               "${booksFound[i].title} has been successfully borrowed!",

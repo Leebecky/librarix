@@ -1,5 +1,6 @@
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
+import 'package:librarix/Screens/Notifications/notifications_build.dart';
 import '../../Models/discussion_room.dart';
 import '../../Models/booking.dart';
 import '../../Custom_Widget/booking_list_wheel_scroll_view.dart';
@@ -88,28 +89,46 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                   //~ Check if User has active bookings
                   {
                     if (completeBookingDetails(roomsFound.value)) {
-                      createBooking(createMyBooking(widget.userId));
                       // All validation checks are passed. Booking is created.
-                      generalAlertDialog(context,
+                      createBooking(createMyBooking(widget.userId));
+                      // Schedule Notifications: on day of booking
+                      if (widget.date != parseDate(DateTime.now().toString())) {
+                        bookingNotificationOnDay(
+                            bookingType: "Discussion Room",
+                            tableRoomNumber: selectedDiscussionRoom,
+                            endTime: widget.endTime,
+                            startTime: widget.startTime,
+                            bookingDate: widget.date);
+                      }
+                      //Schedule Notifications: 15 minutes before booking time
+                      bookingNotificationBeforeStartTime(
+                          bookingType: "Discussion Room",
+                          tableRoomNumber: selectedDiscussionRoom,
+                          endTime: widget.endTime,
+                          startTime: widget.startTime,
+                          bookingDate: widget.date);
+
+                      //Display message
+                      customAlertDialog(context,
                           navigateHome: true,
                           title: "Booking",
                           content: "Booking successfully created!");
                     } else {
                       // Booking details are incomplete
-                      generalAlertDialog(context,
+                      customAlertDialog(context,
                           title: "Booking",
                           content: "Please fill in all booking details first!");
                     }
                   } else {
                     // The user already has an existing booking
-                    generalAlertDialog(context,
+                    customAlertDialog(context,
                         title: "Active Booking Found",
                         content:
                             "Please clear your current booking before making another one!");
                   }
                 } else {
                   //~ UserId is invalid
-                  generalAlertDialog(context,
+                  customAlertDialog(context,
                       title: "Invalid User",
                       content: "No user with this ID has been found!");
                 }
@@ -209,7 +228,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     //^ filtering for a list of all (non-cancelled) discussion room bookings on a given date
     List<Booking> clashingBookings = allBookings
         .where((booking) =>
-            booking.bookingStatus != "Cancel" &&
+            booking.bookingStatus != "Cancelled" &&
             booking.bookingType == "Discussion Room")
         .toList();
 

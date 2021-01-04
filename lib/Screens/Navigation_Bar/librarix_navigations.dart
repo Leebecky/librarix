@@ -7,6 +7,9 @@ import '../catalogue_view.dart';
 import '../History/history_view.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/Screens/Booking/booking_maker.dart';
+import 'package:librarix/modules.dart';
+import '../../Models/notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -55,28 +58,30 @@ class _HomeState extends State<Home> {
                 future: myActiveUser(),
                 builder:
                     (BuildContext context, AsyncSnapshot<ActiveUser> user) {
-                  return UserAccountsDrawerHeader(
-                    accountName: Text(user.data.name),
-                    accountEmail: Text(user.data.email),
-                    currentAccountPicture: GestureDetector(
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(user.data.avatar),
+                  if (user.hasData) {
+                    return UserAccountsDrawerHeader(
+                      accountName: Text(user.data.name),
+                      accountEmail: Text(user.data.email),
+                      currentAccountPicture: GestureDetector(
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(user.data.avatar),
+                        ),
+                        onTap: () => print("This is your current account."),
                       ),
-                      onTap: () => print("This is your current account."),
-                    ),
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
-                            fit: BoxFit.fill)),
-                  );
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
+                              fit: BoxFit.fill)),
+                    );
+                  }
+                  return LinearProgressIndicator();
                 }),
             ListTile(
                 title: Text("Notifications"),
-                trailing: Icon(Icons.notifications),
+                trailing: notificationIcon(),
                 onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push( MaterialPageRoute(builder: (BuildContext context) => new Page("First Page")));
+                  Navigator.popAndPushNamed(context, "/notifications");
                 }),
             ListTile(
                 title: Text("Rewards"),
@@ -91,7 +96,7 @@ class _HomeState extends State<Home> {
                 trailing: Icon(Icons.monetization_on_rounded),
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return Fines();
+                    return FinesDisplay();
                   }));
                 }),
             ListTile(
@@ -144,5 +149,54 @@ class _HomeState extends State<Home> {
   void logout() async {
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
+  }
+
+  Widget notificationIcon() {
+    CollectionReference notificationDb = FirebaseFirestore.instance
+        .collection("User")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("Notifications");
+
+    return StreamBuilder<QuerySnapshot>(
+        stream: notificationDb.snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            //^  Processing notifications to only display those that have been deployed
+            List<Notifications> notificationsList = [];
+            snapshot.data.docs.forEach((doc) {
+              notificationsList.add(notificationsFromJson(doc.data()));
+            });
+
+            notificationsList.removeWhere((notif) =>
+                parseStringToDate(notif.displayDate).isAfter(DateTime.now()) ||
+                notif.read == true);
+            notificationsList.join(",");
+
+            if (notificationsList.length > 0) {
+              return SizedBox(
+                width: 25,
+                child: Stack(children: [
+                  Icon(Icons.notifications),
+                  Positioned(
+                    right: 0,
+                    top: -2,
+                    child: Container(
+                      padding: EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: (currentTheme.currentTheme() == ThemeMode.light)
+                            ? Colors.blue
+                            : Colors.red,
+                      ),
+                      child: Text(notificationsList.length.toString(),
+                          style: TextStyle(fontSize: 11, color: Colors.white)),
+                    ),
+                  ),
+                ]),
+              );
+            }
+          }
+          return Icon(Icons.notifications);
+        });
   }
 }

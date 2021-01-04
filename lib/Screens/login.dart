@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Models/user.dart';
 import '../Custom_Widget/custom_alert_dialog.dart';
+import './Notifications/local_notifications_initializer.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -161,13 +162,18 @@ class _LoginState extends State<Login> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: userIdCtrl.text, password: passwordCtrl.text);
 
-      //^ Testing for type of user
+      saveDeviceToken();
+      saveRole(dropdownValue);
+
+      //^ Routing based on type of user
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
         Navigator.popAndPushNamed(context, "/home");
       } else if (dropdownValue == "Librarian") {
         Navigator.popAndPushNamed(context, "/librarianHome");
+        staffTopicSubscription();
       } else if (dropdownValue == "Admin") {
         Navigator.popAndPushNamed(context, "/adminHome");
+        staffTopicSubscription();
       } else {
         loginError(context, "invalidRole");
         print("Please select a role");
@@ -228,7 +234,7 @@ class _LoginState extends State<Login> {
     }
 
     //^ Build method for AlertDialog
-    generalAlertDialog(context, title: "Error logging in", content: errorMsg);
+    customAlertDialog(context, title: "Error logging in", content: errorMsg);
   }
 
   //? Disposes of the widget once login is completed

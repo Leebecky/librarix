@@ -339,3 +339,13 @@ class _BookManagementDetailPageState extends State<BookManagementDetailPage> {
     );
   }
 }
+
+
+ return Container(
+                          child: Column(
+                            children: [
+                              // Text(snapshot.data[1].name),
+                              // Text(snapshot.data[1].phoneNum)
+                            ],
+                          ),
+                        );

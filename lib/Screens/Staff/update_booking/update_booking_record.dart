@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'discussion_room_list.dart';
+import 'study_table_list.dart';
 
-class BookReturn extends StatefulWidget {
+class UpdateBooking extends StatefulWidget {
   @override
-  _BookReturnState createState() => _BookReturnState();
+  _UpdateBookingState createState() => _UpdateBookingState();
 }
 
-class _BookReturnState extends State<BookReturn>
+class _UpdateBookingState extends State<UpdateBooking>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
@@ -30,12 +32,25 @@ class _BookReturnState extends State<BookReturn>
                   text: "Discussion Room",
                 ),
                 Tab(
-                  text: "Study Table Room",
+                  text: "Study Table",
                 )
               ],
               controller: _tabController,
               indicatorSize: TabBarIndicatorSize.tab,
-            )
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  Container(
+                    child: DiscussionRoomList(),
+                  ),
+                  Container(
+                    child: StudyTableList(),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

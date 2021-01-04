@@ -71,7 +71,7 @@ class _BookManagementListViewState extends State<BookManagementListView> {
                       child: GestureDetector(
                         child: Card(
                           child: Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(14.0),
                             child: Column(
                               children: <Widget>[
                                 Padding(
@@ -81,8 +81,8 @@ class _BookManagementListViewState extends State<BookManagementListView> {
                                     children: [
                                       Image.network(
                                         document.data()['BookImage'],
-                                        width: 170,
-                                        height: 150,
+                                        width: 150,
+                                        height: 130,
                                         fit: BoxFit.fitHeight,
                                       ),
                                       Column(

@@ -61,7 +61,8 @@ class _HistoryViewState extends State<HistoryView>
                         future: myActiveUser(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return BorrowedList(borrowedList: snapshot.data.userId);
+                            return BorrowedList(
+                                borrowedList: snapshot.data.userId);
                           }
                           return Center(
                               child: SpinKitWave(
