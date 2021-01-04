@@ -23,7 +23,7 @@ DateTime parseStringToDate(String date) {
 }
 
 //? Checks if the User is a library staff member
-Future isStaff() async {
+Future<bool> isStaff() async {
   String currentUserId = FirebaseAuth.instance.currentUser.uid, currentRole;
   if (currentUserId != null) {
     await FirebaseFirestore.instance
@@ -36,6 +36,8 @@ Future isStaff() async {
     return (currentRole == "Librarian" || currentRole == "Admin")
         ? true
         : false;
+  } else {
+    return false;
   }
 }
 
@@ -47,3 +49,4 @@ Future<bool> validUser(String userId) async {
       .get();
   return validUser.docs.isNotEmpty;
 }
+

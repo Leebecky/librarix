@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../../Models/notifications.dart';
+import 'package:librarix/Screens/Notifications/notifications_build.dart';
 import 'package:librarix/modules.dart';
+import '../../Models/notifications.dart';
 
-//TODO sort by date / unread
+//TODO book return notifications needs to be saved => test if staff receives notifications
+//TODO test notification scheduling/cancelling for return book and bookings
 class NotificationsDisplay extends StatefulWidget {
   @override
   _NotificationsDisplayState createState() => _NotificationsDisplayState();
@@ -25,6 +27,14 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Notifications"),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.more_vert),
+              onPressed: () async => {
+                    // cancelNotification(1),
+                    checkPendingNotificationRequests(context),
+                  })
+        ],
       ),
       body: FutureBuilder(
           future: getDbType(),
@@ -35,27 +45,75 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData) {
-                    List<Notifications> notificationsList = [];
+                    //^  Processing notifications to only display those that have been deployed
+                    List<Notifications> allNotifications = [],
+                        notificationsList = [];
+                    List<String> notificationId = [];
                     snapshot.data.docs.forEach((notif) {
-                      notificationsList
-                          .add(notificationsFromJson(notif.data()));
+                      allNotifications.add(notificationsFromJson(notif.data()));
+                      notificationId.add(notif.id);
                     });
+
+                    for (var i = 0; i < allNotifications.length; i++) {
+                      notificationsList.add(Notifications(
+                          allNotifications[i].addtionalDetail,
+                          allNotifications[i].content,
+                          allNotifications[i].displayDate,
+                          allNotifications[i].read,
+                          allNotifications[i].title,
+                          allNotifications[i].type,
+                          notificationId[i]));
+                    }
+
                     notificationsList.removeWhere((notif) =>
                         parseStringToDate(notif.displayDate)
                             .isAfter(DateTime.now()));
                     notificationsList.join(",");
+                    notificationsList.sort((a, b) {
+                      DateTime aDate = parseStringToDate(a.displayDate);
+                      DateTime bDate = parseStringToDate(b.displayDate);
+                      return aDate.compareTo(bDate);
+                    });
 
+                    //^ Notifications Display List
                     if (notificationsList.isNotEmpty) {
-                      return ListView.builder(
+                      return ListView.separated(
+                        separatorBuilder: (context, index) => Divider(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                        ),
                         itemCount: notificationsList.length,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: setIcon(notificationsList[index].type),
-                            title: Text(notificationsList[index].title),
-                            subtitle: Text(notificationsList[index].content),
+                          return Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: (notificationsList[index].read)
+                                        ? Theme.of(context).highlightColor
+                                        : Theme.of(context).accentColor)),
+                            child: ListTile(
+                                leading: setIcon(notificationsList[index].type),
+                                title: Text(notificationsList[index].title),
+                                subtitle:
+                                    Text(notificationsList[index].content),
+                                trailing: IconButton(
+                                  icon: Icon(
+                                    Icons.delete,
+                                    size: 20,
+                                  ),
+                                  alignment: Alignment.bottomRight,
+                                  onPressed: () async =>
+                                      await deleteNotification(
+                                          context: context,
+                                          docId: notificationsList[index].id),
+                                ),
+                                onTap: () async => await updateNotification(
+                                      docId: notificationsList[index].id,
+                                      updateAttribute: "NotificationRead",
+                                      updateItem: true,
+                                    )),
                           );
                         },
                       );
+                      //~ User has no notifications
                     } else if (notificationsList.isEmpty) {
                       return Center(child: Text("No notifications found"));
                     }
@@ -91,6 +149,7 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
     return icon;
   }
 
+//? Determines which notification list to display from
   Future getDbType() async {
     bool staff = await isStaff();
 
