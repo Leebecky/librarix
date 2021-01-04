@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/Models/notifications.dart';
 import 'package:librarix/Models/user.dart';
+import 'package:librarix/config.dart';
+import '../Staff/librarian_management.dart';
+import '../../modules.dart';
 import '../Staff/fines_management.dart';
 import '../Staff/update_booking/update_booking_record.dart';
 import '../Staff/update_book/update_book_record.dart';
-import '../Staff/librarian_management.dart';
 import '../../config.dart';
 import '../catalogue_view.dart';
 import '../Booking/booking_maker.dart';
@@ -80,7 +84,7 @@ class _AdminHomeState extends State<AdminHome> {
                 }),
             ListTile(
                 title: Text("Notifications"),
-                trailing: Icon(Icons.notifications),
+                trailing: notificationIcon(),
                 onTap: () {
                   Navigator.popAndPushNamed(context, "/notifications");
                 }),
@@ -88,7 +92,6 @@ class _AdminHomeState extends State<AdminHome> {
                 title: Text("Booking Records"),
                 trailing: Icon(Icons.book_rounded),
                 onTap: () {
-                  //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return BookingRecords();
                   }));
@@ -97,7 +100,6 @@ class _AdminHomeState extends State<AdminHome> {
                 title: Text("Book Management"),
                 trailing: Icon(Icons.book_online),
                 onTap: () {
-                  //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return BookManagementListView();
                   }));
@@ -122,7 +124,6 @@ class _AdminHomeState extends State<AdminHome> {
                 title: Text("Librarian Management"),
                 trailing: Icon(Icons.camera_front),
                 onTap: () {
-                  //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return LibrarianManagement();
                   }));
@@ -181,5 +182,54 @@ class _AdminHomeState extends State<AdminHome> {
   void logout() async {
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(context, "/", ModalRoute.withName("/"));
+  }
+
+  //? Displays a badge over the notification icon if there are unread notifications
+  Widget notificationIcon() {
+    CollectionReference staffNotificationDb =
+        FirebaseFirestore.instance.collection("StaffNotifications");
+
+    return StreamBuilder<QuerySnapshot>(
+        stream: staffNotificationDb.snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            //^  Processing notifications to only display those that have been deployed
+            List<Notifications> notificationsList = [];
+            snapshot.data.docs.forEach((doc) {
+              notificationsList.add(notificationsFromJson(doc.data()));
+            });
+
+            notificationsList.removeWhere((notif) =>
+                parseStringToDate(notif.displayDate).isAfter(DateTime.now()) ||
+                notif.read == true);
+            notificationsList.join(",");
+
+            //^ Display Notification icon + badge
+            if (notificationsList.length > 0) {
+              return SizedBox(
+                  width: 25,
+                  child: Stack(children: [
+                    Icon(Icons.notifications),
+                    Positioned(
+                        right: 0,
+                        top: -2,
+                        child: Container(
+                          padding: EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:
+                                (currentTheme.currentTheme() == ThemeMode.light)
+                                    ? Colors.blue
+                                    : Colors.red,
+                          ),
+                          child: Text(notificationsList.length.toString(),
+                              style:
+                                  TextStyle(fontSize: 11, color: Colors.white)),
+                        ))
+                  ]));
+            }
+          }
+          return Icon(Icons.notifications);
+        });
   }
 }

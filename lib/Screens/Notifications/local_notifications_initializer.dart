@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:librarix/Screens/Notifications/test2.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:get/get.dart';
+import 'package:librarix/Screens/Notifications/notifications_display.dart';
 
 //? Initializes local_notifications
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -27,7 +27,7 @@ Future selectNotification(String payload) async {
   if (payload != null) {
     print('notification payload: $payload');
   }
-  await Get.off(BookReturnNotification(payload: payload));
+  await Get.off(NotificationsDisplay());
 }
 
 //? Intialize local timezone used for scheduling notifications
@@ -55,7 +55,7 @@ saveDeviceToken() async {
   print("Token set: $deviceToken");
 }
 
-//? Automatcally subscribes all library staff to the following topics for push notifications
+//? Automatically subscribes all library staff to the following topics for push notifications
 //TODO enable manual/unsubscribe in notification settings
 staffTopicSubscription() {
   FirebaseMessaging().subscribeToTopic("Fines");
@@ -64,6 +64,7 @@ staffTopicSubscription() {
   print("Topics successfully subscribed");
 }
 
+//? Configuration for FCM messages
 fcmConfiguration() {
   FirebaseMessaging().configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -79,4 +80,19 @@ fcmConfiguration() {
         print("onResume: $message");
         // await standardNotification(message);
       });
+}
+
+//? Handles incoming notifications when application is open
+Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
+  if (message.containsKey('data')) {
+    // Handle data message
+    final dynamic data = message['data'];
+    print(data);
+  }
+
+  if (message.containsKey('notification')) {
+    // Handle notification message
+    final dynamic notification = message['notification'];
+    print(notification);
+  }
 }

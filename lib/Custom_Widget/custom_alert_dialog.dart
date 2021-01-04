@@ -20,10 +20,11 @@ customAlertDialog(BuildContext context,
                     ActiveUser myUser = await myActiveUser(
                         docId: FirebaseAuth.instance.currentUser.uid);
                     (myUser.role == "Admin")
-                        ? Navigator.pushNamed(context, "/adminHome")
+                        ? Navigator.popAndPushNamed(context, "/adminHome")
                         : (myUser.role == "Librarian")
-                            ? Navigator.pushNamed(context, "/librarianHome")
-                            : Navigator.pushNamed(context, "/home");
+                            ? Navigator.popAndPushNamed(
+                                context, "/librarianHome")
+                            : Navigator.popAndPushNamed(context, "/home");
                   } else {
                     Navigator.pop(context);
                   }

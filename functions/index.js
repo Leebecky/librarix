@@ -18,32 +18,56 @@ exports.sendTopicBookings = functions
     .firestore
     .document("Booking/{id}")
     .onCreate((snapshot) => {
+        const bookingId = snapshot.id;
         const bookingUserId = snapshot.get("UserId");
         const bookingType = snapshot.get("BookingType");
         const bookingDate = snapshot.get("BookingDate");
         const bookingStartTime = snapshot.get("BookingStartTime");
         const bookingEndTime = snapshot.get("BookingEndTime");
         const bookingNumber = snapshot.get("RoomOrTableNum");
+        const notificationContent = "Date: " + bookingDate + " - " + bookingStartTime + " - " + bookingEndTime;
+        var myUser = "";
         var promises = [];
         const bookingPayload = {
             notification: {
                 title: bookingUserId + " booked " + bookingNumber,
-                body: "Date: " + bookingDate + " - " + bookingStartTime + " - " + bookingEndTime,
+                body: notificationContent,
                 click_action: "FLUTTER_NOTIFICATION_CLICK",
+                data:{
+                    title: bookingUserId + " booked " + bookingNumber,
+                    body: notificationContent,
+                    type: "Staff Notification"
+                }
             },
         };
 
-        const bookingNotificationData = {
+        const staffBookingNotificationData = {
             NotificationContent: bookingDate + " (" + bookingStartTime + "-" + bookingEndTime + ")",
             NotificationDisplayDate: dateString,
             NotificationRead: false,
             NotificationTitle: bookingUserId + " booked " + bookingNumber,
             NotificationType: bookingType
         }
-        promises.push(db.collection("StaffNotifications").add(bookingNotificationData));
-        promises.push(fcm.sendToTopic("Booking", bookingPayload));
-        return Promise.all(promises).catch((onerror) => console.log(onerror));
-    });
+
+        const bookingNotificationData = {
+            NotificationAdditionalDetail : bookingId,
+            NotificationContent: "Booking for " + bookingNumber + " at " + bookingStartTime + " today!",
+            NotificationDisplayDate: bookingDate,
+            NotificationRead: false,
+            NotificationTitle: "Booking Reminder",
+            NotificationType: bookingType
+        }
+
+        return db.collection("User").where("UserId", "==", bookingUserId).get().then((snap) => {
+            (snap.docs.forEach((doc) => {
+                myUser = doc.id; }))
+
+            promises.push(db.collection("User").doc(myUser).collection("Notifications").add(bookingNotificationData));
+            promises.push(db.collection("StaffNotifications").add(staffBookingNotificationData));
+            promises.push(fcm.sendToTopic("Booking", bookingPayload));
+            return Promise.all(promises).catch((onerror) => console.log(onerror));
+        });
+    })
 
 //? Notify staff/user when new fine is incurred
 exports.sendTopicFines = functions
@@ -52,23 +76,35 @@ exports.sendTopicFines = functions
     .document("Fines/{id}")
     .onCreate(async (snapshot) => {
         //^ Fines Notification for Staff
+        const finesId = snapshot.id;
         const finesUserId = snapshot.get("UserId");
         const total = snapshot.get("FinesTotal");
         const dueDate = snapshot.get("FinesDue");
         const reason = snapshot.get("FinesReason");
+        const notificationContent = "RM" + total + ", to be paid by " + dueDate;
 
         const staffFinesPayload = {
             notification: {
                 title: finesUserId + " has been fined for " + reason,
-                body: "RM" + total + ", to be paid by " + dueDate,
+                body: notificationContent,
                 click_action: "FLUTTER_NOTIFICATION_CLICK",
+                data:{
+                    title: finesUserId + " has been fined for " + reason,
+                    body: notificationContent,
+                    type: "Staff Notification"
+                }
             }
         };
         const userFinesPayload = {
             notification: {
                 title: "You has been fined for " + reason,
-                body: "RM" + total + ", to be paid by " + dueDate,
-                click_action: "FLUTTER_NOTIFICATION_CLICK"
+                body: notificationContent,
+                click_action: "FLUTTER_NOTIFICATION_CLICK",
+                data:{
+                    title: "You has been fined for " + reason,
+                    body: notificationContent,
+                    type: "User Notification"
+                }
             }
         };
         //^ Writes to the User's notification database
@@ -78,6 +114,7 @@ exports.sendTopicFines = functions
 
         //^  Notification entry for database
         finesNotificationData = {
+            NotificationAdditionalDetail: finesId,
             NotificationContent: "RM" + total + ", to be paid by " + dueDate,
             NotificationDisplayDate: dateString,
             NotificationRead: false,
@@ -117,21 +154,28 @@ exports.sendTopicBookReservation = functions
     .firestore
     .document("BorrowedBook/{id}")
     .onCreate((snapshot) => {
+        const bookId = snapshot.get("BookId");
         const borrowUserId = snapshot.get("UserId");
         const borrowStatus = snapshot.get("BorrowStatus");
         const borrowBookTitle = snapshot.get("BookTitle");
-
+        const notificationContent = borrowUserId + " reserved " + borrowBookTitle;
         var promises = [];
         if (borrowStatus === "Reserved") {
             const reservationPayload = {
                 notification: {
                     title: "Book Reservation",
-                    body: borrowUserId + " reserved " + borrowBookTitle,
+                    body: notificationContent,
                     click_action: "FLUTTER_NOTIFICATION_CLICK",
+                    data:{
+                        title: "Book Reservation",
+                        body: notificationContent,
+                        type: "Staff Notification"
+                    },
                 },
             };
 
             const bookingNotificationData = {
+                NotificationAdditionalDetail: bookId,
                 NotificationContent: borrowUserId + " reserved " + borrowBookTitle,
                 NotificationDisplayDate: dateString,
                 NotificationRead: false,
