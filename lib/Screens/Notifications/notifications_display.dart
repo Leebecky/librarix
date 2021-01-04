@@ -100,8 +100,10 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
                                     size: 20,
                                   ),
                                   alignment: Alignment.bottomRight,
-                                  onPressed: () async => deleteNotification(
-                                      docId: notificationsList[index].id),
+                                  onPressed: () async =>
+                                      await deleteNotification(
+                                          context: context,
+                                          docId: notificationsList[index].id),
                                 ),
                                 onTap: () async => await updateNotification(
                                       docId: notificationsList[index].id,

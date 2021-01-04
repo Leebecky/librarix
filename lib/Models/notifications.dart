@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Models/user.dart';
+import 'package:librarix/modules.dart';
 
 class Notifications {
   String content, displayDate, title, type, id, addtionalDetail;
@@ -53,7 +56,8 @@ Future saveNotification(Notifications notificationInstance) async {
       .add(_notificationsToJson(notificationInstance));
 }
 
-Future updateNotification(
+//? Updates notification
+Future<void> updateNotification(
     {String docId,
     String userId,
     dynamic updateItem,
@@ -61,12 +65,18 @@ Future updateNotification(
   (userId == null)
       ? userId = FirebaseAuth.instance.currentUser.uid
       : userId = await findUser("UserId", userId);
-  await FirebaseFirestore.instance
-      .collection("User")
-      .doc(userId)
-      .collection("Notifications")
-      .doc(docId)
-      .update({updateAttribute: updateItem});
+
+  (await isStaff())
+      ? await FirebaseFirestore.instance
+          .collection("StaffNotifications")
+          .doc(docId)
+          .update({updateAttribute: updateItem})
+      : await FirebaseFirestore.instance
+          .collection("User")
+          .doc(userId)
+          .collection("Notifications")
+          .doc(docId)
+          .update({updateAttribute: updateItem});
 }
 
 Future<List<Notifications>> searchNotification(
@@ -116,6 +126,7 @@ Future<void> updateBookReturnNotification({
 
 //? For deleting notifications when requested by user/when bookings are cancelled/books are returned early
 Future deleteNotification({
+  BuildContext context,
   String userId,
   String docId,
   bool hasId = true,
@@ -128,19 +139,41 @@ Future deleteNotification({
       ? userId = FirebaseAuth.instance.currentUser.uid
       : userId = await findUser("UserId", userId);
 
-//^ Looks for the notification docId
+//^ Looks for the notification docId if not provided
   if (hasId == false) {
     notifications = await searchNotification(
         userId, "NotificationAdditionalDetail", queryItem);
     docId = notifications[0].id;
   }
-//^ Delete Request
+
+  //^ Checks user role for authorization of deleting notifications
+  String currentRole;
   await FirebaseFirestore.instance
       .collection("User")
       .doc(userId)
-      .collection("Notifications")
-      .doc(docId)
-      .delete();
+      .collection("Login")
+      .doc("LoginRole")
+      .get()
+      .then((value) => currentRole = value.data()["LoggedInAs"]);
+
+//^ Delete Request
+  if (currentRole == "Admin") {
+    await FirebaseFirestore.instance
+        .collection("StaffNotifications")
+        .doc(docId)
+        .delete();
+  } else if (currentRole == "Librarian") {
+    return customAlertDialog(context,
+        title: "Unauthorized Action",
+        content: "Sorry, you are not authorized to delete notifications");
+  } else {
+    await FirebaseFirestore.instance
+        .collection("User")
+        .doc(userId)
+        .collection("Notifications")
+        .doc(docId)
+        .delete();
+  }
 }
 
 //TODO booking cancelled, delete notification
