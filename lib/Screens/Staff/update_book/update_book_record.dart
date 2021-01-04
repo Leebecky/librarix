@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
-class UpdateBooking extends StatefulWidget {
+import 'book_reservation_list.dart';
+import 'book_return_list.dart';
+
+class UpdateBook extends StatefulWidget {
   @override
-  _UpdateBookingState createState() => _UpdateBookingState();
+  _UpdateBookState createState() => _UpdateBookState();
 }
 
-class _UpdateBookingState extends State<UpdateBooking>
+class _UpdateBookState extends State<UpdateBook>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
@@ -35,7 +38,16 @@ class _UpdateBookingState extends State<UpdateBooking>
               ],
               controller: _tabController,
               indicatorSize: TabBarIndicatorSize.tab,
-            )
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  BookReturnList(),
+                  BookReservationList(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
