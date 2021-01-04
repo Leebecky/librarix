@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/booking.dart';
@@ -67,7 +66,7 @@ class _BookingListState extends State<BookingList> {
                                                                   .data[index]
                                                                   .bookingStatus ==
                                                               "Active") {
-                                                            updateBookingStatus(
+                                                            updateBookingCancelledStatus(
                                                                 snapshot
                                                                     .data[index]
                                                                     .bookingId);

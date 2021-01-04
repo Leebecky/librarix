@@ -28,35 +28,67 @@ class BookingRecords extends StatelessWidget {
                 return ListView.builder(
                   itemCount: myBooking.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      leading: Container(
-                        padding: EdgeInsets.only(right: 12.0),
-                        decoration: new BoxDecoration(
-                            border:
-                                new Border(right: new BorderSide(width: 1.0))),
-                        child:
-                            (myBooking[index].bookingType == "Discussion Room")
-                                ? Icon(Icons.meeting_room)
-                                : Icon(Icons.self_improvement),
-                      ),
-                      title: Text(
-                        myBooking[index].roomOrTableNum,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Row(
-                        children: <Widget>[
-                          Expanded(
-                              child: Padding(
-                            padding: EdgeInsets.only(left: 10.0),
-                            child: Text(myBooking[index].userId),
-                          )),
-                          Text(
-                            myBooking[index].bookingStartTime +
-                                " - " +
-                                myBooking[index].bookingEndTime,
+                    return Column(
+                      children: [
+                        Container(
+                          child: Padding(
+                            // padding: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.all(5),
+                            child: Column(
+                              children: <Widget>[
+                                Card(
+                                  child: ListTile(
+                                    leading: Container(
+                                      padding: EdgeInsets.all(10),
+                                      decoration: new BoxDecoration(
+                                          border: new Border(
+                                              right: new BorderSide(
+                                                  width: 2.0,
+                                                  color: Colors.blueGrey))),
+                                      child: (myBooking[index].bookingType ==
+                                              "Discussion Room")
+                                          ? Icon(
+                                              Icons.meeting_room,
+                                              size: 32,
+                                            )
+                                          : Icon(
+                                              Icons.self_improvement,
+                                              size: 32,
+                                            ),
+                                    ),
+                                    title: Text(
+                                      myBooking[index].roomOrTableNum,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    subtitle: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                            child: Padding(
+                                          padding:
+                                              EdgeInsets.only(top: 5, left: 5),
+                                          child: Text(
+                                            myBooking[index].userId,
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        )),
+                                        Text(
+                                          myBooking[index].bookingStartTime +
+                                              " - " +
+                                              myBooking[index].bookingEndTime,
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        )
+                      ],
                     );
                   },
                 );
