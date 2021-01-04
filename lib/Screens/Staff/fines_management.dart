@@ -8,7 +8,7 @@ class FinesManagement extends StatefulWidget {
 }
 
 class _FinesManagementState extends State<FinesManagement> {
-  List<Fine> activeFines = [];
+  List<Fines> activeFines = [];
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +16,9 @@ class _FinesManagementState extends State<FinesManagement> {
       appBar: AppBar(
         title: Text("Fines Management"),
       ),
-      body: StreamBuilder<List<Fine>>(
+      body: StreamBuilder<List<Fines>>(
         stream: getFinesOf("FinesStatus", "Unpaid"),
-        builder: (BuildContext context, AsyncSnapshot<List<Fine>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<Fines>> snapshot) {
           if (snapshot.hasData) {
             activeFines = snapshot.data.toList();
             return ListView.builder(
