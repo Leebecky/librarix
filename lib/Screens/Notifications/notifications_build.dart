@@ -31,7 +31,7 @@ bookingNotificationOnDay({
   await flutterLocalNotificationsPlugin.zonedSchedule(
       _notificationId,
       'Booking Today',
-      '$tableRoomNumber has been booked from $startTime - $endTime today.',
+      '$tableRoomNumber has been booked from $startTime - $endTime on $bookingDate.',
       tz.TZDateTime.local(
           scheduledDate.year, scheduledDate.month, scheduledDate.day, 8),
       const NotificationDetails(
@@ -67,7 +67,7 @@ bookingNotificationBeforeStartTime({
   await flutterLocalNotificationsPlugin.zonedSchedule(
       _notificationId,
       'Booking Starting in 15 Minutes',
-      '$tableRoomNumber has been booked from $startTime - $endTime today.',
+      '$tableRoomNumber has been booked from $startTime - $endTime on $bookingDate.',
       tz.TZDateTime.local(scheduledDate.year, scheduledDate.month,
           scheduledDate.day, hour, min),
       const NotificationDetails(

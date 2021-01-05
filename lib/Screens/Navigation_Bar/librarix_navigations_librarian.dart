@@ -117,8 +117,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                 title: Text("Report Generator"),
                 trailing: Icon(Icons.bar_chart),
                 onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.pushNamed(context, "/reports");
                 }),
             ListTile(
                 title: Text("Switch theme"),
