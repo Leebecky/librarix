@@ -133,11 +133,12 @@ Future deleteNotification({
   String queryItem,
 }) async {
   List<Notifications> notifications = [];
+  String userDocId;
 
   //^ Looks for docId of specfic User
   (userId == null)
-      ? userId = FirebaseAuth.instance.currentUser.uid
-      : userId = await findUser("UserId", userId);
+      ? userDocId = FirebaseAuth.instance.currentUser.uid
+      : userDocId = await findUser("UserId", userId);
 
 //^ Looks for the notification docId if not provided
   if (hasId == false) {
@@ -150,7 +151,7 @@ Future deleteNotification({
   String currentRole;
   await FirebaseFirestore.instance
       .collection("User")
-      .doc(userId)
+      .doc(userDocId)
       .collection("Login")
       .doc("LoginRole")
       .get()
@@ -169,7 +170,7 @@ Future deleteNotification({
   } else {
     await FirebaseFirestore.instance
         .collection("User")
-        .doc(userId)
+        .doc(userDocId)
         .collection("Notifications")
         .doc(docId)
         .delete();

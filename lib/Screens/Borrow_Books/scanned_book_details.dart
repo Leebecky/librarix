@@ -133,7 +133,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                           type: "Book Return"));
 
                       //~ Schedule Book Return Notification
-                      bookReturnNotification(
+                      await bookReturnNotification(
                           notificationId: await searchNotification(
                                   widget.userId,
                                   "NotificationAdditionalDetail",

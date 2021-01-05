@@ -107,10 +107,10 @@ class _BorrowedListState extends State<BorrowedList> {
                                                                       .borrowedId);
 
                                                               //~ Resets notifications for book return
-                                                              cancelNotification(
+                                                              await cancelNotification(
                                                                   notifId);
                                                               //~ Schedules a new notification
-                                                              bookReturnNotification(
+                                                              await bookReturnNotification(
                                                                   returnDate:
                                                                       parseDate(
                                                                           calculateReturnDate()),
@@ -122,7 +122,7 @@ class _BorrowedListState extends State<BorrowedList> {
                                                                       notifId);
 
                                                               //~ Updates the notification record
-                                                              updateBookReturnNotification(
+                                                              await updateBookReturnNotification(
                                                                   userId: widget
                                                                       .borrowedList,
                                                                   newDate: parseDate(parseStringToDate(
