@@ -27,7 +27,7 @@ Future selectNotification(String payload) async {
   if (payload != null) {
     print('notification payload: $payload');
   }
-  await Get.off(NotificationsDisplay());
+  Get.off(NotificationsDisplay());
 }
 
 //? Intialize local timezone used for scheduling notifications

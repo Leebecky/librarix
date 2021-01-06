@@ -84,3 +84,15 @@ Future<void> updateBookStock(String docId, int stockCount) async {
       .then((value) => print("Book Stock has been updated!"))
       .catchError((onError) => print("An error has occurred: $onError"));
 }
+
+//? Retrieves all Book records
+Stream<List<Book>> getAllBooks() async* {
+  List<Book> bookCatalogue = [];
+  await FirebaseFirestore.instance
+      .collection("BookCatalogue")
+      .get()
+      .then((value) => value.docs
+          .forEach((doc) => bookCatalogue.add(bookFromJson(doc.data()))))
+      .catchError((onError) => print(onError));
+  yield bookCatalogue;
+}

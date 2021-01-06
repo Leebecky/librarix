@@ -50,3 +50,13 @@ Future<bool> validUser(String userId) async {
   return validUser.docs.isNotEmpty;
 }
 
+Future<String> getDocId(
+    {String collectionName, String queryField, String queryItem}) async {
+  String docId;
+  await FirebaseFirestore.instance
+      .collection(collectionName)
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .then((value) => docId = value.docs[0].id);
+  return docId;
+}
