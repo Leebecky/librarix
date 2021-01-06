@@ -25,11 +25,6 @@ main() async {
   //? Initializing stuff for notifications
   initializePlatformSpecifics();
   initialiseTimeZones();
-  fcmConfiguration();
-  if (await isStaff()) {
-    staffTopicSubscription();
-  }
-  saveDeviceToken();
   runApp(MyApp(myRoute));
 }
 
