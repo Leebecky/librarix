@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:librarix/Screens/Notifications/local_notifications_initializer.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
-import 'package:librarix/modules.dart';
 import 'Screens/Navigation_Bar/librarix_navigations.dart';
 import 'Screens/Navigation_Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation_Bar/librarix_navigation_admin.dart';
@@ -26,11 +25,6 @@ main() async {
   //? Initializing stuff for notifications
   initializePlatformSpecifics();
   initialiseTimeZones();
-  fcmConfiguration();
-  if (await isStaff()) {
-    staffTopicSubscription();
-  }
-  saveDeviceToken();
   runApp(MyApp(myRoute));
 }
 

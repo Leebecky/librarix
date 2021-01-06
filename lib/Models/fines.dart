@@ -38,6 +38,19 @@ Map<String, dynamic> _fineToJson(Fines instance) => <String, dynamic>{
       "UserId": instance.userId,
     };
 
+//? Returns all fine records
+Stream<List<Fines>> getAllFines() async* {
+  List<Fines> allFines = [];
+  FirebaseFirestore.instance
+      .collection("Fines")
+      .get()
+      .then((value) => value.docs.forEach((element) {
+            allFines.add(fineFromJson(element.data()));
+          }))
+      .catchError((onError) => print(onError));
+  yield allFines;
+}
+
 //? Returns all fines of a given attribute
 Stream<List<Fines>> getFinesOf(String queryField, String queryItem) async* {
   List<Fines> finesOf = [];

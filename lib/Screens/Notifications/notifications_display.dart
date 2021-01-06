@@ -31,7 +31,6 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
           IconButton(
               icon: Icon(Icons.more_vert),
               onPressed: () async => {
-                    // cancelNotification(1),
                     checkPendingNotificationRequests(context),
                   })
         ],
@@ -72,7 +71,7 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
                     notificationsList.sort((a, b) {
                       DateTime aDate = parseStringToDate(a.displayDate);
                       DateTime bDate = parseStringToDate(b.displayDate);
-                      return aDate.compareTo(bDate);
+                      return bDate.compareTo(aDate);
                     });
 
                     //^ Notifications Display List

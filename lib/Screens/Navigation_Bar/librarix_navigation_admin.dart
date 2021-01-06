@@ -86,7 +86,7 @@ class _AdminHomeState extends State<AdminHome> {
                 title: Text("Notifications"),
                 trailing: notificationIcon(),
                 onTap: () {
-                  Navigator.popAndPushNamed(context, "/notifications");
+                  Navigator.pushNamed(context, "/notifications");
                 }),
             ListTile(
                 title: Text("Booking Records"),

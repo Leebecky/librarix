@@ -114,33 +114,41 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                           title: "Request Cancelled",
                           content: "This book has already been borrowed!");
                     } else {
-                      createBorrowRecord(createRecord(
-                          recordType: "Borrowed",
-                          startDate: parseDate(DateTime.now().toString()),
-                          returnDate: parseDate(calculateReturnDate()),
-                          i: i));
+                      await createBorrowRecord(createRecord(
+                              recordType: "Borrowed",
+                              startDate: parseDate(DateTime.now().toString()),
+                              returnDate: parseDate(calculateReturnDate()),
+                              i: i))
+                          .then((value) async {
+                        //~ Save Notification to database
+                        await saveNotification(
+                            userId: widget.userId,
+                            notificationInstance: createInstance(
+                                details: await getDocId(
+                                    collectionName: "BorrowedBook",
+                                    queryField: "BookId",
+                                    queryItem: bookId[i]),
+                                title: "Book Return - ${widget.userId}",
+                                content:
+                                    "${booksFound[i].title} is due to be returned on ${parseDate(calculateReturnDate())}",
+                                displayDate: parseDate(parseStringToDate(
+                                        parseDate(calculateReturnDate()))
+                                    .subtract(Duration(days: 3))
+                                    .toString()),
+                                type: "Book Return"));
+                      });
 
-                      //~ Save Notification to database
-                      await saveNotification(createInstance(
-                          details: bookId[i],
-                          title: "Book Return",
-                          content:
-                              "${booksFound[i].title} is due to be returned on ${parseDate(calculateReturnDate())}",
-                          displayDate: parseDate(parseStringToDate(
-                                  parseDate(calculateReturnDate()))
-                              .subtract(Duration(days: 3))
-                              .toString()),
-                          type: "Book Return"));
-
-                      //~ Schedule Book Return Notification
-                      await bookReturnNotification(
-                          notificationId: await searchNotification(
-                                  widget.userId,
-                                  "NotificationAdditionalDetail",
-                                  bookId[i])
-                              .then((value) => value[0].id.hashCode),
-                          returnDate: parseDate(calculateReturnDate()),
-                          title: booksFound[i].title);
+                      if (await isStaff() == false) {
+                        //~ Schedule local Book Return Notification if not a staff member
+                        await bookReturnNotification(
+                            notificationId: await searchNotification(
+                                    widget.userId,
+                                    "NotificationAdditionalDetail",
+                                    bookId[i])
+                                .then((value) => value[0].id.hashCode),
+                            returnDate: parseDate(calculateReturnDate()),
+                            title: booksFound[i].title);
+                      }
 
                       customAlertDialog(context,
                           title: "Request Approved",

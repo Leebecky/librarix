@@ -60,13 +60,27 @@ Map<String, dynamic> _borrowToJson(Borrow instance) => <String, dynamic>{
 Future<void> createBorrowRecord(Borrow record) async {
   int stock;
   (record.status == "Borrowed") ? stock = -1 : stock = 0;
-  FirebaseFirestore.instance
+  await FirebaseFirestore.instance
       .collection("BorrowedBook")
       .add(_borrowToJson(record))
       .then((value) {
     print("Book has been successfully borrowed!");
     updateBookStock(record.bookId, stock);
   }).catchError((onError) => print("An error has occurred: $onError"));
+}
+
+//? Retrieves all Borrow Records
+Stream<List<Borrow>> getAllBorrowRecords() async* {
+  List<Borrow> borrowRecordList = [];
+  await FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .get()
+      .then((value) => value.docs.forEach((doc) {
+            borrowRecordList.add(borrowFromJson(doc.data()));
+          }))
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+  yield borrowRecordList;
 }
 
 //? Retrieves all borrowed book records of a user

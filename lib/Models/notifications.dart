@@ -48,10 +48,23 @@ Notifications createInstance(
   return Notifications(details, content, displayDate, false, title, type);
 }
 
-Future saveNotification(Notifications notificationInstance) async {
+//? Saves notifications to database
+Future saveNotification(
+    {Notifications notificationInstance, String userId}) async {
+  String userDocId = FirebaseAuth.instance.currentUser.uid;
+
+//^ If staff, write to notification database as well
+  if (await isStaff()) {
+    await FirebaseFirestore.instance
+        .collection("StaffNotifications")
+        .add(_notificationsToJson(notificationInstance));
+    userDocId = await findUser("UserId", userId);
+  }
+
+  //^ Write to specific user database
   await FirebaseFirestore.instance
       .collection("User")
-      .doc(FirebaseAuth.instance.currentUser.uid)
+      .doc(userDocId)
       .collection("Notifications")
       .add(_notificationsToJson(notificationInstance));
 }
