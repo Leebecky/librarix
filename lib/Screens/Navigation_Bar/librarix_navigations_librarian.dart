@@ -151,11 +151,11 @@ class _LibrarianHomeState extends State<LibrarianHome> {
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
+            icon: Icon(Icons.autorenew),
             label: "Book Update", //return & reservation
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
+            icon: Icon(Icons.av_timer),
             label: "Booking Update", //study table & discussion room
           ),
         ],
