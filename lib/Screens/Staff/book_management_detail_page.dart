@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:librarix/Custom_Widget/buttons.dart';
 import 'book_management_edit_book.dart';
 
 class BookManagementDetailPage extends StatefulWidget {

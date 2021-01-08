@@ -46,8 +46,8 @@ class _FinesManagementState extends State<FinesManagement> {
                                       ),
                                       Spacer(),
                                       Column(
-                                          // children: actionButtons(index),
-                                          ),
+                                        children: actionButtons(index),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -128,7 +128,34 @@ class _FinesManagementState extends State<FinesManagement> {
                     child: Text("Yes"),
                     onPressed: () async {
                       updateFinesPaidStatus(activeFines[index].finesId);
-                      Navigator.of(context).pop();
+                      return showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Received'),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Text('Receive Fines Payment Succesfully'),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('OK'),
+                                  onPressed: () async {
+                                  //   Navigator.push(context,
+                                  //       MaterialPageRoute(builder: (context) {
+                                  //     return FinesManagement();
+                                  //   }));
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          });
                     },
                   ),
                   TextButton(
