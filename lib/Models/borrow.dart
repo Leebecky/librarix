@@ -170,3 +170,28 @@ Future<void> updateCancelStatus(String docId) async {
           print("Completed Status for Discussion Room update successfully!"))
       .catchError((onError) => print("An error has occurred: $onError"));
 }
+
+//update book reservation list  --- borrow => return
+Future<void> updateReturnStatus(String docId, String bookId) async {
+  FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .doc(docId)
+      .update({"BorrowStatus": "Returned"})
+      .then((value) => {
+            updateBookStock(bookId, 1),
+            print("Completed Status for Discussion Room update successfully!")
+          })
+      .catchError((onError) => print("An error has occurred: $onError"));
+}
+
+/* Future<void> returnBook(Borrow record) async {
+  int stock;
+  (record.status == "Returned") ? stock = 1 : stock = 0;
+  FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .add(_borrowToJson(record))
+      .then((value) {
+    print("Book has been successfully returned!");
+    updateBookStock(record.bookId, stock);
+  }).catchError((onError) => print("An error has occurred: $onError")); 
+}*/

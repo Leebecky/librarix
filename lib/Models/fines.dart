@@ -59,7 +59,7 @@ Stream<List<Fines>> getFinesOf(String queryField, String queryItem) async* {
       .where(queryField, isEqualTo: queryItem)
       .get()
       .catchError((onError) =>
-          print("Error retrieving booking data from database: $onError"));
+          print("Error retrieving fines data from database: $onError"));
 
   if (fines.docs.isNotEmpty) {
     fines.docs.forEach((doc) {
@@ -67,4 +67,36 @@ Stream<List<Fines>> getFinesOf(String queryField, String queryItem) async* {
     });
   }
   yield finesOf;
+}
+
+Stream<List<Fines>> getFinesWithDocIdOf(
+    String queryField, String queryItem) async* {
+  List<Fines> finesOf = [];
+  List<Fines> finalFines = [];
+  List<String> finesId = [];
+  QuerySnapshot finess = await FirebaseFirestore.instance
+      .collection("Fines")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving fines data from database: $onError"));
+
+  if (finess.docs.isNotEmpty) {
+    finess.docs.forEach((doc) {
+      finesOf.add(fineFromJson(doc.data()));
+      finesId.add(doc.id);
+    });
+  }
+  for (var i = 0; i < finesOf.length; i++) {
+    finalFines.add(Fines(
+      finesOf[i].dueDate,
+      finesId[i],
+      finesOf[i].reason,
+      finesOf[i].status,
+      finesOf[i].total,
+      finesOf[i].userId,
+    ));
+  }
+
+  yield finalFines;
 }

@@ -40,6 +40,10 @@ class _BookReturnListState extends State<BookReturnList> {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 23),
                                       ),
+                                      Spacer(),
+                                      Column(
+                                        children: actionButtons(index),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -91,5 +95,46 @@ class _BookReturnListState extends State<BookReturnList> {
         },
       ),
     );
+  }
+
+  List<Widget> actionButtons(int index) {
+    List<Widget> buttons = [];
+    buttons.add(IconButton(
+      icon: Icon(Icons.update),
+      onPressed: () {
+        return showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Rutrn Book',
+                ),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[Text("Wanted to return book?")],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text("Yes"),
+                    onPressed: () async {
+                      updateReturnStatus(activeReserve[index].borrowedId,
+                          activeReserve[index].bookId);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text("No"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      },
+    ));
+    return buttons;
   }
 }
