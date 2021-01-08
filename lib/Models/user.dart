@@ -42,6 +42,19 @@ Map<String, String> _activeUserToJson(ActiveUser instance) => <String, String>{
       "UserRole": instance.role,
     };
 
+//? Retrieves list of all users
+Future<List<ActiveUser>> getAllUsers() async {
+  List<ActiveUser> allUser = [];
+  await FirebaseFirestore.instance
+      .collection("User")
+      .get()
+      .then((value) => value.docs.forEach((element) {
+            allUser.add(ActiveUser.fromJson(element.data()));
+          }))
+      .catchError((onError) => print(onError));
+  return allUser;
+}
+
 //? Retrieve data from Firestore - Use with FutureBuilder
 Future<DocumentSnapshot> getActiveUser() async {
   CollectionReference userDb = FirebaseFirestore.instance.collection("User");

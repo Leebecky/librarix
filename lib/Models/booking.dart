@@ -59,6 +59,18 @@ Future<QuerySnapshot> getBooking() async {
   return bookingDetails;
 }
 
+Stream<List<Booking>> getAllBookings() async* {
+  List<Booking> allBookings = [];
+  FirebaseFirestore.instance
+      .collection("Booking")
+      .get()
+      .then((value) => value.docs.forEach((doc) {
+            allBookings.add(bookingFromJson(doc.data()));
+          }))
+      .catchError((onError) => print(onError));
+  yield allBookings;
+}
+
 //? Creates new record in database
 Future<void> createBooking(Booking bookingRecord) async {
   FirebaseFirestore.instance

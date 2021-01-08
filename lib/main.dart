@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:librarix/Screens/Notifications/local_notifications_initializer.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/first_view.dart';
-import 'package:librarix/modules.dart';
 import 'Screens/Navigation_Bar/librarix_navigations.dart';
 import 'Screens/Navigation_Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation_Bar/librarix_navigation_admin.dart';
@@ -14,6 +13,7 @@ import './Screens/Borrow_Books/borrow_book_scanner.dart';
 import 'Screens/Search/search_view.dart';
 import 'Screens/Notifications/notifications_display.dart';
 import 'package:get/get.dart';
+import 'Screens/Report_Generator/report_generator.dart';
 
 main() async {
   //? initialises firebase instances for authentication and Cloud FireStore
@@ -49,6 +49,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         title: "LibrariX",
         theme: ThemeData.light(),
         darkTheme: ThemeData.dark(),
@@ -64,6 +65,7 @@ class _MyAppState extends State<MyApp> {
           "/scanner": (context) => BarcodeScanner(),
           "/search": (context) => SearchFunction(),
           "/notifications": (context) => NotificationsDisplay(),
+          "/reports": (contxt) => ReportGenerator(),
         });
   }
 }

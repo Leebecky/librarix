@@ -92,21 +92,23 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                         // All validation checks are passed: create the booking
                         createBooking(createMyBooking(widget.userId));
 
-                        // Schedule Notifications: on day of booking
-                        bookingNotificationOnDay(
-                            bookingType: "Study Table",
-                            tableRoomNumber: selectedStudyTable.value,
-                            endTime: widget.endTime,
-                            startTime: widget.startTime,
-                            bookingDate: widget.date);
-                        //Schedule Notifications: 15 minutes before booking time
-                        bookingNotificationBeforeStartTime(
-                            bookingType: "Study Table",
-                            tableRoomNumber: selectedStudyTable.value,
-                            endTime: widget.endTime,
-                            startTime: widget.startTime,
-                            bookingDate: widget.date);
-
+                        //^ Schedule Local Notifications if not Staff
+                        if (await isStaff() == false) {
+                          // Schedule Notifications: on day of booking
+                          bookingNotificationOnDay(
+                              bookingType: "Study Table",
+                              tableRoomNumber: selectedStudyTable.value,
+                              endTime: widget.endTime,
+                              startTime: widget.startTime,
+                              bookingDate: widget.date);
+                          //Schedule Notifications: 15 minutes before booking time
+                          bookingNotificationBeforeStartTime(
+                              bookingType: "Study Table",
+                              tableRoomNumber: selectedStudyTable.value,
+                              endTime: widget.endTime,
+                              startTime: widget.startTime,
+                              bookingDate: widget.date);
+                        }
                         customAlertDialog(context,
                             navigateHome: true,
                             title: "Booking",

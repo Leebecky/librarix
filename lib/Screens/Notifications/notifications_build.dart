@@ -6,7 +6,16 @@ import 'package:librarix/modules.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+//! Write this down under project enhancements !(documentation)
+//! Recheck all notifications because borrow notifications were previously saved with book id instead of booking id
 //TODO respond to incoming notifications when app is open
+//TODO set up notifications for fines
+//TODO// prevent staff from receiving local notifications (i think it should be fine now)
+//TODO when making bookings/borrowing books for user
+//TODO compensate for notifications cuz cloud functions are no longer being used
+//! Book Return Notifications are still broken smh
+//! Book Reservation notifications + write to database
+//! Fines Notifications + write to database
 
 //~ Notification id : 1 - Booking on Day - Discussion Room
 //~ Notification id : 2 - Booking 15 minutes - Discussion Room
@@ -31,7 +40,7 @@ bookingNotificationOnDay({
   await flutterLocalNotificationsPlugin.zonedSchedule(
       _notificationId,
       'Booking Today',
-      '$tableRoomNumber has been booked from $startTime - $endTime today.',
+      '$tableRoomNumber has been booked from $startTime - $endTime on $bookingDate.',
       tz.TZDateTime.local(
           scheduledDate.year, scheduledDate.month, scheduledDate.day, 8),
       const NotificationDetails(
@@ -67,7 +76,7 @@ bookingNotificationBeforeStartTime({
   await flutterLocalNotificationsPlugin.zonedSchedule(
       _notificationId,
       'Booking Starting in 15 Minutes',
-      '$tableRoomNumber has been booked from $startTime - $endTime today.',
+      '$tableRoomNumber has been booked from $startTime - $endTime on $bookingDate.',
       tz.TZDateTime.local(scheduledDate.year, scheduledDate.month,
           scheduledDate.day, hour, min),
       const NotificationDetails(
@@ -108,7 +117,8 @@ bookReturnNotification({
               'Booking Channel', 'Booking Channel Notifications')),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime);
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time);
 }
 
 //? Schedules daily notifications
@@ -144,4 +154,8 @@ Future<void> checkPendingNotificationRequests(BuildContext context) async {
       content:
           "${pendingNotificationRequests.length} pending notification requests",
       title: "Pending");
+}
+
+Future<void> cancelAllNotifications() async {
+  await flutterLocalNotificationsPlugin.cancelAll();
 }
