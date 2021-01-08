@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/librarian.dart';
+import 'librarian_management_detail.dart';
 
 class LibrarianManagement extends StatefulWidget {
   @override
@@ -9,6 +11,17 @@ class LibrarianManagement extends StatefulWidget {
 
 class _LibrarianManagementState extends State<LibrarianManagement> {
   final List<Librarian> myLibrarian = [];
+
+  CollectionReference librarianDb =
+      FirebaseFirestore.instance.collection("User");
+
+  navigateToLibrarianManagementDetail(DocumentSnapshot librarian) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                LibrarianManagementDetail(librarian: librarian)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +42,7 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                         return ListView.builder(
                           itemCount: snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Column(
+                            return Column( 
                               children: [
                                 Container(
                                   child: Padding(
@@ -60,7 +73,7 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                                               ],
                                             ),
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
