@@ -96,3 +96,14 @@ Stream<List<Book>> getAllBooks() async* {
       .catchError((onError) => print(onError));
   yield bookCatalogue;
 }
+
+//? Deleting book catalogue
+Future<void> deleteBook(String docId) async {
+  FirebaseFirestore.instance
+      .collection("BookCatalogue")
+      .doc(docId)
+      .delete()
+      .then((value) =>
+          print("Active Status for Discussion Room update successfully!"))
+      .catchError((onError) => print("An error has occurred: $onError"));
+}

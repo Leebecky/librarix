@@ -79,9 +79,9 @@ exports.sendTopicFines = functions
         const finesId = snapshot.id;
         const finesUserId = snapshot.get("UserId");
         const total = snapshot.get("FinesTotal");
-        const dueDate = snapshot.get("FinesDue");
+        const issueDate = snapshot.get("FinesIssueDate");
         const reason = snapshot.get("FinesReason");
-        const notificationContent = "RM" + total + ", to be paid by " + dueDate;
+        const notificationContent = "RM" + total + ", to be paid by " + issueDate;
 
         const staffFinesPayload = {
             notification: {
@@ -115,14 +115,14 @@ exports.sendTopicFines = functions
         //^  Notification entry for database
         finesNotificationData = {
             NotificationAdditionalDetail: finesId,
-            NotificationContent: "RM" + total + ", to be paid by " + dueDate,
+            NotificationContent: "RM" + total + ", to be paid by " + issueDate,
             NotificationDisplayDate: dateString,
             NotificationRead: false,
             NotificationTitle: "Fines Incurred (" + reason + ")",
             NotificationType: "Fines"
         };
         staffFinesNotificationData = {
-            NotificationContent: "RM" + total + ", to be paid by " + dueDate + " for " + reason,
+            NotificationContent: "RM" + total + ", to be paid by " + issueDate + " for " + reason,
             NotificationDisplayDate: dateString,
             NotificationRead: false,
             NotificationTitle: finesUserId + " has been fined",

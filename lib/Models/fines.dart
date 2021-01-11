@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Fines {
-  String total, dueDate, reason, status, userId, finesId;
+  String total, issueDate, reason, status, userId, finesId;
 
-  Fines(this.dueDate, this.finesId, this.reason, this.status, this.total,
+  Fines(this.issueDate, this.finesId, this.reason, this.status, this.total,
       this.userId);
 
   Map<String, String> toJson() => _fineToJson(this);
 
   Fines.fromSnapshot(DocumentSnapshot snapshot)
-      : dueDate = snapshot['FinesDue'],
+      : issueDate = snapshot['FinesIssueDate'],
         finesId = snapshot.id,
         reason = snapshot['FinesReason'],
         status = snapshot['FinesStatus'],
@@ -20,7 +20,7 @@ class Fines {
 //? Converts map of values from Firestore into Fine object.
 Fines fineFromJson(Map<String, dynamic> json) {
   return Fines(
-    json["FinesDue"] as String,
+    json["FinesIssueDate"] as String,
     json["FinesId"] as String,
     json["FinesReason"] as String,
     json["FinesStatus"] as String,
@@ -31,7 +31,7 @@ Fines fineFromJson(Map<String, dynamic> json) {
 
 //? Converts the Fine class into key/value pairs
 Map<String, dynamic> _fineToJson(Fines instance) => <String, dynamic>{
-      "FinesDue": instance.dueDate,
+      "FinesIssueDate": instance.issueDate,
       "FinesReason": instance.reason,
       "FinesStatus": instance.status,
       "FinesTotal": instance.total,
@@ -89,7 +89,7 @@ Stream<List<Fines>> getFinesWithDocIdOf(
   }
   for (var i = 0; i < finesOf.length; i++) {
     finalFines.add(Fines(
-      finesOf[i].dueDate,
+      finesOf[i].issueDate,
       finesId[i],
       finesOf[i].reason,
       finesOf[i].status,

@@ -42,7 +42,7 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                         return ListView.builder(
                           itemCount: snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Column( 
+                            return Column(
                               children: [
                                 Container(
                                   child: Padding(

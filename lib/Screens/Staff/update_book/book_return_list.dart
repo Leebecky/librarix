@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/borrow.dart';
 
+import 'fines_add.dart';
+
 class BookReturnList extends StatefulWidget {
   @override
   _BookReturnListState createState() => _BookReturnListState();
@@ -108,7 +110,7 @@ class _BookReturnListState extends State<BookReturnList> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                  'Rutrn Book',
+                  'Return Book',
                 ),
                 content: SingleChildScrollView(
                   child: ListBody(
@@ -119,9 +121,49 @@ class _BookReturnListState extends State<BookReturnList> {
                   TextButton(
                     child: Text("Yes"),
                     onPressed: () async {
-                      updateReturnStatus(activeReserve[index].borrowedId,
-                          activeReserve[index].bookId);
-                      Navigator.of(context).pop();
+                      return showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                'Fines',
+                              ),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Text("Is the user need to be ?"),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text("Yes"),
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return AddFines(
+                                          activeReserve[index].userId);
+                                    }));
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text("No"),
+                                  onPressed: () async {
+                                    updateReturnStatus(
+                                        activeReserve[index].borrowedId,
+                                        activeReserve[index].bookId);
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                    // Navigator.push(context,
+                                    //     MaterialPageRoute(builder: (context) {
+                                    //   return BookReturnList();
+                                    // }));
+                                  },
+                                ),
+                              ],
+                            );
+                          });
                     },
                   ),
                   TextButton(
