@@ -1,99 +1,445 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:librarix/Models/librarian.dart';
-import 'librarian_management_detail.dart';
+import '../../../Custom_Widget/buttons.dart';
+import '../../../Custom_Widget/textfield.dart';
+import '../fines_management.dart';
 
-class LibrarianManagement extends StatefulWidget {
+class AddFines extends StatefulWidget {
   @override
-  _LibrarianManagementState createState() => _LibrarianManagementState();
+  _AddFinesState createState() => _AddFinesState();
 }
 
-class _LibrarianManagementState extends State<LibrarianManagement> {
-  final List<Librarian> myLibrarian = [];
-
-  CollectionReference librarianDb =
-      FirebaseFirestore.instance.collection("User");
-
-  navigateToLibrarianManagementDetail(DocumentSnapshot librarian) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                LibrarianManagementDetail(librarian: librarian)));
-  }
-
+class _AddFinesState extends State<AddFines> {
+  String userid, due, reason, total;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Librarian Management"),
+        title: Text("Fines"),
       ),
-      body: Container(
-        child: FutureBuilder<List<String>>(
-            future: librarianData(),
-            builder: (BuildContext context, AsyncSnapshot<List<String>> docId) {
-              if (docId.hasData) {
-                return FutureBuilder<List<Librarian>>(
-                    future: getLibrarianData(docId.data),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<Librarian>> snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView.builder(
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: [
-                                Container(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Card(
-                                          child: ListTile(
-                                            title: Text(
-                                              snapshot.data[index].name,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            subtitle: Row(
-                                              children: <Widget>[
-                                                Expanded(
-                                                    child: Padding(
-                                                  padding:
-                                                      EdgeInsets.only(top: 5),
-                                                  child: Text(
-                                                    snapshot.data[index].userId,
-                                                    style:
-                                                        TextStyle(fontSize: 18),
-                                                  ),
-                                                )),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            );
-                          },
-                        );
-                      }
-                      return SpinKitWave(
-                        color: Theme.of(context).accentColor,
-                      );
-                    });
-              }
-              return Center(
-                  child: SpinKitWave(
-                color: Theme.of(context).accentColor,
-              ));
-            }),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+          child: Form(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CustomTextField(
+                    text: "User ID",
+                    fixKeyboardToNum: false,
+                    onChange: (value) => userid = value,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: DropdownButtonFormField(
+                    items: [
+                      DropdownMenuItem(
+                        value: "Late Return",
+                        child: Text("Late Return"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Book Damage",
+                        child: Text("Book Damage"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Book Lost",
+                        child: Text("Book Lost"),
+                      ),
+                    ],
+                    decoration: InputDecoration(
+                        labelText: "Fines Reason",
+                        hintText: "Please select fines reason",
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).accentColor))),
+                    onChanged: (String value) {
+                      setState(() {
+                        reason = value;
+                      });
+                    },
+                  ),
+                ),
+                // Padding(
+                //   padding: EdgeInsets.all(20),
+                //   child: TextField(
+                //     enabled: false,
+                //     decoration: InputDecoration(
+                //         labelText: "  Fines Total",
+                //         enabledBorder: OutlineInputBorder(
+                //             borderSide: BorderSide(
+                //                 color: Theme.of(context).accentColor)),
+                //         focusedBorder: OutlineInputBorder(
+                //             borderSide: BorderSide(
+                //                 color: Theme.of(context).accentColor))),
+                //   ),
+                // ),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Visibility(
+                      visible: true,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(reason),
+
+                          //calculate total fines
+                        ],
+                      ),
+                    )),
+                CustomFlatButton(
+                  roundBorder: true,
+                  buttonText: "Add",
+                  onClick: () async {
+                    createFines();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return FinesManagement();
+                    }));
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
+
+  Future createFines() async {
+    try {
+      await FirebaseFirestore.instance.collection("Fines").add({
+        'UserId': userid,
+        'FinesReason': reason,
+        'FinesIssueDate': "21/06/2021", //due,
+        'FinesStatus': "Unpaid",
+        'FinesTotal': "0.10" //total,
+      });
+    } catch (e) {
+      print(e.message);
+    }
+  }
+
+  // Widget _check(String reason) {
+  //   if (reason == "Late Return") {
+  //     Padding(
+  //         padding: EdgeInsets.all(10),
+  //         child: Visibility(
+  //           visible: true,
+  //           child: Row(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: <Widget>[
+  //               SizedBox(
+  //                 width: 10,
+  //               ),
+  //               Text(reason),
+
+  //               //calculate total fines
+  //             ],
+  //           ),
+  //         ));
+  //   }
+  // }
+
+  // void checkTotalFines(String reasonValue) {
+  //   if (reasonValue == "Book Lost") {
+  //     print("RM10");
+  //   } else if (reasonValue = "Late Return") {
+  //     print("RM10");
+  //   }
+  // }
+}
+
+
+
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../../../Models/borrow.dart';
+import 'fines_add.dart';
+
+class BookReturnList extends StatefulWidget {
+  @override
+  _BookReturnListState createState() => _BookReturnListState();
+}
+
+class _BookReturnListState extends State<BookReturnList> {
+  List<Borrow> activeReserve = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: StreamBuilder<List<Borrow>>(
+        stream: getBorrowedWithDocIdOf("BorrowStatus", "Borrowed"),
+        builder: (BuildContext context, AsyncSnapshot<List<Borrow>> snapshot) {
+          if (snapshot.hasData) {
+            activeReserve = snapshot.data.toList();
+            return ListView.builder(
+                itemCount: activeReserve.length,
+                itemBuilder: (_, index) {
+                  return Column(
+                    children: <Widget>[
+                      Container(
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(14.0),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        activeReserve[index].bookTitle,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 23),
+                                      ),
+                                      Spacer(),
+                                      Column(
+                                        children: actionButtons(index),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: [
+                                      Text(activeReserve[index].userId,
+                                          style: TextStyle(fontSize: 22)),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                          activeReserve[index].borrowedDate +
+                                              " - " +
+                                              activeReserve[index].returnedDate,
+                                          style: TextStyle(fontSize: 20)),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 4.0),
+                                  child: Row(
+                                    children: [
+                                      Text(activeReserve[index].status,
+                                          style: TextStyle(fontSize: 20)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  );
+                });
+          }
+          return SpinKitWave(
+            color: Theme.of(context).accentColor,
+          );
+        },
+      ),
+    );
+  }
+
+  List<Widget> actionButtons(int index) {
+    List<Widget> buttons = [];
+    buttons.add(IconButton(
+      icon: Icon(Icons.update),
+      onPressed: () {
+        return showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Return Book',
+                ),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[Text("Wanted to return book?")],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text("Yes"),
+                    onPressed: () async {
+                      return showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                'Book Condition',
+                              ),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Text("Is the book in a good condition?"),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text("Yes"),
+                                  onPressed: () async {
+                                    updateReturnStatus(
+                                        activeReserve[index].borrowedId,
+                                        activeReserve[index].bookId);
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                    // Navigator.push(context,
+                                    //     MaterialPageRoute(builder: (context) {
+                                    //   return BookReturnList();
+                                    // }));
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text("No"),
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return AddFines();
+                                      // Navigator.push(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //         builder: (context) => AddFines(
+                                      //             borrowedUserID: activeReserve[index].)));
+                                    }));
+                                  },
+                                ),
+                              ],
+                            );
+                          });
+                    },
+                  ),
+                  TextButton(
+                    child: Text("No"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      },
+    ));
+    return buttons;
+  }
+}
+
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class Fines {
+  String total, reason, status, userId, finesId;
+
+  Fines(this.finesId, this.reason, this.status, this.total, this.userId);
+
+  Map<String, String> toJson() => _fineToJson(this);
+
+  Fines.fromSnapshot(DocumentSnapshot snapshot)
+      : finesId = snapshot.id,
+        reason = snapshot['FinesReason'],
+        status = snapshot['FinesStatus'],
+        total = snapshot['FinesTotal'],
+        userId = snapshot['Userid'];
+}
+
+//? Converts map of values from Firestore into Fine object.
+Fines fineFromJson(Map<String, dynamic> json) {
+  return Fines(
+    json["FinesId"] as String,
+    json["FinesReason"] as String,
+    json["FinesStatus"] as String,
+    json["FinesTotal"] as String,
+    json["UserId"] as String,
+  );
+}
+
+//? Converts the Fine class into key/value pairs
+Map<String, dynamic> _fineToJson(Fines instance) => <String, dynamic>{
+      "FinesReason": instance.reason,
+      "FinesStatus": instance.status,
+      "FinesTotal": instance.total,
+      "UserId": instance.userId,
+    };
+
+//? Returns all fine records
+Stream<List<Fines>> getAllFines() async* {
+  List<Fines> allFines = [];
+  FirebaseFirestore.instance
+      .collection("Fines")
+      .get()
+      .then((value) => value.docs.forEach((element) {
+            allFines.add(fineFromJson(element.data()));
+          }))
+      .catchError((onError) => print(onError));
+  yield allFines;
+}
+
+//? Returns all fines of a given attribute
+Stream<List<Fines>> getFinesOf(String queryField, String queryItem) async* {
+  List<Fines> finesOf = [];
+  QuerySnapshot fines = await FirebaseFirestore.instance
+      .collection("Fines")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving fines data from database: $onError"));
+
+  if (fines.docs.isNotEmpty) {
+    fines.docs.forEach((doc) {
+      finesOf.add(fineFromJson(doc.data()));
+    });
+  }
+  yield finesOf;
+}
+
+Stream<List<Fines>> getFinesWithDocIdOf(
+    String queryField, String queryItem) async* {
+  List<Fines> finesOf = [];
+  List<Fines> finalFines = [];
+  List<String> finesId = [];
+  QuerySnapshot finess = await FirebaseFirestore.instance
+      .collection("Fines")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving fines data from database: $onError"));
+
+  if (finess.docs.isNotEmpty) {
+    finess.docs.forEach((doc) {
+      finesOf.add(fineFromJson(doc.data()));
+      finesId.add(doc.id);
+    });
+  }
+  for (var i = 0; i < finesOf.length; i++) {
+    finalFines.add(Fines(
+      finesId[i],
+      finesOf[i].reason,
+      finesOf[i].status,
+      finesOf[i].total,
+      finesOf[i].userId,
+    ));
+  }
+
+  yield finalFines;
 }

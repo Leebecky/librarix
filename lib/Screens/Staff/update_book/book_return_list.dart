@@ -127,18 +127,28 @@ class _BookReturnListState extends State<BookReturnList> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text(
-                                'Book Condition',
+                                'Fines',
                               ),
                               content: SingleChildScrollView(
                                 child: ListBody(
                                   children: <Widget>[
-                                    Text("Is the book in a good condition?"),
+                                    Text("Is the user need to be ?"),
                                   ],
                                 ),
                               ),
                               actions: <Widget>[
                                 TextButton(
                                   child: Text("Yes"),
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return AddFines(
+                                          activeReserve[index].userId);
+                                    }));
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text("No"),
                                   onPressed: () async {
                                     updateReturnStatus(
                                         activeReserve[index].borrowedId,
@@ -149,15 +159,6 @@ class _BookReturnListState extends State<BookReturnList> {
                                     //     MaterialPageRoute(builder: (context) {
                                     //   return BookReturnList();
                                     // }));
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text("No"),
-                                  onPressed: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return AddFines();
-                                    }));
                                   },
                                 ),
                               ],

@@ -116,14 +116,14 @@ class _FinesReportState extends State<FinesReport> {
   List<Widget> finesReportRecordList({List<Fines> record, String userId}) {
     List<Widget> recordList = [];
     var filtered = record.where((details) => details.userId == userId).toList();
-    filtered.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+    filtered.sort((a, b) => a.issueDate.compareTo(b.issueDate));
     for (var item in filtered) {
       recordList.add(ListTile(
         isThreeLine: true,
         title: Text(item.reason),
         subtitle:
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text("Total: RM${item.total}, to be paid by ${item.dueDate}"),
+          Text("Total: RM${item.total}, to be paid by ${item.issueDate}"),
           Text("Status: ${item.status}"),
         ]),
       ));
@@ -144,7 +144,7 @@ class _FinesReportState extends State<FinesReport> {
     List<Fines> measure = [];
 
     for (var item in record) {
-      xAxisTime.add(parseStringToDate(item.dueDate).year.toString());
+      xAxisTime.add(parseStringToDate(item.issueDate).year.toString());
     }
 
     var sortedXAxis = xAxisTime.toList();
@@ -152,7 +152,7 @@ class _FinesReportState extends State<FinesReport> {
 
     sortedXAxis.forEach((element) {
       for (var item in record) {
-        if (parseStringToDate(item.dueDate).year.toString() == element) {
+        if (parseStringToDate(item.issueDate).year.toString() == element) {
           measure.add(item);
         }
       }

@@ -70,7 +70,7 @@ class _FinesManagementState extends State<FinesManagement> {
                                     children: [
                                       Text(
                                         "Due Date: " +
-                                            activeFines[index].dueDate,
+                                            activeFines[index].issueDate,
                                         style: TextStyle(fontSize: 16),
                                       ),
                                     ],
@@ -145,10 +145,10 @@ class _FinesManagementState extends State<FinesManagement> {
                                 TextButton(
                                   child: Text('OK'),
                                   onPressed: () async {
-                                  //   Navigator.push(context,
-                                  //       MaterialPageRoute(builder: (context) {
-                                  //     return FinesManagement();
-                                  //   }));
+                                    //   Navigator.push(context,
+                                    //       MaterialPageRoute(builder: (context) {
+                                    //     return FinesManagement();
+                                    //   }));
                                     Navigator.of(context).pop();
                                     Navigator.of(context).pop();
                                   },

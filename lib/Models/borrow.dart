@@ -116,6 +116,38 @@ Stream<List<Borrow>> getBorrowedOf(String queryField, String queryItem) async* {
 
 //?Retrieve data from Firestore
 
+/* Stream<List<Borrow>> getBorrowedWithDocIdOf(
+    String queryField, String queryItem) async* {
+  List<Borrow> borrowedOf = [];
+  List<Borrow> finalBorrowed = [];
+  List<String> borowedId = [];
+  QuerySnapshot borrowed = await FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+
+  if (borrowed.docs.isNotEmpty) {
+    borrowed.docs.forEach((doc) {
+      borrowedOf.add(borrowFromJson(doc.data()));
+      borowedId.add(doc.id);
+    });
+  }
+  for (var i = 0; i < borrowedOf.length; i++) {
+    finalBorrowed.add(Borrow(
+        borrowedOf[i].userId,
+        borrowedOf[i].bookId,
+        borrowedOf[i].bookTitle,
+        borrowedOf[i].borrowedDate,
+        borrowedOf[i].timesRenewed,
+        borrowedOf[i].returnedDate,
+        borrowedOf[i].status,
+        borowedId[i]));
+  }
+
+  yield finalBorrowed;
+} */
 Stream<List<Borrow>> getBorrowedWithDocIdOf(
     String queryField, String queryItem) async* {
   List<Borrow> borrowedOf = [];

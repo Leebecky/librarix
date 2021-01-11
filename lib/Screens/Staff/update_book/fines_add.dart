@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../../Custom_Widget/buttons.dart';
-import '../../../Custom_Widget/textfield.dart';
 import '../fines_management.dart';
 
 class AddFines extends StatefulWidget {
+  final String userId;
+  AddFines(this.userId);
   @override
   _AddFinesState createState() => _AddFinesState();
 }
 
 class _AddFinesState extends State<AddFines> {
   String userid, due, reason, total;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,10 +27,14 @@ class _AddFinesState extends State<AddFines> {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomTextField(
-                    text: "User ID",
-                    fixKeyboardToNum: false,
-                    onChange: (value) => userid = value,
+                  // child: CustomDisplayTextField(
+                  //   controller: _userId,
+                  //   fixKeyboardToNum: false,
+                  //   onChange: (value) => userid = widget.userId,
+                  // ),
+                  child: Text(
+                    widget.userId,
+                    style: TextStyle(fontSize: 25),
                   ),
                 ),
                 Padding(
@@ -60,10 +66,27 @@ class _AddFinesState extends State<AddFines> {
                     onChanged: (String value) {
                       setState(() {
                         reason = value;
+                        calcFines();
                       });
                     },
                   ),
                 ),
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Visibility(
+                      visible: true,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("$total"),
+
+                          //calculate total fines
+                        ],
+                      ),
+                    )),
                 CustomFlatButton(
                   roundBorder: true,
                   buttonText: "Add",
@@ -86,14 +109,27 @@ class _AddFinesState extends State<AddFines> {
   Future createFines() async {
     try {
       await FirebaseFirestore.instance.collection("Fines").add({
-        'UserId': userid,
+        'UserId': widget.userId,
         'FinesReason': reason,
-        'FinesDue': "21/06/2021", //due,
         'FinesStatus': "Unpaid",
-        'FinesTotal': "0.10" //total,
+        'FinesTotal': total //total,
       });
     } catch (e) {
       print(e.message);
+    }
+  }
+
+  void calcFines() {
+    switch (reason) {
+      case "Late Return":
+        total = "RM5.00";
+        break;
+      case "Book Damage":
+        total = "RM50.00";
+        break;
+      case "Book Lost":
+        total = "RM100.00";
+        break;
     }
   }
 }
