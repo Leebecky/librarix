@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../Custom_Widget/buttons.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:async';
 import 'dart:io';
+import '../../../Custom_Widget/textfield.dart';
 // import 'dart:math';
-// import '../../Screens/Staff/book_management_select_image.dart';
-import '../../Custom_Widget/buttons.dart';
-import '../../Custom_Widget/textfield.dart';
+// import 'book_management_select_image.dart';
 
 class AddNewBook extends StatefulWidget {
   @override
@@ -261,7 +261,7 @@ class _AddNewBookState extends State<AddNewBook> {
   Future createBookCatalogue() async {
     try {
       // DocumentReference ref =
-          await FirebaseFirestore.instance.collection("BookCatalogue").add({
+      await FirebaseFirestore.instance.collection("BookCatalogue").add({
         'BookTitle': title,
         'BookISBNCode': isbnCode,
         'BookBarcode': barcode,
