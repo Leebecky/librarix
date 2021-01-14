@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/borrow.dart';
-
 import 'fines_add.dart';
 
 class BookReturnList extends StatefulWidget {
@@ -114,7 +113,7 @@ class _BookReturnListState extends State<BookReturnList> {
                 ),
                 content: SingleChildScrollView(
                   child: ListBody(
-                    children: <Widget>[Text("Wanted to return book?")],
+                    children: <Widget>[Text("Book Returned?")],
                   ),
                 ),
                 actions: <Widget>[
@@ -134,7 +133,7 @@ class _BookReturnListState extends State<BookReturnList> {
                               content: SingleChildScrollView(
                                 child: ListBody(
                                   children: <Widget>[
-                                    Text("Is the user need to be fines?"),
+                                    Text("Does the user need to be fined?"),
                                   ],
                                 ),
                               ),

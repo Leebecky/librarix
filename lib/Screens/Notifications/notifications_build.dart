@@ -1,27 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Screens/Notifications/local_notifications_initializer.dart';
 import 'package:librarix/modules.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-//! Write this down under project enhancements !(documentation)
-//! Recheck all notifications because borrow notifications were previously saved with book id instead of booking id
-//TODO respond to incoming notifications when app is open
-//TODO set up notifications for fines
-//TODO// prevent staff from receiving local notifications (i think it should be fine now)
-//TODO when making bookings/borrowing books for user
-//TODO compensate for notifications cuz cloud functions are no longer being used
-//! Book Return Notifications are still broken smh
-//! Book Reservation notifications + write to database
-//! Fines Notifications + write to database
-
 //~ Notification id : 1 - Booking on Day - Discussion Room
 //~ Notification id : 2 - Booking 15 minutes - Discussion Room
 //~ Notification id : 3 - Booking on Day - Study Table
 //~ Notification id : 4 - Booking 15 minutes - Study Table
-//~ Notification id : x - Book Return
+//~ Notification id : (bookingId) - Book Return on day
 
 //? Schedule Notification for bookings (on day of booking)
 bookingNotificationOnDay({
@@ -107,11 +94,15 @@ bookReturnNotification({
   String title,
   int notificationId,
 }) async {
+  DateTime scheduledDate;
+  scheduledDate = parseStringToDate(returnDate);
+
   await flutterLocalNotificationsPlugin.zonedSchedule(
       notificationId,
       'Book Return',
       '$title is due to be returned on $returnDate',
-      dailyReminder(returnDate),
+      tz.TZDateTime.local(
+          scheduledDate.year, scheduledDate.month, scheduledDate.day, 9),
       const NotificationDetails(
           android: AndroidNotificationDetails('Booking Channel Id',
               'Booking Channel', 'Booking Channel Notifications')),
@@ -121,41 +112,7 @@ bookReturnNotification({
       matchDateTimeComponents: DateTimeComponents.time);
 }
 
-//? Schedules daily notifications
-tz.TZDateTime dailyReminder(String returnDate) {
-  DateTime bookReturnDate = parseStringToDate(returnDate);
-
-  final daysBefore = bookReturnDate.subtract(Duration(days: 3));
-
-  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-
-  tz.TZDateTime scheduledNotification =
-      tz.TZDateTime(tz.local, now.year, now.month, now.day, 9);
-  //~ While it is not time yet, extend the notification (??)
-  while (scheduledNotification.isBefore(daysBefore)) {
-    scheduledNotification = scheduledNotification.add(const Duration(days: 1));
-  }
-  //~ Once the return date has passed, break the loop
-  if (scheduledNotification.isAfter(bookReturnDate)) {
-    return null;
-  }
-  return scheduledNotification;
-}
-
-//? Cancels pending notifications
+//?Cancel selected notification
 Future<void> cancelNotification(int notificationId) async {
   await flutterLocalNotificationsPlugin.cancel(notificationId);
-}
-
-Future<void> checkPendingNotificationRequests(BuildContext context) async {
-  final List<PendingNotificationRequest> pendingNotificationRequests =
-      await flutterLocalNotificationsPlugin.pendingNotificationRequests();
-  return customAlertDialog(context,
-      content:
-          "${pendingNotificationRequests.length} pending notification requests",
-      title: "Pending");
-}
-
-Future<void> cancelAllNotifications() async {
-  await flutterLocalNotificationsPlugin.cancelAll();
 }

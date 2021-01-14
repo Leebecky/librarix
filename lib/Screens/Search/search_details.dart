@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:librarix/Custom_Widget/buttons.dart';
 import 'package:librarix/Models/book.dart';
-import 'package:librarix/Models/user.dart';
+import 'package:librarix/Models/borrow.dart';
 
 import '../../modules.dart';
 
@@ -27,8 +26,8 @@ class _DetailBookViewState extends State<DetailBookView> {
             SliverAppBar(
               expandedHeight: 400.0,
               flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(widget.book.image, height: 300, fit: BoxFit.fill)
-              ),
+                  background: Image.network(widget.book.image,
+                      height: 300, fit: BoxFit.fill)),
             ),
             SliverFixedExtentList(
               itemExtent: 60.00,
@@ -69,8 +68,7 @@ class _DetailBookViewState extends State<DetailBookView> {
                   child: Row(
                     children: [
                       Text("Genre: ", style: TextStyle(fontSize: 15.0)),
-                      Text(widget.book.genre,
-                          style: TextStyle(fontSize: 15.0)),
+                      Text(widget.book.genre, style: TextStyle(fontSize: 15.0)),
                     ],
                   ),
                 ),
@@ -108,7 +106,6 @@ class _DetailBookViewState extends State<DetailBookView> {
                   padding: const EdgeInsets.all(8.0),
                   child: verifyUser(userId),
                 ),
-                
               ]),
             )
           ],
@@ -119,23 +116,22 @@ class _DetailBookViewState extends State<DetailBookView> {
 
   Widget verifyUser(ValueNotifier userId) {
     return FutureBuilder<bool>(
-      future: isStaff(),
-      // ignore: missing_return
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        //^ if User is Staff, create a textfield
-        if (snapshot.data == false) {
-          return CustomOutlineButton(
-            buttonText: "Placehold",
-            onClick: () => _showMyDialog());
-        }else
-          return SizedBox(height: 0.01);
-    });
-  }  
+        future: isStaff(),
+        // ignore: missing_return
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          //^ if User is Staff, create a textfield
+          if (snapshot.data == false) {
+            return CustomOutlineButton(
+                buttonText: "Reserve Book", onClick: () => _showMyDialog());
+          } else
+            return SizedBox(height: 0.01);
+        });
+  }
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, 
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Reserve Book'),
@@ -150,32 +146,16 @@ class _DetailBookViewState extends State<DetailBookView> {
             TextButton(
               child: Text("Yes"),
               onPressed: () async {
-                  createRecord();
-                  Navigator.of(context).pop();
+                createReservationRecord(widget.book.id, widget.book.title);
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.of(context).pop()
-              )
+                child: Text("Cancel"),
+                onPressed: () => Navigator.of(context).pop())
           ],
         );
       },
     );
-  }
-
-  Future createRecord() async {
-    ActiveUser myUser = await myActiveUser();
-
-    DocumentReference ref = await FirebaseFirestore.instance.collection("BorrowedBook")
-      .add({
-        'BookId': widget.book.id,
-        'BookTitle': widget.book.title,
-        'BorrowDate': 'Not Available',
-        'BorrowReturnedDate': 'Not Available',
-        'BorrowStatus': 'Reserved',
-        'UserId': myUser.userId,
-      });
-    print(ref.id);
   }
 }

@@ -83,10 +83,20 @@ class _BookingListState extends State<BookingList> {
                                                                     .data[index]
                                                                     .bookingId);
                                                             //~ Cancel any pending notifications
-                                                            await cancelNotification(
-                                                                1);
-                                                            cancelNotification(
-                                                                2);
+                                                            if (snapshot
+                                                                    .data[index]
+                                                                    .bookingType ==
+                                                                "Discussion Room") {
+                                                              await cancelNotification(
+                                                                  1);
+                                                              cancelNotification(
+                                                                  2);
+                                                            } else {
+                                                              await cancelNotification(
+                                                                  3);
+                                                              cancelNotification(
+                                                                  4);
+                                                            }
 
                                                             Navigator.of(
                                                                     context)

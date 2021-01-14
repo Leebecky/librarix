@@ -24,8 +24,8 @@ class _AddNewBookState extends State<AddNewBook> {
       publisher,
       publishedDate,
       description,
-      stock,
       image;
+  int stock;
 
   File bookImage;
   final picker = ImagePicker();
@@ -237,10 +237,11 @@ class _AddNewBookState extends State<AddNewBook> {
                 Padding(
                     padding: EdgeInsets.all(20),
                     child: CustomTextField(
-                      text: 'Stock',
-                      fixKeyboardToNum: true,
-                      onChange: (value) => stock = value,
-                    )),
+                        text: 'Stock',
+                        fixKeyboardToNum: true,
+                        onChange: (value) => {
+                              stock = int.parse(value),
+                            })),
                 CustomFlatButton(
                   roundBorder: true,
                   buttonText: "Add",

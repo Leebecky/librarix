@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:librarix/modules.dart';
 import '../../../Custom_Widget/buttons.dart';
 import '../fines_management.dart';
+import '../../../modules.dart';
 
 class AddFines extends StatefulWidget {
   final String userId;
@@ -93,6 +94,11 @@ class _AddFinesState extends State<AddFines> {
                   buttonText: "Add",
                   onClick: () async {
                     createFines();
+
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return FinesManagement();
+                    }));
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();

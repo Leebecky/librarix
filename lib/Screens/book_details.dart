@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:librarix/Models/user.dart';
+import 'package:librarix/Models/borrow.dart';
 import '../Custom_Widget/buttons.dart';
 import '../modules.dart';
 
@@ -121,7 +121,7 @@ class _BookDetailsState extends State<BookDetails> {
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.data == false) {
             return CustomOutlineButton(
-                buttonText: "Placehold", onClick: () => _showMyDialog());
+                buttonText: "Reserve Book", onClick: () => _showMyDialog());
           } else
             return SizedBox(height: 0);
         });
@@ -146,7 +146,8 @@ class _BookDetailsState extends State<BookDetails> {
             TextButton(
               child: Text("Yes"),
               onPressed: () async {
-                createReservationRecord();
+                createReservationRecord(
+                    widget.bookCatalogue.id, widget.bookCatalogue["BookTitle"]);
                 Navigator.of(context).pop();
               },
             ),
@@ -157,21 +158,5 @@ class _BookDetailsState extends State<BookDetails> {
         );
       },
     );
-  }
-
-  Future createReservationRecord() async {
-    ActiveUser myUser = await myActiveUser();
-
-    DocumentReference ref =
-        await FirebaseFirestore.instance.collection("BorrowedBook").add({
-      'BookId': widget.bookCatalogue.id,
-      'BookTitle': widget.bookCatalogue["BookTitle"],
-      'BorrowDate': "Not Available",
-      'BorrowRenewedTime': 0,
-      'BorrowReturnedDate': "Not Available",
-      'BorrowStatus': 'Reserved',
-      'UserId': myUser.userId,
-    });
-    print(ref.id);
   }
 }
