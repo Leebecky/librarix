@@ -4,7 +4,6 @@ import 'package:librarix/modules.dart';
 import '../../../Custom_Widget/buttons.dart';
 import '../fines_management.dart';
 import '../../../modules.dart';
-import '../../../Models/notifications.dart';
 
 class AddFines extends StatefulWidget {
   final String userId;
@@ -95,17 +94,7 @@ class _AddFinesState extends State<AddFines> {
                   buttonText: "Add",
                   onClick: () async {
                     createFines();
-                    await saveNotification(
-                        userId: widget.userId,
-                        notificationInstance: createInstance(
-                            details: await getDocId(
-                                collectionName: "Fines",
-                                queryField: "BookId",
-                                queryItem: bookId[i]),
-                            title: "Fines - ${widget.userId}",
-                            content: "$total, incurred for $reason",
-                            displayDate: parseDate(DateTime.now().toString()),
-                            type: "Fines"));
+
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return FinesManagement();

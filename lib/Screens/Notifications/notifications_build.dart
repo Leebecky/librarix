@@ -4,11 +4,6 @@ import 'package:librarix/modules.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-//! Write this down under project enhancements !(documentation)
-//TODO set up notifications for fine
-//! Book Reservation notifications + write to database
-//! Fines Notifications + write to database
-
 //~ Notification id : 1 - Booking on Day - Discussion Room
 //~ Notification id : 2 - Booking 15 minutes - Discussion Room
 //~ Notification id : 3 - Booking on Day - Study Table

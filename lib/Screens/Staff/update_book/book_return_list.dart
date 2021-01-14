@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/borrow.dart';
-import '../../../Models/notifications.dart';
-import '../../../modules.dart';
 import 'fines_add.dart';
 
 class BookReturnList extends StatefulWidget {
