@@ -117,8 +117,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                 title: Text("Report Generator"),
                 trailing: Icon(Icons.bar_chart),
                 onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.pushNamed(context, "/reports");
                 }),
             ListTile(
                 title: Text("Switch theme"),
@@ -151,11 +150,11 @@ class _LibrarianHomeState extends State<LibrarianHome> {
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
+            icon: Icon(Icons.autorenew),
             label: "Book Update", //return & reservation
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
+            icon: Icon(Icons.av_timer),
             label: "Booking Update", //study table & discussion room
           ),
         ],

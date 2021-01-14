@@ -28,6 +28,21 @@ Map<String, dynamic> _discussionRoomToJson(DiscussionRoom instance) =>
       "RoomSize": instance.size,
     };
 
+//? Retrieve all Discussion Rooms
+Future<List<DiscussionRoom>> getAllRooms() async {
+  List<DiscussionRoom> dr = [];
+  await FirebaseFirestore.instance
+      .collection("DiscussionRoom")
+      .orderBy("RoomNum")
+      .get()
+      .then((value) => value.docs.forEach((element) {
+            dr.add(discussionRoomFromJson(element.data()));
+          }))
+      .catchError((onError) => print(
+          "An error has occurred while retrieving discussion room data: $onError"));
+  return dr;
+}
+
 //? Retrive rooms of a given size
 Future<List<DiscussionRoom>> getRoomsOfSize(int size) async {
   List<DiscussionRoom> dr = [];

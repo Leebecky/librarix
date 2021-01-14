@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/borrow.dart';
 
+import 'fines_add.dart';
+
 class BookReturnList extends StatefulWidget {
   @override
   _BookReturnListState createState() => _BookReturnListState();
@@ -39,6 +41,10 @@ class _BookReturnListState extends State<BookReturnList> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 23),
+                                      ),
+                                      Spacer(),
+                                      Column(
+                                        children: actionButtons(index),
                                       ),
                                     ],
                                   ),
@@ -91,5 +97,86 @@ class _BookReturnListState extends State<BookReturnList> {
         },
       ),
     );
+  }
+
+  List<Widget> actionButtons(int index) {
+    List<Widget> buttons = [];
+    buttons.add(IconButton(
+      icon: Icon(Icons.update),
+      onPressed: () {
+        return showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Return Book',
+                ),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[Text("Wanted to return book?")],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text("Yes"),
+                    onPressed: () async {
+                      return showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                'Fines',
+                              ),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Text("Is the user need to be ?"),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text("Yes"),
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return AddFines(
+                                          activeReserve[index].userId);
+                                    }));
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text("No"),
+                                  onPressed: () async {
+                                    updateReturnStatus(
+                                        activeReserve[index].borrowedId,
+                                        activeReserve[index].bookId);
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                    // Navigator.push(context,
+                                    //     MaterialPageRoute(builder: (context) {
+                                    //   return BookReturnList();
+                                    // }));
+                                  },
+                                ),
+                              ],
+                            );
+                          });
+                    },
+                  ),
+                  TextButton(
+                    child: Text("No"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      },
+    ));
+    return buttons;
   }
 }

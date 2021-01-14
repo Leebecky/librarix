@@ -103,7 +103,7 @@ class _FinesListState extends State<FinesList> {
                                     top: 8.0, bottom: 8.0),
                                 child: Row(
                                   children: [
-                                    Text(snapshot.data[index].dueDate,
+                                    Text(snapshot.data[index].issueDate,
                                         style: TextStyle(fontSize: 30.0)),
                                     Spacer(),
                                   ],

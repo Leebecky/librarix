@@ -60,13 +60,27 @@ Map<String, dynamic> _borrowToJson(Borrow instance) => <String, dynamic>{
 Future<void> createBorrowRecord(Borrow record) async {
   int stock;
   (record.status == "Borrowed") ? stock = -1 : stock = 0;
-  FirebaseFirestore.instance
+  await FirebaseFirestore.instance
       .collection("BorrowedBook")
       .add(_borrowToJson(record))
       .then((value) {
     print("Book has been successfully borrowed!");
     updateBookStock(record.bookId, stock);
   }).catchError((onError) => print("An error has occurred: $onError"));
+}
+
+//? Retrieves all Borrow Records
+Stream<List<Borrow>> getAllBorrowRecords() async* {
+  List<Borrow> borrowRecordList = [];
+  await FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .get()
+      .then((value) => value.docs.forEach((doc) {
+            borrowRecordList.add(borrowFromJson(doc.data()));
+          }))
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+  yield borrowRecordList;
 }
 
 //? Retrieves all borrowed book records of a user
@@ -102,6 +116,38 @@ Stream<List<Borrow>> getBorrowedOf(String queryField, String queryItem) async* {
 
 //?Retrieve data from Firestore
 
+/* Stream<List<Borrow>> getBorrowedWithDocIdOf(
+    String queryField, String queryItem) async* {
+  List<Borrow> borrowedOf = [];
+  List<Borrow> finalBorrowed = [];
+  List<String> borowedId = [];
+  QuerySnapshot borrowed = await FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .where(queryField, isEqualTo: queryItem)
+      .get()
+      .catchError((onError) =>
+          print("Error retrieving booking data from database: $onError"));
+
+  if (borrowed.docs.isNotEmpty) {
+    borrowed.docs.forEach((doc) {
+      borrowedOf.add(borrowFromJson(doc.data()));
+      borowedId.add(doc.id);
+    });
+  }
+  for (var i = 0; i < borrowedOf.length; i++) {
+    finalBorrowed.add(Borrow(
+        borrowedOf[i].userId,
+        borrowedOf[i].bookId,
+        borrowedOf[i].bookTitle,
+        borrowedOf[i].borrowedDate,
+        borrowedOf[i].timesRenewed,
+        borrowedOf[i].returnedDate,
+        borrowedOf[i].status,
+        borowedId[i]));
+  }
+
+  yield finalBorrowed;
+} */
 Stream<List<Borrow>> getBorrowedWithDocIdOf(
     String queryField, String queryItem) async* {
   List<Borrow> borrowedOf = [];
@@ -156,3 +202,28 @@ Future<void> updateCancelStatus(String docId) async {
           print("Completed Status for Discussion Room update successfully!"))
       .catchError((onError) => print("An error has occurred: $onError"));
 }
+
+//update book reservation list  --- borrow => return
+Future<void> updateReturnStatus(String docId, String bookId) async {
+  FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .doc(docId)
+      .update({"BorrowStatus": "Returned"})
+      .then((value) => {
+            updateBookStock(bookId, 1),
+            print("Completed Status for Discussion Room update successfully!")
+          })
+      .catchError((onError) => print("An error has occurred: $onError"));
+}
+
+/* Future<void> returnBook(Borrow record) async {
+  int stock;
+  (record.status == "Returned") ? stock = 1 : stock = 0;
+  FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .add(_borrowToJson(record))
+      .then((value) {
+    print("Book has been successfully returned!");
+    updateBookStock(record.bookId, stock);
+  }).catchError((onError) => print("An error has occurred: $onError")); 
+}*/

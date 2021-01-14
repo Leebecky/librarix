@@ -91,22 +91,27 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                     if (completeBookingDetails(roomsFound.value)) {
                       // All validation checks are passed. Booking is created.
                       createBooking(createMyBooking(widget.userId));
-                      // Schedule Notifications: on day of booking
-                      if (widget.date != parseDate(DateTime.now().toString())) {
-                        bookingNotificationOnDay(
+
+                      //? If the user is not a staff member, schedule local notifications
+                      if (await isStaff() == false) {
+                        // Schedule Notifications: on day of booking
+                        if (widget.date !=
+                            parseDate(DateTime.now().toString())) {
+                          bookingNotificationOnDay(
+                              bookingType: "Discussion Room",
+                              tableRoomNumber: selectedDiscussionRoom,
+                              endTime: widget.endTime,
+                              startTime: widget.startTime,
+                              bookingDate: widget.date);
+                        }
+                        //Schedule Notifications: 15 minutes before booking time
+                        bookingNotificationBeforeStartTime(
                             bookingType: "Discussion Room",
                             tableRoomNumber: selectedDiscussionRoom,
                             endTime: widget.endTime,
                             startTime: widget.startTime,
                             bookingDate: widget.date);
                       }
-                      //Schedule Notifications: 15 minutes before booking time
-                      bookingNotificationBeforeStartTime(
-                          bookingType: "Discussion Room",
-                          tableRoomNumber: selectedDiscussionRoom,
-                          endTime: widget.endTime,
-                          startTime: widget.startTime,
-                          bookingDate: widget.date);
 
                       //Display message
                       customAlertDialog(context,

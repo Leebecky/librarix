@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/booking.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../Models/notifications.dart';
+import '../Notifications/notifications_build.dart';
 
 class BookingList extends StatefulWidget {
   final String bList;
@@ -66,11 +68,26 @@ class _BookingListState extends State<BookingList> {
                                                           if (snapshot
                                                                   .data[index]
                                                                   .bookingStatus ==
-                                                              "Active") {
+                                                              "Booked") {
                                                             updateBookingCancelledStatus(
                                                                 snapshot
                                                                     .data[index]
                                                                     .bookingId);
+
+                                                            //~ Delete the notification
+                                                            await deleteNotification(
+                                                                userId: widget
+                                                                    .bList,
+                                                                hasId: false,
+                                                                queryItem: snapshot
+                                                                    .data[index]
+                                                                    .bookingId);
+                                                            //~ Cancel any pending notifications
+                                                            await cancelNotification(
+                                                                1);
+                                                            cancelNotification(
+                                                                2);
+
                                                             Navigator.of(
                                                                     context)
                                                                 .pop();

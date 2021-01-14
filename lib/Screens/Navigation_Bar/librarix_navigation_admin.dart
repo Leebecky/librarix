@@ -86,7 +86,7 @@ class _AdminHomeState extends State<AdminHome> {
                 title: Text("Notifications"),
                 trailing: notificationIcon(),
                 onTap: () {
-                  Navigator.popAndPushNamed(context, "/notifications");
+                  Navigator.pushNamed(context, "/notifications");
                 }),
             ListTile(
                 title: Text("Booking Records"),
@@ -117,8 +117,7 @@ class _AdminHomeState extends State<AdminHome> {
                 title: Text("Report Generator"),
                 trailing: Icon(Icons.bar_chart),
                 onTap: () {
-                  //Navigator.of(context).pop();
-                  //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));
+                  Navigator.pushNamed(context, "/reports");
                 }),
             ListTile(
                 title: Text("Librarian Management"),
@@ -160,11 +159,11 @@ class _AdminHomeState extends State<AdminHome> {
             label: "Catalogue",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
+            icon: Icon(Icons.autorenew),
             label: "Book Update", //return & reservation
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle),
+            icon: Icon(Icons.av_timer),
             label: "Booking Update", //study table & discussion room
           ),
         ],
