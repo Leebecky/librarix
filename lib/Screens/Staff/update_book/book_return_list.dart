@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Models/borrow.dart';
-
+import '../../../Models/notifications.dart';
+import '../../../modules.dart';
 import 'fines_add.dart';
 
 class BookReturnList extends StatefulWidget {
@@ -114,13 +115,17 @@ class _BookReturnListState extends State<BookReturnList> {
                 ),
                 content: SingleChildScrollView(
                   child: ListBody(
-                    children: <Widget>[Text("Wanted to return book?")],
+                    children: <Widget>[Text("Book Returned?")],
                   ),
                 ),
                 actions: <Widget>[
                   TextButton(
                     child: Text("Yes"),
                     onPressed: () async {
+                      //~ Return Book
+                      updateReturnStatus(activeReserve[index].borrowedId,
+                          activeReserve[index].bookId);
+
                       return showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -132,7 +137,7 @@ class _BookReturnListState extends State<BookReturnList> {
                               content: SingleChildScrollView(
                                 child: ListBody(
                                   children: <Widget>[
-                                    Text("Is the user need to be ?"),
+                                    Text("Does the user need to be fined?"),
                                   ],
                                 ),
                               ),
@@ -150,9 +155,6 @@ class _BookReturnListState extends State<BookReturnList> {
                                 TextButton(
                                   child: Text("No"),
                                   onPressed: () async {
-                                    updateReturnStatus(
-                                        activeReserve[index].borrowedId,
-                                        activeReserve[index].bookId);
                                     Navigator.of(context).pop();
                                     Navigator.of(context).pop();
                                     // Navigator.push(context,

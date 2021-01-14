@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../../Custom_Widget/buttons.dart';
 import '../fines_management.dart';
+import '../../../modules.dart';
+import '../../../Models/notifications.dart';
 
 class AddFines extends StatefulWidget {
   final String userId;
@@ -92,6 +94,17 @@ class _AddFinesState extends State<AddFines> {
                   buttonText: "Add",
                   onClick: () async {
                     createFines();
+                    await saveNotification(
+                        userId: widget.userId,
+                        notificationInstance: createInstance(
+                            details: await getDocId(
+                                collectionName: "Fines",
+                                queryField: "BookId",
+                                queryItem: bookId[i]),
+                            title: "Fines - ${widget.userId}",
+                            content: "$total, incurred for $reason",
+                            displayDate: parseDate(DateTime.now().toString()),
+                            type: "Fines"));
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return FinesManagement();
@@ -109,10 +122,11 @@ class _AddFinesState extends State<AddFines> {
   Future createFines() async {
     try {
       await FirebaseFirestore.instance.collection("Fines").add({
-        'UserId': widget.userId,
+        'FinesIssueDate': parseDate(DateTime.now().toString()),
         'FinesReason': reason,
         'FinesStatus': "Unpaid",
-        'FinesTotal': total //total,
+        'FinesTotal': total,
+        'UserId': widget.userId,
       });
     } catch (e) {
       print(e.message);

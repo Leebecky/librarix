@@ -144,8 +144,11 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                             notificationId: await searchNotification(
                                     widget.userId,
                                     "NotificationAdditionalDetail",
-                                    bookId[i])
-                                .then((value) => value[0].id.hashCode),
+                                    await getDocId(
+                                        collectionName: "BorrowedBook",
+                                        queryField: "BookId",
+                                        queryItem: bookId[i]))
+                                .then((value) => value.hashCode),
                             returnDate: parseDate(calculateReturnDate()),
                             title: booksFound[i].title);
                       }

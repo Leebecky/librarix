@@ -2,12 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:librarix/Screens/Notifications/notifications_build.dart';
 import 'package:librarix/modules.dart';
 import '../../Models/notifications.dart';
 
-//TODO book return notifications needs to be saved => test if staff receives notifications
-//TODO test notification scheduling/cancelling for return book and bookings
 class NotificationsDisplay extends StatefulWidget {
   @override
   _NotificationsDisplayState createState() => _NotificationsDisplayState();
@@ -27,13 +24,6 @@ class _NotificationsDisplayState extends State<NotificationsDisplay> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Notifications"),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.more_vert),
-              onPressed: () async => {
-                    checkPendingNotificationRequests(context),
-                  })
-        ],
       ),
       body: FutureBuilder(
           future: getDbType(),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:librarix/Models/book.dart';
 import 'search_card.dart';
 
-class SearchFunction extends StatefulWidget{
+class SearchFunction extends StatefulWidget {
   @override
   _SearchFunctionState createState() => _SearchFunctionState();
 }
@@ -34,7 +34,6 @@ class _SearchFunctionState extends State<SearchFunction> {
     resultsLoaded = getUsersPastTripsStreamSnapshots();
   }
 
-
   _onSearchChanged() {
     searchResultsList();
   }
@@ -42,15 +41,14 @@ class _SearchFunctionState extends State<SearchFunction> {
   searchResultsList() {
     var showResults = [];
 
-    if(_searchController.text != "") {
-      for(var tripSnapshot in _allResults){
+    if (_searchController.text != "") {
+      for (var tripSnapshot in _allResults) {
         var title = Book.fromSnapshot(tripSnapshot).title.toLowerCase();
 
-        if(title.contains(_searchController.text.toLowerCase())) {
+        if (title.contains(_searchController.text.toLowerCase())) {
           showResults.add(tripSnapshot);
         }
       }
-
     } else {
       showResults = List.from(_allResults);
     }
@@ -60,9 +58,8 @@ class _SearchFunctionState extends State<SearchFunction> {
   }
 
   getUsersPastTripsStreamSnapshots() async {
-    var data = await FirebaseFirestore.instance
-        .collection('BookCatalogue')
-        .get();
+    var data =
+        await FirebaseFirestore.instance.collection('BookCatalogue').get();
 
     setState(() {
       _allResults = data.docs;
@@ -75,9 +72,7 @@ class _SearchFunctionState extends State<SearchFunction> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Search")
-      ),
+      appBar: AppBar(title: Text("Search")),
       body: Container(
         child: Column(
           children: <Widget>[
@@ -85,20 +80,17 @@ class _SearchFunctionState extends State<SearchFunction> {
               controller: _searchController,
               autofocus: true,
               decoration: InputDecoration(
-                icon: Icon(Icons.search),
-                hintText: "Search by book name or ISBN Code"
-              ),
+                  icon: Icon(Icons.search),
+                  hintText: "Search by book name or ISBN Code"),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: _resultsList.length,
-                itemBuilder: (BuildContext context, int index) =>
-                buildSearchCard(context, _resultsList[index]),
-              )
-            ),
+                child: ListView.builder(
+              itemCount: _resultsList.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  buildSearchCard(context, _resultsList[index]),
+            )),
           ],
         ),
-        
       ),
     );
   }
