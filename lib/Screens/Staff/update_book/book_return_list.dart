@@ -122,10 +122,8 @@ class _BookReturnListState extends State<BookReturnList> {
                   TextButton(
                     child: Text("Yes"),
                     onPressed: () async {
-                      //~ Return Book
                       updateReturnStatus(activeReserve[index].borrowedId,
                           activeReserve[index].bookId);
-
                       return showDialog(
                           context: context,
                           barrierDismissible: false,
