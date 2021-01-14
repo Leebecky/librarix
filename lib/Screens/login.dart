@@ -170,10 +170,8 @@ class _LoginState extends State<Login> {
         Navigator.popAndPushNamed(context, "/home");
       } else if (dropdownValue == "Librarian") {
         Navigator.popAndPushNamed(context, "/librarianHome");
-        staffTopicSubscription();
       } else if (dropdownValue == "Admin") {
         Navigator.popAndPushNamed(context, "/adminHome");
-        staffTopicSubscription();
       } else {
         loginError(context, "invalidRole");
         print("Please select a role");

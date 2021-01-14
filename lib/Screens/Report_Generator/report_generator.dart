@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import './borrow_report.dart';
 import './booking_report.dart';
 import './fines_report.dart';
-//TODO Filter settings, abandoned for now in favour of completing the report system
-// enum filterSettings { bookTitle, month, years, listYear }
 
 class ReportGenerator extends StatefulWidget {
   @override
@@ -12,21 +10,15 @@ class ReportGenerator extends StatefulWidget {
 
 class _ReportGeneratorState extends State<ReportGenerator>
     with SingleTickerProviderStateMixin {
-  // filterSettings xAxisFilter, listFilter;
   TabController reportTabs;
-  // List<DropdownMenuItem<filterSettings>> filterItemList;
   @override
   void initState() {
-    // filterItemList = [];
-    // filterList();
     reportTabs = TabController(length: 3, vsync: this)
       ..addListener(() {
         setState(() {
           // filterList(index: reportTabs.index);
         });
       });
-    // xAxisFilter = filterSettings.years;
-    // listFilter = filterSettings.bookTitle;
     super.initState();
   }
 
@@ -43,10 +35,10 @@ class _ReportGeneratorState extends State<ReportGenerator>
                   onPressed: () => filter(context, filterItemList),
                 );
               }), */
-              IconButton(
-                icon: Icon(Icons.print_rounded),
-                onPressed: null,
-              )
+              // IconButton(
+              //   icon: Icon(Icons.print_rounded),
+              //   onPressed: null,
+              // )
             ],
             bottom: TabBar(
               controller: reportTabs,

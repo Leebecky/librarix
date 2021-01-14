@@ -55,17 +55,8 @@ saveDeviceToken() async {
   print("Token set: $deviceToken");
 }
 
-//? Automatically subscribes all library staff to the following topics for push notifications
-//TODO enable manual/unsubscribe in notification settings
-staffTopicSubscription() {
-  FirebaseMessaging().subscribeToTopic("Fines");
-  FirebaseMessaging().subscribeToTopic("Booking");
-  FirebaseMessaging().subscribeToTopic("BookReservation");
-  print("Topics successfully subscribed");
-}
-
-//? Configuration for FCM messages
-fcmConfiguration() {
+//?// Configuration for FCM messages
+/* fcmConfiguration() {
   FirebaseMessaging().configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
@@ -80,10 +71,10 @@ fcmConfiguration() {
         print("onResume: $message");
         // await standardNotification(message);
       });
-}
+} */
 
 //? Handles incoming notifications when application is open
-Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
+/* Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
   if (message.containsKey('data')) {
     // Handle data message
     final dynamic data = message['data'];
@@ -94,5 +85,6 @@ Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) async {
     // Handle notification message
     final dynamic notification = message['notification'];
     print(notification);
-  }
 }
+}
+ */

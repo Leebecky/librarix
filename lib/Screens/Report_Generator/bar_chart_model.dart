@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+// ignore: implementation_imports
 import 'package:charts_flutter/src/text_element.dart' as chartsTextElement;
+// ignore: implementation_imports
 import 'package:charts_flutter/src/text_style.dart' as chartsTextStyle;
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:random_color/random_color.dart';

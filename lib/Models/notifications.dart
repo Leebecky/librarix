@@ -50,11 +50,13 @@ Notifications createInstance(
 
 //? Saves notifications to database
 Future saveNotification(
-    {Notifications notificationInstance, String userId}) async {
+    {Notifications notificationInstance,
+    String userId,
+    bool saveToStaff = false}) async {
   String userDocId = FirebaseAuth.instance.currentUser.uid;
 
 //^ If staff, write to notification database as well
-  if (await isStaff()) {
+  if (await isStaff() || saveToStaff == true) {
     await FirebaseFirestore.instance
         .collection("StaffNotifications")
         .add(_notificationsToJson(notificationInstance));
@@ -92,6 +94,7 @@ Future<void> updateNotification(
           .update({updateAttribute: updateItem});
 }
 
+//? Searches for a notification
 Future<List<Notifications>> searchNotification(
     String userId, String queryField, String queryItem) async {
   String uid = await findUser("UserId", userId);
@@ -122,6 +125,7 @@ Future<List<Notifications>> searchNotification(
   return notificationsList;
 }
 
+//? Updates the noficiations for book return
 Future<void> updateBookReturnNotification({
   String userId,
   String bookId,
@@ -189,6 +193,3 @@ Future deleteNotification({
         .delete();
   }
 }
-
-//TODO booking cancelled, delete notification
-// TODO// book returned before notifications started

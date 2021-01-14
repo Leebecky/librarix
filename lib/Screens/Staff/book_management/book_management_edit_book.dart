@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import '../../Custom_Widget/textfield.dart';
-import '../../Models/book.dart';
+import '../../../Custom_Widget/textfield.dart';
+import '../../../Models/book.dart';
 
 class EditBook extends StatefulWidget {
   final DocumentSnapshot bookCatalogue;

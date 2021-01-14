@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import './book.dart';
+import './user.dart';
+import './notifications.dart';
+import '../modules.dart';
 
 //? Model for the BorrowedBook database records
 class Borrow {
@@ -115,39 +118,6 @@ Stream<List<Borrow>> getBorrowedOf(String queryField, String queryItem) async* {
 }
 
 //?Retrieve data from Firestore
-
-/* Stream<List<Borrow>> getBorrowedWithDocIdOf(
-    String queryField, String queryItem) async* {
-  List<Borrow> borrowedOf = [];
-  List<Borrow> finalBorrowed = [];
-  List<String> borowedId = [];
-  QuerySnapshot borrowed = await FirebaseFirestore.instance
-      .collection("BorrowedBook")
-      .where(queryField, isEqualTo: queryItem)
-      .get()
-      .catchError((onError) =>
-          print("Error retrieving booking data from database: $onError"));
-
-  if (borrowed.docs.isNotEmpty) {
-    borrowed.docs.forEach((doc) {
-      borrowedOf.add(borrowFromJson(doc.data()));
-      borowedId.add(doc.id);
-    });
-  }
-  for (var i = 0; i < borrowedOf.length; i++) {
-    finalBorrowed.add(Borrow(
-        borrowedOf[i].userId,
-        borrowedOf[i].bookId,
-        borrowedOf[i].bookTitle,
-        borrowedOf[i].borrowedDate,
-        borrowedOf[i].timesRenewed,
-        borrowedOf[i].returnedDate,
-        borrowedOf[i].status,
-        borowedId[i]));
-  }
-
-  yield finalBorrowed;
-} */
 Stream<List<Borrow>> getBorrowedWithDocIdOf(
     String queryField, String queryItem) async* {
   List<Borrow> borrowedOf = [];
@@ -227,3 +197,30 @@ Future<void> updateReturnStatus(String docId, String bookId) async {
     updateBookStock(record.bookId, stock);
   }).catchError((onError) => print("An error has occurred: $onError")); 
 }*/
+//? Creates book reservation record
+Future createReservationRecord(String bookId, String bookTitle) async {
+  ActiveUser myUser = await myActiveUser();
+
+  DocumentReference ref =
+      await FirebaseFirestore.instance.collection("BorrowedBook").add({
+    'BookId': bookId,
+    'BookTitle': bookTitle,
+    'BorrowDate': "Not Available",
+    'BorrowRenewedTime': 0,
+    'BorrowReturnedDate': "Not Available",
+    'BorrowStatus': 'Reserved',
+    'UserId': myUser.userId,
+  });
+  print(ref.id);
+
+  //? Creates a notification
+  await saveNotification(
+      userId: myUser.userId,
+      saveToStaff: true,
+      notificationInstance: createInstance(
+          details: ref.id,
+          title: "Book Reservation - ${myUser.userId}",
+          content: "$bookTitle has been reserved by ${myUser.userId}",
+          displayDate: parseDate(DateTime.now().toString()),
+          type: "Book Reservation"));
+}
