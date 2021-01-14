@@ -31,7 +31,7 @@ class _SearchFunctionState extends State<SearchFunction> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    resultsLoaded = getUsersPastTripsStreamSnapshots();
+    resultsLoaded = getSearchStreamSnapshots();
   }
 
   _onSearchChanged() {
@@ -40,13 +40,13 @@ class _SearchFunctionState extends State<SearchFunction> {
 
   searchResultsList() {
     var showResults = [];
+    if(_searchController.text != "") {
+      for(var searchSnapshot in _allResults){
+        var title = Book.fromSnapshot(searchSnapshot).title.toLowerCase();
 
-    if (_searchController.text != "") {
-      for (var tripSnapshot in _allResults) {
-        var title = Book.fromSnapshot(tripSnapshot).title.toLowerCase();
+        if(title.contains(_searchController.text.toLowerCase())) {
+          showResults.add(searchSnapshot);
 
-        if (title.contains(_searchController.text.toLowerCase())) {
-          showResults.add(tripSnapshot);
         }
       }
     } else {
@@ -57,9 +57,12 @@ class _SearchFunctionState extends State<SearchFunction> {
     });
   }
 
-  getUsersPastTripsStreamSnapshots() async {
-    var data =
-        await FirebaseFirestore.instance.collection('BookCatalogue').get();
+
+  getSearchStreamSnapshots() async {
+    var data = await FirebaseFirestore.instance
+        .collection('BookCatalogue')
+        .get();
+
 
     setState(() {
       _allResults = data.docs;
