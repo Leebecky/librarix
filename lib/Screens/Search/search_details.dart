@@ -120,7 +120,6 @@ class _DetailBookViewState extends State<DetailBookView> {
   Widget verifyUser(ValueNotifier userId) {
     return FutureBuilder<bool>(
       future: isStaff(),
-      // ignore: missing_return
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         //^ if User is Staff, create a textfield
         if (snapshot.data == false) {
