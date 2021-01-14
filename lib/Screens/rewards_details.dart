@@ -33,7 +33,7 @@ class RewardsDetails extends StatelessWidget {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
-                                          Image.network(reward['RewardIcon']),
+                                          Image.network(reward['RewardIcon'],),
                                           Spacer(),
                                           Column(
                                             children: [

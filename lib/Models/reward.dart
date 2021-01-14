@@ -35,8 +35,8 @@ Reward rewardFromJson(Map<String, dynamic> json) {
 //? Converts the Reward class into key/value pairs
 Map<String, dynamic> _rewardToJson(Reward instance) => <String, dynamic>{
       "RewardTitle": instance.title,
-      "RewardId": instance.icon,
-      "RewardIcon": instance.rewardId,
+      "RewardId": instance.rewardId,
+      "RewardIcon": instance.icon,
       "RewardDescription": instance.description,
       "RewardRequirement": instance.requirement,
 };
