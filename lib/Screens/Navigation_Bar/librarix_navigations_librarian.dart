@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:librarix/Models/notifications.dart';
-import 'package:librarix/Models/user.dart';
+import '../../Models/notifications.dart';
+import '../../Models/user.dart';
+import '../Staff/book_management/book_management.dart';
 import '../../modules.dart';
 import '../Booking/booking_maker.dart';
-import '../Staff/book_management.dart';
 import '../Staff/fines_management.dart';
 import '../Staff/update_booking/update_booking_record.dart';
 import '../../config.dart';

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:librarix/modules.dart';
 import '../../../Custom_Widget/buttons.dart';
 import '../fines_management.dart';
 
@@ -11,7 +12,7 @@ class AddFines extends StatefulWidget {
 }
 
 class _AddFinesState extends State<AddFines> {
-  String userid, due, reason, total;
+  String userid, due, reason, total, date;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,7 @@ class _AddFinesState extends State<AddFines> {
                           SizedBox(
                             width: 10,
                           ),
-                          Text("$total"),
+                          Text("Fines Total : $total"),
 
                           //calculate total fines
                         ],
@@ -92,10 +93,9 @@ class _AddFinesState extends State<AddFines> {
                   buttonText: "Add",
                   onClick: () async {
                     createFines();
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return FinesManagement();
-                    }));
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -109,10 +109,11 @@ class _AddFinesState extends State<AddFines> {
   Future createFines() async {
     try {
       await FirebaseFirestore.instance.collection("Fines").add({
-        'UserId': widget.userId,
+        'FinesIssueDate': parseDate(DateTime.now().toString()),
         'FinesReason': reason,
         'FinesStatus': "Unpaid",
-        'FinesTotal': total //total,
+        'FinesTotal': total, //total,
+        'UserId': widget.userId,
       });
     } catch (e) {
       print(e.message);
