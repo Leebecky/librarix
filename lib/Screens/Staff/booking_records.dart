@@ -79,13 +79,13 @@ class BookingRecords extends StatelessWidget {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 8.0, bottom: 4.0, right: 100),
+                                        top: 8.0, bottom: 4.0),
                                     child: Row(
                                       children: [
                                         Text(
-                                            "               " +
+                                            "             " +
                                                 myBooking[index].userId,
-                                            style: TextStyle(fontSize: 19)),
+                                            style: TextStyle(fontSize: 20)),
                                       ],
                                     ),
                                   ),

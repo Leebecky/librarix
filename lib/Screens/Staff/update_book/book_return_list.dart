@@ -121,6 +121,8 @@ class _BookReturnListState extends State<BookReturnList> {
                   TextButton(
                     child: Text("Yes"),
                     onPressed: () async {
+                      updateReturnStatus(activeReserve[index].borrowedId,
+                          activeReserve[index].bookId);
                       return showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -132,7 +134,7 @@ class _BookReturnListState extends State<BookReturnList> {
                               content: SingleChildScrollView(
                                 child: ListBody(
                                   children: <Widget>[
-                                    Text("Is the user need to be ?"),
+                                    Text("Is the user need to be fines?"),
                                   ],
                                 ),
                               ),
@@ -150,9 +152,6 @@ class _BookReturnListState extends State<BookReturnList> {
                                 TextButton(
                                   child: Text("No"),
                                   onPressed: () async {
-                                    updateReturnStatus(
-                                        activeReserve[index].borrowedId,
-                                        activeReserve[index].bookId);
                                     Navigator.of(context).pop();
                                     Navigator.of(context).pop();
                                     // Navigator.push(context,
