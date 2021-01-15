@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class LibrarianManagementDetail extends StatefulWidget {
-  final DocumentSnapshot librarian;
-  LibrarianManagementDetail({this.librarian});
+  final DocumentSnapshot dlibrarian;
+  LibrarianManagementDetail({this.dlibrarian});
 
   @override
   _LibrarianManagementDetailState createState() =>

@@ -20,7 +20,7 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                LibrarianManagementDetail(librarian: librarian)));
+                LibrarianManagementDetail(dlibrarian: librarian)));
   }
 
   @override
@@ -42,43 +42,74 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                         return ListView.builder(
                           itemCount: snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: [
-                                Container(
+                            return Container(
+                              child: GestureDetector(
+                                child: Card(
                                   child: Padding(
                                     padding: const EdgeInsets.all(5),
                                     child: Column(
                                       children: <Widget>[
-                                        Card(
-                                          child: ListTile(
-                                            title: Text(
-                                              snapshot.data[index].name,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            subtitle: Row(
-                                              children: <Widget>[
-                                                Expanded(
-                                                    child: Padding(
-                                                  padding:
-                                                      EdgeInsets.only(top: 5),
-                                                  child: Text(
-                                                    snapshot.data[index].userId,
-                                                    style:
-                                                        TextStyle(fontSize: 18),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 8.0, bottom: 4.0),
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 2.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                          snapshot
+                                                              .data[index].name,
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                )),
-                                              ],
-                                            ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 2.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                          snapshot.data[index]
+                                                              .userId,
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                )
-                              ],
+                                ),
+                                onTap: () {
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) =>
+                                  //           LibrarianManagementDetail(
+                                  //               dlibrarian:)),
+                                  // );
+                                  navigateToLibrarianManagementDetail();
+                                },
+                              ),
                             );
                           },
                         );
