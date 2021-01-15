@@ -41,7 +41,7 @@ Map<String, dynamic> _fineToJson(Fines instance) => <String, dynamic>{
 //? Returns all fine records
 Stream<List<Fines>> getAllFines() async* {
   List<Fines> allFines = [];
-  FirebaseFirestore.instance
+  await FirebaseFirestore.instance
       .collection("Fines")
       .get()
       .then((value) => value.docs.forEach((element) {

@@ -83,7 +83,7 @@ class _AddFinesState extends State<AddFines> {
                           SizedBox(
                             width: 10,
                           ),
-                          Text("Fines Total : $total"),
+                          Text("Fines Total : RM$total"),
 
                           //calculate total fines
                         ],
@@ -129,13 +129,13 @@ class _AddFinesState extends State<AddFines> {
   void calcFines() {
     switch (reason) {
       case "Late Return":
-        total = "RM5.00";
+        total = "5.00";
         break;
       case "Book Damage":
-        total = "RM50.00";
+        total = "50.00";
         break;
       case "Book Lost":
-        total = "RM100.00";
+        total = "100.00";
         break;
     }
   }
