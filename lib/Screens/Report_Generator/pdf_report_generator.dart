@@ -1,22 +1,21 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:librarix/Models/borrow.dart';
-import 'package:librarix/Models/discussion_room.dart';
-import 'package:librarix/Models/study_table.dart';
 import 'package:pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart' as material;
-import 'pdf_viewer_page.dart';
-import 'dart:typed_data';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:librarix/modules.dart';
+import 'package:librarix/Models/borrow.dart';
+import 'package:librarix/Models/discussion_room.dart';
+import 'package:librarix/Models/study_table.dart';
+import 'package:librarix/Screens/Notifications/notifications_build.dart';
 import '../../Models/booking.dart';
 import '../../Models/fines.dart';
 import '../../Models/book.dart';
 import '../../Models/user.dart';
 
 //? PDF Generator
-Future<Uint8List> generatePdfReport(material.BuildContext context,
+Future generatePdfReport(material.BuildContext context,
     PdfPageFormat pageFormat, int tabIndex) async {
   String reportType;
   List<Book> bookList = [];
@@ -65,12 +64,7 @@ Future<Uint8List> generatePdfReport(material.BuildContext context,
       maxPages: 100,
       pageFormat: pageFormat,
       build: (context) => [
-            pw.Text("$reportType Report",
-                style: pw.TextStyle(
-                  fontSize: 30,
-                  fontWeight: pw.FontWeight.bold,
-                ),
-                textAlign: pw.TextAlign.center),
+            TextWidget("$reportType Report", fontSize: 30),
             pw.SizedBox(height: 30),
             //~ Bar chart
             _barChart(context,
@@ -91,16 +85,16 @@ Future<Uint8List> generatePdfReport(material.BuildContext context,
           ]));
 
   //^ Save and display pdf
-  // final String dir = (await getApplicationDocumentsDirectory()).path;
-  final String dir = (await getApplicationSupportDirectory()).path;
-  final String path = '$dir/$reportType.pdf';
+  final String dir = (await getExternalStorageDirectory()).path;
+  final String path = '$dir/$reportType Report.pdf';
   final File file = File(path);
   await file.writeAsBytes(await report.save());
-  return material.Navigator.of(context).push(
-    material.MaterialPageRoute(
-      builder: (_) => PdfViewerPage(path: path),
-    ),
-  );
+  var message = {
+    "Title": "LibrariX Report Generator",
+    "Body": "$reportType report PDF has been saved. ",
+    "Payload": "$path"
+  };
+  await standardNotification(message);
 }
 
 //? Report Bar Chart
@@ -173,35 +167,43 @@ List<pw.Widget> _recordTable(pw.Context context,
     List<StudyTable> studyTableList,
     List<Booking> bookingList,
     List<DiscussionRoom> roomList}) {
+  //^ Borrow Report
   if (borrowList.isNotEmpty) {
     List<String> bookTitle = [];
     for (Book book in bookList) {
       bookTitle.add(book.title);
     }
     bookTitle.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
-
     return generateBorrowTable(borrowList, bookTitle);
-  } else if (finesList.isNotEmpty) {
+  }
+  //^ Fines Report
+  else if (finesList.isNotEmpty) {
     List<String> userId = [];
     for (ActiveUser user in userList) {
       userId.add(user.userId);
     }
     return generateFinesTable(finesList, userId);
-  } else {
-    var dr = generateDiscussionRoomBookingTable(bookingList, roomList);
-    var st = generateStudyTableBookingTable(bookingList, studyTableList);
+  }
+  //^ Booking Report
+  else {
     List<pw.Widget> widgetList = [];
+    List<pw.Widget> dr =
+        generateDiscussionRoomBookingTable(bookingList, roomList);
+    List<pw.Widget> st =
+        generateStudyTableBookingTable(bookingList, studyTableList);
+
+    //~ Combines the results of discussion room + study table
     widgetList.addAll([
-      pw.Text("Discussion Room",
-          style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
+      TextWidget("Discussion Room", fontSize: 20, header: true),
       pw.SizedBox(height: 20)
     ]);
     dr.forEach((element) {
       widgetList.add(element);
     });
+
     widgetList.addAll([
-      pw.Text("Study Table",
-          style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
+      pw.SizedBox(height: 20),
+      TextWidget("Study Table", fontSize: 20, header: true),
       pw.SizedBox(height: 20)
     ]);
     st.forEach((element) {
@@ -330,8 +332,7 @@ List<pw.Widget> generateBorrowTable(
     //^ Constructs the data table
     if (recordList.isNotEmpty) {
       tableList.addAll([
-        pw.Text(title,
-            style: pw.TextStyle(fontSize: 15, fontWeight: pw.FontWeight.bold)),
+        TextWidget(title),
         DataTable(recordList: recordList, tableHeader: tableHeader),
         pw.SizedBox(height: 20)
       ]);
@@ -363,8 +364,7 @@ List<pw.Widget> generateFinesTable(List<Fines> finesList, List<String> userId) {
     //^ Constructs the data table
     if (recordList.isNotEmpty) {
       tableList.addAll([
-        pw.Text(user,
-            style: pw.TextStyle(fontSize: 15, fontWeight: pw.FontWeight.bold)),
+        TextWidget(user),
         DataTable(recordList: recordList, tableHeader: tableHeader),
         pw.SizedBox(height: 20)
       ]);
@@ -399,8 +399,7 @@ List<pw.Widget> generateDiscussionRoomBookingTable(
     //^ Constructs the data table
     if (recordList.isNotEmpty) {
       tableList.addAll([
-        pw.Text(room.roomNum,
-            style: pw.TextStyle(fontSize: 15, fontWeight: pw.FontWeight.bold)),
+        TextWidget(room.roomNum),
         DataTable(recordList: recordList, tableHeader: tableHeader),
         pw.SizedBox(height: 20)
       ]);
@@ -444,8 +443,7 @@ List<pw.Widget> generateStudyTableBookingTable(
     //^ Constructs the data table
     if (recordList.isNotEmpty) {
       tableList.addAll([
-        pw.Text(table.tableNum,
-            style: pw.TextStyle(fontSize: 15, fontWeight: pw.FontWeight.bold)),
+        TextWidget(table.tableNum),
         DataTable(
             recordList: recordList, tableHeader: tableHeader, widths: widths),
         pw.SizedBox(height: 20)
@@ -454,6 +452,26 @@ List<pw.Widget> generateStudyTableBookingTable(
     recordList = [];
   });
   return tableList;
+}
+
+//? Report Text Headers
+class TextWidget extends pw.StatelessWidget {
+  String text;
+  double fontSize, padding;
+  bool header;
+  TextWidget(this.text, {this.fontSize = 15, this.header = false});
+
+  @override
+  pw.Widget build(pw.Context context) {
+    (header) ? padding = 0 : padding = 5;
+    return pw.Align(
+        alignment: pw.Alignment.centerLeft,
+        child: pw.Padding(
+            padding: pw.EdgeInsets.only(left: padding),
+            child: pw.Text(text,
+                style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold, fontSize: fontSize))));
+  }
 }
 
 //? Data Table class
