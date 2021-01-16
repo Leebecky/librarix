@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:get/get.dart';
 
 class FirstView extends StatelessWidget {
   final primaryColor = const Color(0xFF7fbfe9);
@@ -45,8 +46,7 @@ class FirstView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // Navigator.of(context).popAndPushNamed("/login");
-                    Navigator.popAndPushNamed(context, "/login");
+                    Get.offNamed("/login");
                   }),
             ],
           ),

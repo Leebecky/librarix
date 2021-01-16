@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../Models/user.dart';
 import '../Custom_Widget/custom_alert_dialog.dart';
-import './Notifications/local_notifications_initializer.dart';
+import 'package:get/get.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -162,7 +162,6 @@ class _LoginState extends State<Login> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: userIdCtrl.text, password: passwordCtrl.text);
 
-      saveDeviceToken();
       saveRole(dropdownValue);
 
       //^ Routing based on type of user
@@ -171,7 +170,7 @@ class _LoginState extends State<Login> {
       } else if (dropdownValue == "Librarian") {
         Navigator.popAndPushNamed(context, "/librarianHome");
       } else if (dropdownValue == "Admin") {
-        Navigator.popAndPushNamed(context, "/adminHome");
+        Get.offNamed("/adminHome");
       } else {
         loginError(context, "invalidRole");
         print("Please select a role");

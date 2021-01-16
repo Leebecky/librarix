@@ -11,7 +11,7 @@ import '../Staff/fines_management.dart';
 import '../Staff/update_booking/update_booking_record.dart';
 import '../Staff/update_book/update_book_record.dart';
 import '../../config.dart';
-import '../catalogue_view.dart';
+import '../Catalogue/catalogue_view.dart';
 import '../Booking/booking_maker.dart';
 import '../Staff/booking_records.dart';
 
