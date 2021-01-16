@@ -32,8 +32,8 @@ class _BorrowReportState extends State<BorrowReport> {
                 stream: getAllBorrowRecords(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Borrow>> snapshot) {
-                  var record = snapshot.data;
                   if (snapshot.hasData) {
+                    var record = snapshot.data;
                     generateChartData(record);
 
                     return Column(children: [

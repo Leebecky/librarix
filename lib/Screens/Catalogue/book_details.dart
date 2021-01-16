@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:librarix/Models/borrow.dart';
-import '../Custom_Widget/buttons.dart';
-import '../modules.dart';
+import '../../Custom_Widget/buttons.dart';
+import '../../modules.dart';
 
 class BookDetails extends StatefulWidget {
   final DocumentSnapshot bookCatalogue;

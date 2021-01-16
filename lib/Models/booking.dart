@@ -59,9 +59,10 @@ Future<QuerySnapshot> getBooking() async {
   return bookingDetails;
 }
 
+//? Retrieves all booking records in the database
 Stream<List<Booking>> getAllBookings() async* {
   List<Booking> allBookings = [];
-  FirebaseFirestore.instance
+  await FirebaseFirestore.instance
       .collection("Booking")
       .get()
       .then((value) => value.docs.forEach((doc) {
@@ -73,7 +74,7 @@ Stream<List<Booking>> getAllBookings() async* {
 
 //? Creates new record in database
 Future<void> createBooking(Booking bookingRecord) async {
-  FirebaseFirestore.instance
+  await FirebaseFirestore.instance
       .collection("Booking")
       .add(_bookingToJson(bookingRecord))
       .then(
@@ -135,7 +136,7 @@ Stream<List<Booking>> getBookingsWithDocIdOf(
 }
 
 Future<void> updateBookingCompletedStatus(String docId) async {
-  FirebaseFirestore.instance
+  await FirebaseFirestore.instance
       .collection("Booking")
       .doc(docId)
       .update({"BookingStatus": "Completed"})
@@ -145,7 +146,7 @@ Future<void> updateBookingCompletedStatus(String docId) async {
 }
 
 Future<void> updateBookingCancelledStatus(String docId) async {
-  FirebaseFirestore.instance
+  await FirebaseFirestore.instance
       .collection("Booking")
       .doc(docId)
       .update({"BookingStatus": "Cancelled"})
@@ -155,7 +156,7 @@ Future<void> updateBookingCancelledStatus(String docId) async {
 }
 
 Future<void> updateBookingActiveStatus(String docId) async {
-  FirebaseFirestore.instance
+  await FirebaseFirestore.instance
       .collection("Booking")
       .doc(docId)
       .update({"BookingStatus": "Active"})
