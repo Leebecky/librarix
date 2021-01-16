@@ -41,8 +41,8 @@ class _FinesReportState extends State<FinesReport> {
                 stream: getAllFines(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Fines>> fineSnapshot) {
-                  var record = fineSnapshot.data;
                   if (fineSnapshot.hasData) {
+                    var record = fineSnapshot.data;
                     generateChartData(record);
 
                     return SingleChildScrollView(
@@ -123,7 +123,7 @@ class _FinesReportState extends State<FinesReport> {
         title: Text(item.reason),
         subtitle:
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text("Total: RM${item.total}, to be paid by ${item.issueDate}"),
+          Text("Total: RM${item.total}, issued on ${item.issueDate}"),
           Text("Status: ${item.status}"),
         ]),
       ));
