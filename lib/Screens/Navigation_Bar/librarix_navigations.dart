@@ -118,7 +118,7 @@ class _HomeState extends State<Home> {
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey[300],
+        unselectedItemColor: Colors.grey[400],
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: [

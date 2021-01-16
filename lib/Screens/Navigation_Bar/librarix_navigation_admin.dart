@@ -146,7 +146,7 @@ class _AdminHomeState extends State<AdminHome> {
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey[300],
+        unselectedItemColor: Colors.grey[400],
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: [
@@ -187,7 +187,7 @@ class _AdminHomeState extends State<AdminHome> {
   Widget notificationIcon() {
     CollectionReference staffNotificationDb =
         FirebaseFirestore.instance.collection("StaffNotifications");
-
+    double padding, fontSize;
     return StreamBuilder<QuerySnapshot>(
         stream: staffNotificationDb.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -202,7 +202,15 @@ class _AdminHomeState extends State<AdminHome> {
                 parseStringToDate(notif.displayDate).isAfter(DateTime.now()) ||
                 notif.read == true);
             notificationsList.join(",");
-
+            int unreadNotifications = notificationsList.length;
+            if (unreadNotifications < 10) {
+              padding = 3;
+              fontSize = 11;
+            } else {
+              padding = 2;
+              fontSize = 10;
+            }
+            
             //^ Display Notification icon + badge
             if (notificationsList.length > 0) {
               return SizedBox(
@@ -211,9 +219,9 @@ class _AdminHomeState extends State<AdminHome> {
                     Icon(Icons.notifications),
                     Positioned(
                         right: 0,
-                        top: -2,
+                        top: 0,
                         child: Container(
-                          padding: EdgeInsets.all(3),
+                          padding: EdgeInsets.all(padding),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color:
@@ -221,9 +229,9 @@ class _AdminHomeState extends State<AdminHome> {
                                     ? Colors.blue
                                     : Colors.red,
                           ),
-                          child: Text(notificationsList.length.toString(),
-                              style:
-                                  TextStyle(fontSize: 11, color: Colors.white)),
+                          child: Text(unreadNotifications.toString(),
+                              style: TextStyle(
+                                  fontSize: fontSize, color: Colors.white)),
                         ))
                   ]));
             }

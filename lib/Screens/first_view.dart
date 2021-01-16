@@ -46,7 +46,7 @@ class FirstView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Get.offNamed("/login");
+                    Get.offAllNamed("/login");
                   }),
             ],
           ),
