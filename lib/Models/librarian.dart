@@ -115,3 +115,13 @@ Future<List<Librarian>> getLibrarianData(List<String> docId) async {
   }
   return librarianList;
 }
+
+Future<void> createLibrarian(String librarianid, String librarianhp) async {
+  var addLibrarian = FirebaseFirestore.instance
+      .collection("User")
+      .doc(librarianid)
+      .collection("Librarian")
+      .doc("LibrarianDetails");
+  await addLibrarian
+      .set({"LibrarianPhoneNumber": librarianhp, "LibrarianStatus": "Trainee"});
+}

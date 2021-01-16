@@ -1,9 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../../Models/librarian.dart';
 
 class LibrarianManagementDetail extends StatefulWidget {
-  final DocumentSnapshot dlibrarian;
-  LibrarianManagementDetail({this.dlibrarian});
+  final String dlibrarian;
+  final Librarian data;
+  LibrarianManagementDetail({this.dlibrarian, this.data});
 
   @override
   _LibrarianManagementDetailState createState() =>
@@ -13,6 +14,12 @@ class LibrarianManagementDetail extends StatefulWidget {
 class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.data.name),
+        ),
+        body: (Container(
+          child: Text(widget.data.status),
+        )));
   }
 }

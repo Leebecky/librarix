@@ -15,12 +15,13 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
   CollectionReference librarianDb =
       FirebaseFirestore.instance.collection("User");
 
-  navigateToLibrarianManagementDetail(DocumentSnapshot librarian) {
+  navigateToLibrarianManagementDetail(
+      String librarianId, Librarian librarianData) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                LibrarianManagementDetail(dlibrarian: librarian)));
+            builder: (context) => LibrarianManagementDetail(
+                dlibrarian: librarianId, data: librarianData)));
   }
 
   @override
@@ -107,7 +108,8 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                                   //           LibrarianManagementDetail(
                                   //               dlibrarian:)),
                                   // );
-                                  navigateToLibrarianManagementDetail();
+                                  navigateToLibrarianManagementDetail(
+                                      docId.data[index], snapshot.data[index]);
                                 },
                               ),
                             );
