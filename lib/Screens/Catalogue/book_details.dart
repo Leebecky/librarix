@@ -29,28 +29,29 @@ class _BookDetailsState extends State<BookDetails> {
                     height: 300, fit: BoxFit.fill),
               ),
             ),
-            SliverFixedExtentList(
-              itemExtent: 60.00,
+            SliverList(
+              // itemExtent: 60.00,
               delegate: SliverChildListDelegate([
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(widget.bookCatalogue["BookTitle"],
                       style: TextStyle(
-                          fontSize: 30.0, fontWeight: FontWeight.w500)),
+                          fontSize: 25.0, fontWeight: FontWeight.w500)),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 5.0, left: 8.0),
+                  padding:
+                      const EdgeInsets.only(top: 5.0, left: 8.0, bottom: 10.0),
                   child: Text(widget.bookCatalogue["BookAuthor"],
                       style: TextStyle(
                           fontSize: 20.0, fontStyle: FontStyle.italic)),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: AutoSizeText(
                     widget.bookCatalogue["BookDescription"],
                     style: TextStyle(fontSize: 15.0),
                     maxLines: 20,
-                    textAlign: TextAlign.left,
+                    textAlign: TextAlign.justify,
                   ),
                 ),
                 Padding(
