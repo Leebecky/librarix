@@ -11,7 +11,7 @@ import '../Staff/update_booking/update_booking_record.dart';
 import '../../config.dart';
 import '../Staff/update_book/update_book_record.dart';
 import '../Staff/booking_records.dart';
-import '../Catalogue/catalogue_view.dart';
+import '../catalogue_view.dart';
 
 class LibrarianHome extends StatefulWidget {
   @override
@@ -99,6 +99,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                 title: Text("Book Management"),
                 trailing: Icon(Icons.book_online),
                 onTap: () {
+                  //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return BookManagementListView();
                   }));
@@ -107,6 +108,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                 title: Text("Fines Management"),
                 trailing: Icon(Icons.attach_money),
                 onTap: () {
+                  //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return FinesManagement();
                   }));
@@ -135,7 +137,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey[400],
+        unselectedItemColor: Colors.grey[300],
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: [
@@ -176,7 +178,6 @@ class _LibrarianHomeState extends State<LibrarianHome> {
   Widget notificationIcon() {
     CollectionReference staffNotificationDb =
         FirebaseFirestore.instance.collection("StaffNotifications");
-    double padding, fontSize;
     return StreamBuilder<QuerySnapshot>(
         stream: staffNotificationDb.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -192,16 +193,6 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                 notif.read == true);
             notificationsList.join(",");
 
-            //^ Adjusts the sizing of the text within the unread notification bubble
-            int unreadNotifications = notificationsList.length;
-            if (unreadNotifications < 10) {
-              padding = 3;
-              fontSize = 11;
-            } else {
-              padding = 2;
-              fontSize = 10;
-            }
-            //^ Building the unread notification bubble
             if (notificationsList.length > 0) {
               return SizedBox(
                 width: 25,
@@ -211,16 +202,15 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                     right: 0,
                     top: -2,
                     child: Container(
-                      padding: EdgeInsets.all(padding),
+                      padding: EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: (currentTheme.currentTheme() == ThemeMode.light)
                             ? Colors.blue
                             : Colors.red,
                       ),
-                      child: Text(unreadNotifications.toString(),
-                          style: TextStyle(
-                              fontSize: fontSize, color: Colors.white)),
+                      child: Text(notificationsList.length.toString(),
+                          style: TextStyle(fontSize: 11, color: Colors.white)),
                     ),
                   ),
                 ]),

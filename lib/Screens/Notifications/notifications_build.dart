@@ -76,16 +76,16 @@ bookingNotificationBeforeStartTime({
 
 //? Deploys standard notification banner
 Future standardNotification(Map<String, dynamic> message) async {
-  String title = message["Title"];
-  String body = message["Body"];
-  String payload = message["Payload"];
+  String title = message["notification"]["title"];
+  String body = message["notification"]["body"];
+
   const AndroidNotificationDetails androidPlatformChannelSpecifics =
       AndroidNotificationDetails("Misc Id", "Misc", "Miscellaneous",
           importance: Importance.max, priority: Priority.max, showWhen: false);
   const NotificationDetails platformChannelSpecifics =
       NotificationDetails(android: androidPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin
-      .show(0, title, body, platformChannelSpecifics, payload: payload);
+      .show(0, title, body, platformChannelSpecifics, payload: "payload");
 }
 
 //? Return Book Notification

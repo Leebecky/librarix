@@ -11,7 +11,7 @@ import '../Staff/fines_management.dart';
 import '../Staff/update_booking/update_booking_record.dart';
 import '../Staff/update_book/update_book_record.dart';
 import '../../config.dart';
-import '../Catalogue/catalogue_view.dart';
+import '../catalogue_view.dart';
 import '../Booking/booking_maker.dart';
 import '../Staff/booking_records.dart';
 
@@ -146,7 +146,7 @@ class _AdminHomeState extends State<AdminHome> {
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey[400],
+        unselectedItemColor: Colors.grey[300],
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: [
@@ -187,7 +187,7 @@ class _AdminHomeState extends State<AdminHome> {
   Widget notificationIcon() {
     CollectionReference staffNotificationDb =
         FirebaseFirestore.instance.collection("StaffNotifications");
-    double padding, fontSize;
+
     return StreamBuilder<QuerySnapshot>(
         stream: staffNotificationDb.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -202,15 +202,7 @@ class _AdminHomeState extends State<AdminHome> {
                 parseStringToDate(notif.displayDate).isAfter(DateTime.now()) ||
                 notif.read == true);
             notificationsList.join(",");
-            int unreadNotifications = notificationsList.length;
-            if (unreadNotifications < 10) {
-              padding = 3;
-              fontSize = 11;
-            } else {
-              padding = 2;
-              fontSize = 10;
-            }
-            
+
             //^ Display Notification icon + badge
             if (notificationsList.length > 0) {
               return SizedBox(
@@ -219,9 +211,9 @@ class _AdminHomeState extends State<AdminHome> {
                     Icon(Icons.notifications),
                     Positioned(
                         right: 0,
-                        top: 0,
+                        top: -2,
                         child: Container(
-                          padding: EdgeInsets.all(padding),
+                          padding: EdgeInsets.all(3),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color:
@@ -229,9 +221,9 @@ class _AdminHomeState extends State<AdminHome> {
                                     ? Colors.blue
                                     : Colors.red,
                           ),
-                          child: Text(unreadNotifications.toString(),
-                              style: TextStyle(
-                                  fontSize: fontSize, color: Colors.white)),
+                          child: Text(notificationsList.length.toString(),
+                              style:
+                                  TextStyle(fontSize: 11, color: Colors.white)),
                         ))
                   ]));
             }

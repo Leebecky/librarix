@@ -9,7 +9,6 @@ String parseDate(String date) {
   return dateString.toString();
 }
 
-//? Takes the date String and converts it to DateTime
 DateTime parseStringToDate(String date) {
   DateTime parsedDate;
   List<String> newDate = date.split("/");
@@ -51,7 +50,6 @@ Future<bool> validUser(String userId) async {
   return validUser.docs.isNotEmpty;
 }
 
-//? Retrieves the document id of the enquired document
 Future<String> getDocId(
     {String collectionName, String queryField, String queryItem}) async {
   String docId;

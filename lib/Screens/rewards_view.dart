@@ -5,7 +5,7 @@ import 'package:librarix/Custom_Widget/buttons.dart';
 import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Models/borrow.dart';
 import 'package:librarix/Models/user.dart';
-import 'package:librarix/Screens/Rewards/rewards_details.dart';
+import 'package:librarix/Screens/rewards_details.dart';
 
 class Rewards extends StatefulWidget {
   @override

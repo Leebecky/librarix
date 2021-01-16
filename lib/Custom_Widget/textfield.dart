@@ -86,8 +86,6 @@ class CustomDisplayTextField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
           labelText: text,
-          labelStyle: TextStyle(color: textFieldBorderColor),
-          hintStyle: TextStyle(color: textFieldBorderColor),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: textFieldBorderColor)),
           focusedBorder: OutlineInputBorder(
