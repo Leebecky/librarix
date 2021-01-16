@@ -177,7 +177,7 @@ class _LoginState extends State<Login> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: userIdCtrl.text, password: passwordCtrl.text);
 
-      saveRole(dropdownValue);
+      await saveRole(dropdownValue);
 
       //^ Routing based on type of user
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {

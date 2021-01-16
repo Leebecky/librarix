@@ -55,26 +55,28 @@ class _CatalogueViewState extends State<CatalogueView> {
                                       Padding(
                                         padding: const EdgeInsets.only(
                                             top: 4.0, bottom: 10.0, left: 10.0),
-                                        child: Row(children: <Widget>[
-                                          Image.network(
-                                              snapshot.data[index]
-                                                  .data()['BookImage'],
-                                              width: 150,
-                                              height: 150,
-                                              fit: BoxFit.fitHeight),
-                                        ]),
+                                        child: Image.network(
+                                            snapshot.data[index]
+                                                .data()['BookImage'],
+                                            width: 150,
+                                            height: 150,
+                                            fit: BoxFit.fitHeight),
                                       ),
-                                      Row(children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 20.0, left: 18.0),
+                                      Flexible(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2,
                                           child: Text(
-                                              snapshot.data[index]
-                                                  .data()['BookTitle'],
-                                              style: new TextStyle(
-                                                  fontSize: 14.0)),
+                                            snapshot.data[index]
+                                                .data()['BookTitle'],
+                                            style: TextStyle(fontSize: 14.0),
+                                            textAlign: TextAlign.center,
+                                          ),
                                         ),
-                                      ])
+                                      ),
                                     ])))),
                         onTap: () {
                           navigateToDetail(snapshot.data[index]);
@@ -83,7 +85,7 @@ class _CatalogueViewState extends State<CatalogueView> {
                     },
                     gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.8,
+                      childAspectRatio: 0.75,
                       mainAxisSpacing: 3.0,
                       crossAxisSpacing: 4.0,
                     ),
