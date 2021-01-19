@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../Models/librarian.dart';
+import 'librarian_management_add.dart';
 import 'librarian_management_detail.dart';
 
 class LibrarianManagement extends StatefulWidget {
@@ -30,6 +31,17 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
       appBar: AppBar(
         title: Text("Librarian Management"),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return AddLibrarian();
+          }));
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
+      ),
       body: Container(
         child: FutureBuilder<List<String>>(
             future: librarianData(),
@@ -45,69 +57,39 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                           itemBuilder: (BuildContext context, int index) {
                             return Container(
                               child: GestureDetector(
-                                child: Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 8.0, bottom: 4.0),
-                                          child: Row(
-                                            children: [
-                                              Column(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 2.0),
-                                                    child: Row(
-                                                      children: [
-                                                        Text(
-                                                          snapshot
-                                                              .data[index].name,
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 2.0),
-                                                    child: Row(
-                                                      children: [
-                                                        Text(
-                                                          snapshot.data[index]
-                                                              .userId,
-                                                          style: TextStyle(
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Card(
+                                        child: ListTile(
+                                          title: Text(
+                                            snapshot.data[index].name,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          subtitle: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                  child: Padding(
+                                                padding:
+                                                    EdgeInsets.only(top: 5),
+                                                child: Text(
+                                                  snapshot.data[index].userId,
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
+                                              )),
                                             ],
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 onTap: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (context) =>
-                                  //           LibrarianManagementDetail(
-                                  //               dlibrarian:)),
-                                  // );
                                   navigateToLibrarianManagementDetail(
                                       docId.data[index], snapshot.data[index]);
                                 },

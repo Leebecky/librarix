@@ -23,8 +23,8 @@ class _EditBookState extends State<EditBook> {
       publisher,
       publishedDate,
       description,
-      stock,
       image;
+  int stock;
 
   TextEditingController _titleC = TextEditingController();
   TextEditingController _isbnCodeC = TextEditingController();
@@ -62,7 +62,7 @@ class _EditBookState extends State<EditBook> {
     _publisherC.text = widget.bookCatalogue["BookPublisher"];
     _publishedDateC.text = widget.bookCatalogue["BookPublishDate"];
     _descriptionC.text = widget.bookCatalogue["BookDescription"];
-    _stockC.text = widget.bookCatalogue["BookStock"];
+    _stockC.text = widget.bookCatalogue["BookStock"].toString();
     // _imageC.text = widget.bookCatalogue["BookImage"];
 
     setState(() {
@@ -218,7 +218,7 @@ class _EditBookState extends State<EditBook> {
                     controller: _stockC,
                     text: 'Stock',
                     fixKeyboardToNum: true,
-                    onChange: (value) => stock = value,
+                    onChange: (value) => stock = int.parse(value),
                   ),
                 ),
                 Padding(

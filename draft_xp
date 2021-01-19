@@ -715,3 +715,62 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
     );
   }
 }
+
+
+??????????
+Librairna Management Card
+child: Card(
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.all(5),
+                                //     child: Column(
+                                //       children: <Widget>[
+                                //         Padding(
+                                //           padding: const EdgeInsets.only(
+                                //               top: 8.0, bottom: 4.0),
+                                //           child: Row(
+                                //             children: [
+                                //               Column(
+                                //                 children: [
+                                //                   Padding(
+                                //                     padding:
+                                //                         const EdgeInsets.only(
+                                //                             left: 2.0),
+                                //                     child: Row(
+                                //                       children: [
+                                //                         Text(
+                                //                           snapshot
+                                //                               .data[index].name,
+                                //                           style: TextStyle(
+                                //                             fontWeight:
+                                //                                 FontWeight.bold,
+                                //                             fontSize: 20,
+                                //                           ),
+                                //                         ),
+                                //                       ],
+                                //                     ),
+                                //                   ),
+                                //                   Padding(
+                                //                     padding:
+                                //                         const EdgeInsets.only(
+                                //                             left: 2.0),
+                                //                     child: Row(
+                                //                       children: [
+                                //                         Text(
+                                //                           snapshot.data[index]
+                                //                               .userId,
+                                //                           style: TextStyle(
+                                //                             fontSize: 18,
+                                //                           ),
+                                //                         ),
+                                //                       ],
+                                //                     ),
+                                //                   ),
+                                //                 ],
+                                //               ),
+                                //             ],
+                                //           ),
+                                //         ),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // ),

@@ -53,12 +53,13 @@ class CustomDisplayTextField extends StatelessWidget {
   final Function onChange;
   final Color borderColor;
 
-  CustomDisplayTextField(
-      {this.text,
-      this.controller,
-      this.onChange,
-      this.fixKeyboardToNum = false,
-      this.borderColor});
+  CustomDisplayTextField({
+    this.text,
+    this.controller,
+    this.onChange,
+    this.fixKeyboardToNum = false,
+    this.borderColor,
+  });
 
   @override
   Widget build(BuildContext context) {
