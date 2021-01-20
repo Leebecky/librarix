@@ -57,24 +57,38 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
                   padding: EdgeInsets.all(20),
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(widget.data.avatar),
+                    minRadius: 50,
+                    maxRadius: 75,
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Text(
-                    widget.data.userId,
-                    style: TextStyle(fontSize: 25),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(5),
                   child: Text(
                     widget.data.name,
-                    style: TextStyle(fontSize: 25),
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    widget.data.userId +
+                        "   |   " +
+                        widget.data.intakeCodeOrSchool,
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Text(
+                    widget.data.email,
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(15),
                   child: CustomDisplayTextField(
                     controller: _phoneno,
                     text: "Phone Number",
