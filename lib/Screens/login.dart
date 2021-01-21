@@ -164,6 +164,7 @@ class _LoginState extends State<Login> {
 
       saveDeviceToken();
       saveRole(dropdownValue);
+      await saveRole(dropdownValue);
 
       //^ Routing based on type of user
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
