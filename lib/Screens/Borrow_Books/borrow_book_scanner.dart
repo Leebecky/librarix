@@ -156,6 +156,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
     return currentBorrows = [];
   }
 
+//? Checks if there are any unpaid fines
   Future<bool> hasFines() async {
     List<Fines> finesList = [];
 
