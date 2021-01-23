@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:librarix/Screens/Search/search_details.dart';
@@ -23,7 +24,8 @@ Widget buildSearchCard(BuildContext context, DocumentSnapshot document) {
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Row(children: <Widget>[
-                  Text(book.title, style: TextStyle(fontSize: 20.0),),
+                  AutoSizeText(
+                    book.title, style: TextStyle(fontSize: 20.0),),
                   Spacer(),
                 ]),
               ),
