@@ -15,7 +15,8 @@ class _CatalogueViewState extends State<CatalogueView> {
   Future getBookCatalogue() async {
     await Firebase.initializeApp();
     var firestore = FirebaseFirestore.instance;
-    QuerySnapshot qn = await firestore.collection("BookCatalogue").get();
+    QuerySnapshot qn =
+        await firestore.collection("BookCatalogue").orderBy("BookTitle").get();
     return qn.docs;
   }
 
