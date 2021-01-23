@@ -43,8 +43,10 @@ class _SearchFunctionState extends State<SearchFunction> {
     if(_searchController.text != "") {
       for(var searchSnapshot in _allResults){
         var title = Book.fromSnapshot(searchSnapshot).title.toLowerCase();
+        var isbn = Book.fromSnapshot(searchSnapshot).isbnCode.toString();
+        var author = Book.fromSnapshot(searchSnapshot).author.toLowerCase();
 
-        if(title.contains(_searchController.text.toLowerCase())) {
+        if(title.contains(_searchController.text.toLowerCase()) || isbn.contains(_searchController.text.toString()) || author.contains(_searchController.text.toLowerCase())) {
           showResults.add(searchSnapshot);
 
         }
