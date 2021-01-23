@@ -40,13 +40,12 @@ class _SearchFunctionState extends State<SearchFunction> {
 
   searchResultsList() {
     var showResults = [];
-    if(_searchController.text != "") {
-      for(var searchSnapshot in _allResults){
+    if (_searchController.text != "") {
+      for (var searchSnapshot in _allResults) {
         var title = Book.fromSnapshot(searchSnapshot).title.toLowerCase();
 
-        if(title.contains(_searchController.text.toLowerCase())) {
+        if (title.contains(_searchController.text.toLowerCase())) {
           showResults.add(searchSnapshot);
-
         }
       }
     } else {
@@ -57,12 +56,9 @@ class _SearchFunctionState extends State<SearchFunction> {
     });
   }
 
-
   getSearchStreamSnapshots() async {
-    var data = await FirebaseFirestore.instance
-        .collection('BookCatalogue')
-        .get();
-
+    var data =
+        await FirebaseFirestore.instance.collection('BookCatalogue').get();
 
     setState(() {
       _allResults = data.docs;
@@ -87,11 +83,18 @@ class _SearchFunctionState extends State<SearchFunction> {
                   hintText: "Search by book name or ISBN Code"),
             ),
             Expanded(
-                child: ListView.builder(
-              itemCount: _resultsList.length,
-              itemBuilder: (BuildContext context, int index) =>
-                  buildSearchCard(context, _resultsList[index]),
-            )),
+                child: (_resultsList.isNotEmpty)
+                    ? ListView.builder(
+                        itemCount: _resultsList.length,
+                        itemBuilder: (BuildContext context, int index) =>
+                            buildSearchCard(context, _resultsList[index]),
+                      )
+                    : Center(
+                        child: Text(
+                        "No books matching the search details found",
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
+                      ))),
           ],
         ),
       ),
