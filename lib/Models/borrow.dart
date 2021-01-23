@@ -148,6 +148,12 @@ Stream<List<Borrow>> getBorrowedWithDocIdOf(
         borowedId[i]));
   }
 
+  finalBorrowed.sort((a, b) {
+    DateTime aDate = parseStringToDate(a.returnedDate);
+    DateTime bDate = parseStringToDate(b.returnedDate);
+    return bDate.compareTo(aDate);
+  });
+
   yield finalBorrowed;
 }
 
