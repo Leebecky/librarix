@@ -12,14 +12,6 @@ class BookManagementListView extends StatefulWidget {
 }
 
 class _BookManagementListViewState extends State<BookManagementListView> {
-  // Stream getBook() async {
-  //   await Firebase.initializeApp();
-  //   var firestore = FirebaseFirestore.instance;
-  //   QuerySnapshot bookDetail =
-  //       await firestore.collection("BookCatalogue").get();
-  //   return bookDetail.docs;
-  // }
-
   CollectionReference bookDb =
       FirebaseFirestore.instance.collection("BookCatalogue");
 
@@ -72,43 +64,32 @@ class _BookManagementListViewState extends State<BookManagementListView> {
                         child: Card(
                           child: Padding(
                             padding: const EdgeInsets.all(14.0),
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, bottom: 4.0),
-                                  child: Row(
-                                    children: [
-                                      Image.network(
-                                        document.data()['BookImage'],
-                                        width: 150,
-                                        height: 130,
-                                        fit: BoxFit.fitHeight,
-                                      ),
-                                      Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 2.0),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  document.data()['BookTitle'],
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 20),
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                              child: Row(
+                                children: [
+                                  Image.network(
+                                    document.data()['BookImage'],
+                                    width: 150,
+                                    height: 130,
+                                    fit: BoxFit.fitHeight,
                                   ),
-                                ),
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 2.0),
+                                    child: Container(
+                                      color: Colors.red,
+                                      child: Text(
+                                        document.data()['BookTitle'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
