@@ -120,8 +120,10 @@ Stream<List<Borrow>> getBorrowedOf(String queryField, String queryItem) async* {
 //?Retrieve data from Firestore
 Stream<List<Borrow>> getBorrowedWithDocIdOf(
     String queryField, String queryItem) async* {
-  List<Borrow> borrowedOf = [];
-  List<Borrow> finalBorrowed = [];
+  List<Borrow> borrowedOf = [],
+      finalBorrowed = [],
+      reservations = [],
+      borrowRecords = [];
   List<String> borowedId = [];
   QuerySnapshot borrowed = await FirebaseFirestore.instance
       .collection("BorrowedBook")
@@ -148,13 +150,26 @@ Stream<List<Borrow>> getBorrowedWithDocIdOf(
         borowedId[i]));
   }
 
+  // Separate Reserved Books from Borrowed Books
+  finalBorrowed.forEach((record) => reservations.add(record));
+  reservations.removeWhere((record) => record.status != "Reserved");
+  reservations.join(",");
+
+  finalBorrowed.removeWhere((record) => record.status == "Reserved");
+  finalBorrowed.join(",");
+
+  //Sort borrowed books by date
   finalBorrowed.sort((a, b) {
     DateTime aDate = parseStringToDate(a.returnedDate);
     DateTime bDate = parseStringToDate(b.returnedDate);
     return bDate.compareTo(aDate);
   });
 
-  yield finalBorrowed;
+  //Combine borrowed books and reserved books together. Reserved books at the bottom.
+  finalBorrowed.forEach((record) => borrowRecords.add(record));
+  reservations.forEach((record) => borrowRecords.add(record));
+
+  yield borrowRecords;
 }
 
 //update book reservation list --- reserve => borrow

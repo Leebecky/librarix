@@ -41,7 +41,7 @@ class _BookReservationListState extends State<BookReservationList> {
                                             fontSize: 23),
                                       ),
                                       Spacer(),
-                                      Column(
+                                      Row(
                                         children: actionButtons(index),
                                       ),
                                     ],
@@ -50,34 +50,31 @@ class _BookReservationListState extends State<BookReservationList> {
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 8.0, bottom: 4.0),
-                                  child: Row(
-                                    children: [
-                                      Text(activeReserve[index].userId,
-                                          style: TextStyle(fontSize: 22)),
-                                    ],
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(activeReserve[index].userId,
+                                        style: TextStyle(fontSize: 22)),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 8.0, bottom: 4.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                          activeReserve[index].borrowedDate +
-                                              " - " +
-                                              activeReserve[index].returnedDate,
-                                          style: TextStyle(fontSize: 20)),
-                                    ],
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        activeReserve[index].borrowedDate +
+                                            " - " +
+                                            activeReserve[index].returnedDate,
+                                        style: TextStyle(fontSize: 20)),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 8.0, bottom: 4.0),
-                                  child: Row(
-                                    children: [
-                                      Text(activeReserve[index].status,
-                                          style: TextStyle(fontSize: 20)),
-                                    ],
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(activeReserve[index].status,
+                                        style: TextStyle(fontSize: 20)),
                                   ),
                                 ),
                               ],
@@ -110,13 +107,11 @@ class _BookReservationListState extends State<BookReservationList> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text(
-                      'Cancel Reserved Book',
+                      'Book Reservation',
                     ),
                     content: SingleChildScrollView(
                       child: ListBody(
-                        children: <Widget>[
-                          Text("Wanted to cancel reserved book?")
-                        ],
+                        children: <Widget>[Text("Cancel book reservation?")],
                       ),
                     ),
                     actions: <Widget>[
@@ -138,9 +133,6 @@ class _BookReservationListState extends State<BookReservationList> {
                 });
           },
         ),
-        Container(
-          width: 15.0,
-        ),
         IconButton(
           icon: Icon(Icons.update),
           onPressed: () {
@@ -150,7 +142,7 @@ class _BookReservationListState extends State<BookReservationList> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text(
-                      'Update Reserved Book',
+                      'Book Reservation',
                     ),
                     content: SingleChildScrollView(
                       child: ListBody(
