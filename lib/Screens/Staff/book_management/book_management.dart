@@ -75,10 +75,9 @@ class _BookManagementListViewState extends State<BookManagementListView> {
                                     height: 130,
                                     fit: BoxFit.fitHeight,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 2.0),
+                                  Expanded(
                                     child: Container(
-                                      color: Colors.red,
+                                      padding: const EdgeInsets.only(left: 2.0),
                                       child: Text(
                                         document.data()['BookTitle'],
                                         style: TextStyle(
