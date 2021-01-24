@@ -18,12 +18,13 @@ class BookingStudyTable extends StatefulWidget {
 }
 
 class _BookingStudyTableState extends State<BookingStudyTable> {
-  String initialStartTime, initialEndTime, initialDate;
+  String initialStartTime, initialEndTime, initialDate, userId;
   ValueNotifier<String> selectedStudyTable;
   ValueNotifier<bool> detailsChange;
 
   @override
   void initState() {
+    userId = widget.userId.value;
     initialDate = widget.date;
     initialEndTime = widget.endTime;
     initialStartTime = widget.startTime;
@@ -97,9 +98,11 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                                 saveNotification(
                                     notificationInstance: createInstance(
                                         type: "Study Table",
-                                        title: "Booking Made",
+                                        title: userId +
+                                            " has booked " +
+                                            selectedStudyTable.value,
                                         content:
-                                            "$selectedStudyTable has been booked by ${widget.userId.value} on ${widget.date}",
+                                            "${widget.date} (${widget.startTime} - ${widget.endTime})",
                                         displayDate: parseDate(
                                             DateTime.now().toString()),
                                         details: value),

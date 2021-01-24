@@ -19,11 +19,16 @@ class BookingDiscussionRoom extends StatefulWidget {
 }
 
 class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
-  String selectedRoomSize, numPeople, selectedRoom, selectedDiscussionRoom;
+  String selectedRoomSize,
+      numPeople,
+      selectedRoom,
+      selectedDiscussionRoom,
+      initialDate,
+      initialStartTime,
+      initialEndTime;
   List<Text> roomSizes, discussionRoomsAvailable;
   ValueNotifier<bool> roomsFound;
   ValueNotifier<bool> detailsChange;
-  String initialDate, initialStartTime, initialEndTime;
 
   @override
   void initState() {
@@ -97,9 +102,10 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                               saveNotification(
                                   notificationInstance: createInstance(
                                       type: "Discussion Room",
-                                      title: "Booking Made",
+                                      title: widget.userId.value +
+                                          " has booked $selectedDiscussionRoom",
                                       content:
-                                          "$selectedDiscussionRoom has been booked by ${widget.userId.value} on ${widget.date}",
+                                          "${widget.date} (${widget.startTime} - ${widget.endTime})",
                                       displayDate:
                                           parseDate(DateTime.now().toString()),
                                       details: value),

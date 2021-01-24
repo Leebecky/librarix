@@ -24,8 +24,9 @@ initializePlatformSpecifics() async {
 Future selectNotification(String payload) async {
   if (payload != null) {
     return Get.to(PdfViewerPage(path: payload));
+  } else {
+    await Get.off(NotificationsDisplay());
   }
-  Get.off(NotificationsDisplay());
 }
 
 //? Intialize local timezone used for scheduling notifications

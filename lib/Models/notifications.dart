@@ -161,7 +161,11 @@ Future deleteNotification({
   if (hasId == false) {
     notifications = await searchNotification(
         userId, "NotificationAdditionalDetail", queryItem);
-    docId = notifications[0].id;
+    if (notifications.isNotEmpty) {
+      docId = notifications[0].id;
+    } else {
+      return;
+    }
   }
 
   //^ Checks user role for authorization of deleting notifications
