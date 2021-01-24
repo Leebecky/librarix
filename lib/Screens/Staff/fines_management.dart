@@ -116,7 +116,7 @@ class _FinesManagementState extends State<FinesManagement> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text(
-                  'Paid Fines',
+                  'Fines Management',
                 ),
                 content: SingleChildScrollView(
                   child: ListBody(
@@ -133,11 +133,11 @@ class _FinesManagementState extends State<FinesManagement> {
                           barrierDismissible: false,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Received'),
+                              title: Text('Fines Management'),
                               content: SingleChildScrollView(
                                 child: ListBody(
                                   children: <Widget>[
-                                    Text('Receive Fines Payment Succesfully'),
+                                    Text('Fines payment received'),
                                   ],
                                 ),
                               ),
