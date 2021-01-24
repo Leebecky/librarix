@@ -1,5 +1,6 @@
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
+import 'package:librarix/Models/notifications.dart';
 import 'package:librarix/Screens/Notifications/notifications_build.dart';
 import '../../Models/discussion_room.dart';
 import '../../Models/booking.dart';
@@ -90,8 +91,20 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                   {
                     if (completeBookingDetails(roomsFound.value)) {
                       // All validation checks are passed. Booking is created.
-                      createBooking(createMyBooking(widget.userId));
-
+                      createBooking(createMyBooking(widget.userId)).then(
+                          (value) =>
+                              //~ Create Notification entry
+                              saveNotification(
+                                  notificationInstance: createInstance(
+                                      type: "Discussion Room",
+                                      title: "Booking Made",
+                                      content:
+                                          "$selectedDiscussionRoom has been booked by ${widget.userId.value} on ${widget.date}",
+                                      displayDate:
+                                          parseDate(DateTime.now().toString()),
+                                      details: value),
+                                  userId: widget.userId.value,
+                                  saveToStaff: true));
                       //? If the user is not a staff member, schedule local notifications
                       if (await isStaff() == false) {
                         // Schedule Notifications: on day of booking
@@ -116,12 +129,12 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
                       //Display message
                       customAlertDialog(context,
                           navigateHome: true,
-                          title: "Booking",
+                          title: "Booking Created",
                           content: "Booking successfully created!");
                     } else {
                       // Booking details are incomplete
                       customAlertDialog(context,
-                          title: "Booking",
+                          title: "Incomplete Booking Details",
                           content: "Please fill in all booking details first!");
                     }
                   } else {

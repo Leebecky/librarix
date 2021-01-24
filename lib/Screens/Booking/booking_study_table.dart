@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:librarix/Models/notifications.dart';
 import 'package:librarix/Screens/Booking/study_table_floor_plan.dart';
 import 'package:librarix/Screens/Notifications/notifications_build.dart';
 import '../../Custom_Widget/buttons.dart';
@@ -90,17 +91,33 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                     {
                       if (completeBookingDetails()) {
                         // All validation checks are passed: create the booking
-                        createBooking(createMyBooking(widget.userId));
+                        createBooking(createMyBooking(widget.userId)).then(
+                            (value) =>
+                                //~ Create Notification entry
+                                saveNotification(
+                                    notificationInstance: createInstance(
+                                        type: "Study Table",
+                                        title: "Booking Made",
+                                        content:
+                                            "$selectedStudyTable has been booked by ${widget.userId.value} on ${widget.date}",
+                                        displayDate: parseDate(
+                                            DateTime.now().toString()),
+                                        details: value),
+                                    userId: widget.userId.value,
+                                    saveToStaff: true));
 
                         //^ Schedule Local Notifications if not Staff
                         if (await isStaff() == false) {
                           // Schedule Notifications: on day of booking
-                          bookingNotificationOnDay(
-                              bookingType: "Study Table",
-                              tableRoomNumber: selectedStudyTable.value,
-                              endTime: widget.endTime,
-                              startTime: widget.startTime,
-                              bookingDate: widget.date);
+                          if (widget.date !=
+                              parseDate(DateTime.now().toString())) {
+                            bookingNotificationOnDay(
+                                bookingType: "Study Table",
+                                tableRoomNumber: selectedStudyTable.value,
+                                endTime: widget.endTime,
+                                startTime: widget.startTime,
+                                bookingDate: widget.date);
+                          }
                           //Schedule Notifications: 15 minutes before booking time
                           bookingNotificationBeforeStartTime(
                               bookingType: "Study Table",
@@ -111,12 +128,12 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                         }
                         customAlertDialog(context,
                             navigateHome: true,
-                            title: "Booking",
+                            title: "Booking Created",
                             content: "Booking successfully created!");
                       } else {
                         //Incomplete booking details
                         customAlertDialog(context,
-                            title: "Booking",
+                            title: "Incomplete Booking Details",
                             content:
                                 "Please fill in all booking details first!");
                       }
