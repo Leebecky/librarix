@@ -282,13 +282,7 @@ class _AddNewBookState extends State<AddNewBook> {
                   roundBorder: true,
                   buttonText: "Add",
                   onClick: () async {
-                    if (title.isEmpty) {
-                      customAlertDialog(
-                        context,
-                        title: "Empty textfied",
-                        content: "Please fill up the empty field !",
-                      );
-                    } else if (_formKey.currentState.validate()) {
+                    if (_formKey.currentState.validate()) {
                       createBookCatalogue();
                       Navigator.of(context).pop();
                       customAlertDialog(
