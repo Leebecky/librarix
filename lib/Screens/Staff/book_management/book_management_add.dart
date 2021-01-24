@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../Custom_Widget/buttons.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
+import '../../../Custom_Widget/custom_alert_dialog.dart';
 import 'dart:async';
 import 'dart:io';
 import '../../../Custom_Widget/textfield.dart';
@@ -27,9 +28,22 @@ class _AddNewBookState extends State<AddNewBook> {
       image;
   int stock;
 
+  @override
+  void initState() {
+    title = "";
+    isbnCode = "";
+    barcode = "";
+    genre = "Education";
+    author = "";
+    publisher = "";
+    publishedDate = "";
+    description = "";
+    super.initState();
+  }
+
   File bookImage;
   final picker = ImagePicker();
-
+  final _formKey = GlobalKey<FormState>();
   Future getImageFromCamera() async {
     PickedFile image = await picker.getImage(source: ImageSource.camera);
 
@@ -94,6 +108,7 @@ class _AddNewBookState extends State<AddNewBook> {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
           child: Form(
+            key: _formKey,
             child: Column(
               children: <Widget>[
                 bookImage == null
@@ -114,31 +129,38 @@ class _AddNewBookState extends State<AddNewBook> {
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomTextField(
+                  child: CustomValidTextField(
                     text: "Book Title",
                     fixKeyboardToNum: false,
                     onChange: (value) => title = value,
+                    validate: (title) =>
+                        title.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomTextField(
+                  child: CustomValidTextField(
                     text: "Book ISBN Code",
                     fixKeyboardToNum: true,
                     onChange: (value) => isbnCode = value,
+                    validate: (isbnCode) =>
+                        isbnCode.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomTextField(
+                  child: CustomValidTextField(
                     text: "Book Barcode",
                     fixKeyboardToNum: true,
                     onChange: (value) => barcode = value,
+                    validate: (barcode) =>
+                        isbnCode.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
                   child: DropdownButtonFormField(
+                    value: genre,
                     items: [
                       DropdownMenuItem(
                         value: "Fantasy",
@@ -183,28 +205,31 @@ class _AddNewBookState extends State<AddNewBook> {
                         genre = value;
                       });
                     },
-                    // onChange: (value) => bookGenre = value,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomTextField(
+                  child: CustomValidTextField(
                     text: "Author",
                     fixKeyboardToNum: false,
                     onChange: (value) => author = value,
+                    validate: (author) =>
+                        author.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomTextField(
+                  child: CustomValidTextField(
                     text: "Publisher",
                     fixKeyboardToNum: false,
                     onChange: (value) => publisher = value,
+                    validate: (publisher) =>
+                        publisher.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: TextField(
+                  child: TextFormField(
                     // maxLength: 10,
                     keyboardType: TextInputType.datetime,
                     decoration: InputDecoration(
@@ -224,30 +249,51 @@ class _AddNewBookState extends State<AddNewBook> {
                       _DateFormatter(),
                     ],
                     onChanged: (value) => publishedDate = value,
+                    validator: (publishedDate) =>
+                        publishedDate.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomTextField(
+                  child: CustomValidTextField(
                     text: "Book Description",
                     fixKeyboardToNum: false,
                     onChange: (value) => description = value,
+                    validate: (description) =>
+                        description.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                     padding: EdgeInsets.all(20),
-                    child: CustomTextField(
-                        text: 'Stock',
-                        fixKeyboardToNum: true,
-                        onChange: (value) => {
-                              stock = int.parse(value),
-                            })),
+                    child: CustomValidTextField(
+                      text: 'Stock',
+                      fixKeyboardToNum: true,
+                      onChange: (value) => {
+                        stock = int.parse(value),
+                      },
+                      validate: (stock) =>
+                          stock.isEmpty ? "This Field is required" : null,
+                    )),
                 CustomFlatButton(
                   roundBorder: true,
                   buttonText: "Add",
                   onClick: () async {
-                    createBookCatalogue();
-                    Navigator.of(context).pop();
+                    if (_formKey.currentState.validate()) {
+                      createBookCatalogue();
+                      Navigator.of(context).pop();
+                      customAlertDialog(
+                        context,
+                        title: "Book Management",
+                        content:
+                            "New book successfully added to the Catalogue!",
+                      );
+                    } else {
+                      customAlertDialog(
+                        context,
+                        title: "Empty textfield",
+                        content: "Please fill up any empty fields!",
+                      );
+                    }
                   },
                 ),
               ],
