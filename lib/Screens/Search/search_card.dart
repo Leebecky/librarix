@@ -17,7 +17,11 @@ Widget buildSearchCard(BuildContext context, DocumentSnapshot document) {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, left: 100),
                 child: Row(children: <Widget>[
-                  Image.network(book.image, width: 150, fit: BoxFit.fitWidth,),
+                  Image.network(
+                    book.image,
+                    width: 150,
+                    fit: BoxFit.fitWidth,
+                  ),
                   Spacer(),
                 ]),
               ),
@@ -33,7 +37,11 @@ Widget buildSearchCard(BuildContext context, DocumentSnapshot document) {
                 padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                 child: Row(
                   children: <Widget>[
-                    Text(book.author, style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic),),
+                    Text(
+                      book.author,
+                      style: TextStyle(
+                          fontSize: 15.0, fontStyle: FontStyle.italic),
+                    ),
                     Spacer(),
                   ],
                 ),
@@ -44,8 +52,7 @@ Widget buildSearchCard(BuildContext context, DocumentSnapshot document) {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => DetailBookView(book: book)),
+            MaterialPageRoute(builder: (context) => DetailBookView(book: book)),
           );
         },
       ),

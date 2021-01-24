@@ -35,20 +35,20 @@ class _BookingReportState extends State<BookingReport> {
                 stream: getAllBookings(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Booking>> bookingSnapshot) {
+                  var record = bookingSnapshot.data;
                   if (bookingSnapshot.hasData) {
-                    var record = bookingSnapshot.data;
                     generateChartData(record);
 
                     return SingleChildScrollView(
                         child: Column(children: [
                       //~ Chart Display
                       ExpansionTile(
-                        title: Text("Booking Records Chart"),
+                        title: Text("Borrow Records Chart"),
                         initiallyExpanded: true,
                         children: [
                           BarChartGraph(
                             data: bookingData,
-                            chartHeading: "Booking Records",
+                            chartHeading: "Borrow Records",
                             xHeading: "Years",
                           ),
                         ],

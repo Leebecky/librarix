@@ -33,32 +33,24 @@ class RewardsDetails extends StatelessWidget {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
-                                          Image.network(
-                                            reward['RewardIcon'],
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.27,
-                                          ),
+                                          Image.network(reward['RewardIcon'],),
                                           Spacer(),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                1.9,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
+                                          Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10.0, right: 10.0),
+                                                child: Center(
+                                                    child: Text(
                                                   reward['RewardTitle'],
                                                   style:
                                                       TextStyle(fontSize: 25.0),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                )),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10.0, right: 10.0),
+                                                child: Row(
                                                   children: [
                                                     Icon(
                                                       Icons.star_rate,
@@ -71,8 +63,8 @@ class RewardsDetails extends StatelessWidget {
                                                     ),
                                                   ],
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),

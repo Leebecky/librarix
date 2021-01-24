@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'discussion_room_list.dart';
 import 'study_table_list.dart';
-import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 
 class UpdateBooking extends StatefulWidget {
   @override
@@ -21,11 +20,7 @@ class _UpdateBookingState extends State<UpdateBooking>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: DoubleBackToCloseApp(
-      snackBar: const SnackBar(
-        content: Text('Tap back again to leave'),
-      ),
-      child: Container(
+      body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -59,6 +54,6 @@ class _UpdateBookingState extends State<UpdateBooking>
           ],
         ),
       ),
-    ));
+    );
   }
 }
