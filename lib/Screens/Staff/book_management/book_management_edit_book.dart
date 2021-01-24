@@ -23,8 +23,8 @@ class _EditBookState extends State<EditBook> {
       publisher,
       publishedDate,
       description,
-      stock,
       image;
+  int stock;
 
   TextEditingController _titleC = TextEditingController();
   TextEditingController _isbnCodeC = TextEditingController();
@@ -62,7 +62,7 @@ class _EditBookState extends State<EditBook> {
     _publisherC.text = widget.bookCatalogue["BookPublisher"];
     _publishedDateC.text = widget.bookCatalogue["BookPublishDate"];
     _descriptionC.text = widget.bookCatalogue["BookDescription"];
-    _stockC.text = widget.bookCatalogue["BookStock"];
+    _stockC.text = widget.bookCatalogue["BookStock"].toString();
     // _imageC.text = widget.bookCatalogue["BookImage"];
 
     setState(() {
@@ -385,7 +385,7 @@ class _EditBookState extends State<EditBook> {
       'BookDescription': _descriptionC.text,
       'BookImage':
           "https://images-na.ssl-images-amazon.com/images/I/61bKTJvsWGL._SX334_BO1,204,203,200_.jpg",
-      'BookStock': _stockC.text,
+      'BookStock': int.parse(_stockC.text),
     });
   }
 }
