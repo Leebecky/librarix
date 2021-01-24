@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:double_back_to_close_app/double_back_to_close_app.dart';
+
 import 'book_reservation_list.dart';
 import 'book_return_list.dart';
 
@@ -21,11 +21,7 @@ class _UpdateBookState extends State<UpdateBook>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: DoubleBackToCloseApp(
-      snackBar: const SnackBar(
-        content: Text('Tap back again to leave'),
-      ),
-      child: Container(
+      body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -55,6 +51,6 @@ class _UpdateBookState extends State<UpdateBook>
           ],
         ),
       ),
-    ));
+    );
   }
 }

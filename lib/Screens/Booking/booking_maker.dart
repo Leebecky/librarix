@@ -5,7 +5,6 @@ import '../../Custom_Widget/booking_list_wheel_scroll_view.dart';
 import '../../Custom_Widget/user_id_field.dart';
 import '../../Custom_Widget/buttons.dart';
 import './booking_study_table.dart';
-import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 
 class BookingMaker extends StatefulWidget {
   @override
@@ -47,73 +46,68 @@ class _BookingMakerState extends State<BookingMaker> {
   //^ Main build method
   @override
   Widget build(BuildContext context) {
-    return DoubleBackToCloseApp(
-        snackBar: const SnackBar(
-          content: Text('Tap back again to leave'),
+    return SingleChildScrollView(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          //~ Select Booking Type
+          padding: EdgeInsets.all(20),
+          child: DropdownButton<BookingType>(
+            isExpanded: true,
+            items: [
+              DropdownMenuItem(
+                  value: BookingType.discussionRoom,
+                  child: Text("Discussion Room")),
+              DropdownMenuItem(
+                  value: BookingType.studyTable, child: Text("Study Table")),
+            ],
+            value: type,
+            onChanged: (value) => selectBookingType(value),
+          ),
         ),
-        child: SingleChildScrollView(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              //~ Select Booking Type
-              padding: EdgeInsets.all(20),
-              child: DropdownButton<BookingType>(
-                isExpanded: true,
-                items: [
-                  DropdownMenuItem(
-                      value: BookingType.discussionRoom,
-                      child: Text("Discussion Room")),
-                  DropdownMenuItem(
-                      value: BookingType.studyTable,
-                      child: Text("Study Table")),
-                ],
-                value: type,
-                onChanged: (value) => selectBookingType(value),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: userIdField(userId),
-            ),
-            //~ Shared Booking Details
-            CustomOutlineButton(
-              buttonText: "Date: $dateSelected",
-              onClick: () async => showDatePicker(
-                      context: context,
-                      initialDate: (TimeOfDay.now().hour > 19)
-                          ? DateTime.now().add(Duration(days: 1))
-                          : DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(Duration(days: 6)))
-                  .then((date) => setState(() {
-                        dateSelected = parseDate(date.toString());
-                        startTimeString = "${setStartHour()}:$selectedMin";
-                        endTimeString = "${setStartHour() + 1}:00";
-                      })),
-            ),
-            CustomOutlineButton(
-              buttonText: "Start Time: $startTimeString",
-              onClick: () => timePicker(
-                "start",
-                earliestTime: setStartHour(),
-                latestTime: 20,
-                maxHours: 11,
-              ),
-            ),
-            CustomOutlineButton(
-              buttonText: "End Time: $endTimeString",
-              onClick: () => timePicker(
-                "end",
-                earliestTime: (int.parse(startHour) + 1),
-                latestTime: 21,
-                maxHours: 4,
-              ),
-            ),
-            //~ Specific Booking Type Details
-            bookingMakerType(),
-          ],
-        )));
+        Padding(
+          padding: EdgeInsets.all(20),
+          child: userIdField(userId),
+        ),
+        //~ Shared Booking Details
+        CustomOutlineButton(
+          buttonText: "Date: $dateSelected",
+          onClick: () async => showDatePicker(
+                  context: context,
+                  initialDate: (TimeOfDay.now().hour > 19)
+                      ? DateTime.now().add(Duration(days: 1))
+                      : DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(Duration(days: 6)))
+              .then((date) => setState(() {
+                    dateSelected = parseDate(date.toString());
+                    startTimeString = "${setStartHour()}:$selectedMin";
+                    endTimeString = "${setStartHour() + 1}:00";
+                  })),
+        ),
+        CustomOutlineButton(
+          buttonText: "Start Time: $startTimeString",
+          onClick: () => timePicker(
+            "start",
+            earliestTime: setStartHour(),
+            latestTime: 20,
+            maxHours: 11,
+          ),
+        ),
+        CustomOutlineButton(
+          buttonText: "End Time: $endTimeString",
+          onClick: () => timePicker(
+            "end",
+            earliestTime: (int.parse(startHour) + 1),
+            latestTime: 21,
+            maxHours: 4,
+          ),
+        ),
+        //~ Specific Booking Type Details
+        bookingMakerType(),
+      ],
+    ));
   }
 
   //? Start/End Time Picker

@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:librarix/Screens/Notifications/local_notifications_initializer.dart';
 import 'package:librarix/config.dart';
-import 'package:librarix/Screens/first_view.dart';
+import 'package:librarix/first_view.dart';
 import 'Screens/Navigation_Bar/librarix_navigations.dart';
 import 'Screens/Navigation_Bar/librarix_navigations_librarian.dart';
 import 'Screens/Navigation_Bar/librarix_navigation_admin.dart';
@@ -16,16 +16,15 @@ import 'package:get/get.dart';
 import 'Screens/Report_Generator/report_generator.dart';
 
 main() async {
-  //~ initialises firebase instances for authentication and Cloud FireStore
+  //? initialises firebase instances for authentication and Cloud FireStore
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseAuth.instance;
-  //~ Redirects users
   String myRoute = await checkLoggedIn();
-  //~  Initializing stuff for notifications
+
+  //? Initializing stuff for notifications
   initializePlatformSpecifics();
   initialiseTimeZones();
-  //~ Run application
   runApp(MyApp(myRoute));
 }
 
@@ -66,7 +65,7 @@ class _MyAppState extends State<MyApp> {
           "/scanner": (context) => BarcodeScanner(),
           "/search": (context) => SearchFunction(),
           "/notifications": (context) => NotificationsDisplay(),
-          "/reports": (context) => ReportGenerator(),
+          "/reports": (contxt) => ReportGenerator(),
         });
   }
 }

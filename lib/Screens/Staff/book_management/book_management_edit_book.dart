@@ -218,7 +218,7 @@ class _EditBookState extends State<EditBook> {
                     controller: _stockC,
                     text: 'Stock',
                     fixKeyboardToNum: true,
-                    onChange: (value) => stock = value,
+                    onChange: (value) => stock = int.parse(value),
                   ),
                 ),
                 Padding(
