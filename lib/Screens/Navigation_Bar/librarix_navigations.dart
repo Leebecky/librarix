@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:librarix/Models/user.dart';
 import 'package:librarix/Screens/Fines/fines_view.dart';
-import 'package:librarix/Screens/rewards_view.dart';
-import '../catalogue_view.dart';
+import 'package:librarix/Screens/Rewards/rewards_view.dart';
+import '../Catalogue/catalogue_view.dart';
 import '../History/history_view.dart';
 import 'package:librarix/config.dart';
 import 'package:librarix/Screens/Booking/booking_maker.dart';
@@ -118,7 +118,7 @@ class _HomeState extends State<Home> {
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey[300],
+        unselectedItemColor: Colors.grey[400],
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: [

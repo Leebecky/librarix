@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:librarix/Custom_Widget/textfield.dart';
 import '../Models/user.dart';
 import '../Custom_Widget/custom_alert_dialog.dart';
-import './Notifications/local_notifications_initializer.dart';
+import 'package:get/get.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -22,13 +23,14 @@ class _LoginState extends State<Login> {
   //^ Password field attributes - password visibility toggle + icon
   bool passwordHidden;
   var iconShowPassword;
-
+  bool _isVerifying;
   //? Intialises inital value of variables
   @override
   void initState() {
     dropdownValue = "Role:";
     enteredEmail = "";
     passwordHidden = true;
+    _isVerifying = false;
     iconShowPassword = Icons.visibility_off_rounded;
     super.initState();
   }
@@ -65,21 +67,16 @@ class _LoginState extends State<Login> {
               Padding(
                   //~ Email field
                   padding: EdgeInsets.all(20),
-                  child: TextField(
-                      onChanged: (newText) {
-                        setState(() {
-                          enteredEmail = newText;
-                        });
-                      },
-                      controller: userIdCtrl,
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        labelStyle: TextStyle(color: Colors.white),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                      ))),
+                  child: CustomDisplayTextField(
+                    text: "Email",
+                    controller: userIdCtrl,
+                    borderColor: Colors.white,
+                    onChange: (newText) {
+                      setState(() {
+                        enteredEmail = newText;
+                      });
+                    },
+                  )),
               Padding(
                 //~ Password field
                 padding: EdgeInsets.all(20),
@@ -135,21 +132,36 @@ class _LoginState extends State<Login> {
                   }),
               Padding(
                 padding: EdgeInsets.all(30),
-                child: RaisedButton(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 15.0, bottom: 15.0, left: 30.0, right: 30.0),
-                    child: Text("Login",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: primaryColor,
-                            fontWeight: FontWeight.w600)),
-                  ),
-                  onPressed: accountLogin,
-                ),
+                //^ Displays a loader to indicate when login is being processed
+                child: (_isVerifying)
+                    ? Container(
+                        width: 135,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(30.0)),
+                        child: SpinKitThreeBounce(
+                          color: primaryColor,
+                          size: 25.0,
+                        ),
+                      )
+                    : RaisedButton(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0)),
+                        child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 15.0,
+                                bottom: 15.0,
+                                left: 30.0,
+                                right: 30.0),
+                            child: Text("Login",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: primaryColor,
+                                    fontWeight: FontWeight.w600))),
+                        onPressed: accountLogin,
+                      ),
               ),
             ],
           ),
@@ -158,20 +170,22 @@ class _LoginState extends State<Login> {
 
   //? Login
   void accountLogin() async {
+    setState(() {
+      _isVerifying = true;
+    });
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: userIdCtrl.text, password: passwordCtrl.text);
 
-      saveDeviceToken();
-      saveRole(dropdownValue);
+      await saveRole(dropdownValue);
 
       //^ Routing based on type of user
       if (dropdownValue == "Student" || dropdownValue == "Lecturer") {
-        Navigator.popAndPushNamed(context, "/home");
+        Get.offAllNamed("/home");
       } else if (dropdownValue == "Librarian") {
-        Navigator.popAndPushNamed(context, "/librarianHome");
+        Get.offAllNamed("/librarianHome");
       } else if (dropdownValue == "Admin") {
-        Navigator.popAndPushNamed(context, "/adminHome");
+        Get.offAllNamed("/adminHome");
       } else {
         loginError(context, "invalidRole");
         print("Please select a role");
@@ -184,6 +198,10 @@ class _LoginState extends State<Login> {
       } else if (e.code == "invalid-email") {
         loginError(context, "invalidEmail");
       }
+    } finally {
+      setState(() {
+        _isVerifying = false;
+      });
     }
   }
 

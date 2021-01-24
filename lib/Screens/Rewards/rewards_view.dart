@@ -5,7 +5,7 @@ import 'package:librarix/Custom_Widget/buttons.dart';
 import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Models/borrow.dart';
 import 'package:librarix/Models/user.dart';
-import 'package:librarix/Screens/rewards_details.dart';
+import 'package:librarix/Screens/Rewards/rewards_details.dart';
 
 class Rewards extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _RewardsState extends State<Rewards> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 150.0),
+          padding: const EdgeInsets.only(top: 80.0),
           child: Container(
             child: Column(
               children: [
@@ -40,19 +40,11 @@ class _RewardsState extends State<Rewards> {
                             Padding(
                               padding: const EdgeInsets.only(
                                   top: 30.0, bottom: 30.0),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.08,
-                                  ),
-                                  AutoSizeText(
-                                      "Click me to know your reading level!",
-                                      maxLines: 5,
-                                      style: TextStyle(fontSize: 20.0)),
-                                ],
-                              ),
-                            )
+                              child: AutoSizeText(
+                                  "Click me to know your reading level!",
+                                  maxLines: 5,
+                                  style: TextStyle(fontSize: 20.0)),
+                            ),
                           ],
                         ),
                       ),
@@ -121,7 +113,7 @@ class _RewardsState extends State<Rewards> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 100),
+                    padding: const EdgeInsets.only(top: 50),
                     child: CustomOutlineButton(
                       buttonText: "Rewards Details",
                       onClick: () => Navigator.push(context,
