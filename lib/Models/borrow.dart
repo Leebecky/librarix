@@ -31,7 +31,7 @@ class Borrow {
         borrowedDate = snapshot["BorrowDate"],
         returnedDate = snapshot["BorrowReturnedDate"],
         status = snapshot["BorrowStatus"],
-        timesRenewed = snapshot["BorrowRenewedTime"],
+        timesRenewed = snapshot["BorrowRenewedTimes"],
         borrowedId = snapshot.id;
 }
 
@@ -42,7 +42,7 @@ Borrow borrowFromJson(Map<String, dynamic> json, [SetOptions options]) {
     json["BookId"] as String,
     json["BookTitle"] as String,
     json["BorrowDate"] as String,
-    json["BorrowRenewedTime"] as int,
+    json["BorrowRenewedTimes"] as int,
     json["BorrowReturnedDate"] as String,
     json["BorrowStatus"] as String,
   );
@@ -54,22 +54,24 @@ Map<String, dynamic> _borrowToJson(Borrow instance) => <String, dynamic>{
       "BookId": instance.bookId,
       "BookTitle": instance.bookTitle,
       "BorrowDate": instance.borrowedDate,
-      "BorrowRenewedTime": instance.timesRenewed,
+      "BorrowRenewedTimes": instance.timesRenewed,
       "BorrowReturnedDate": instance.returnedDate,
       "BorrowStatus": instance.status,
     };
 
 //? Creates a borrowed book record
-Future<void> createBorrowRecord(Borrow record) async {
+Future<String> createBorrowRecord(Borrow record) async {
   int stock;
+  String docId;
   (record.status == "Borrowed") ? stock = -1 : stock = 0;
   await FirebaseFirestore.instance
       .collection("BorrowedBook")
       .add(_borrowToJson(record))
       .then((value) {
-    print("Book has been successfully borrowed!");
+    docId = value.id;
     updateBookStock(record.bookId, stock);
   }).catchError((onError) => print("An error has occurred: $onError"));
+  return docId;
 }
 
 //? Retrieves all Borrow Records
@@ -227,7 +229,7 @@ Future createReservationRecord(String bookId, String bookTitle) async {
     'BookId': bookId,
     'BookTitle': bookTitle,
     'BorrowDate': "Not Available",
-    'BorrowRenewedTime': 0,
+    'BorrowRenewedTimes': 0,
     'BorrowReturnedDate': "Not Available",
     'BorrowStatus': 'Reserved',
     'UserId': myUser.userId,

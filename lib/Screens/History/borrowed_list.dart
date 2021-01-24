@@ -19,7 +19,7 @@ class BorrowedList extends StatefulWidget {
 }
 
 class _BorrowedListState extends State<BorrowedList> {
-  List<Borrow> records = [];
+  // List<Borrow> records = [];
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +59,13 @@ class _BorrowedListState extends State<BorrowedList> {
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
                                                   title: Text(
-                                                      'Renew Borrow Status'),
+                                                      'Renew Borrowed Book'),
                                                   content:
                                                       SingleChildScrollView(
                                                     child: ListBody(
                                                       children: <Widget>[
                                                         Text(
-                                                            "Do you want to extend the borrow period?"),
+                                                            "Do you wish to extend the borrow period?"),
                                                       ],
                                                     ),
                                                   ),
@@ -75,13 +75,14 @@ class _BorrowedListState extends State<BorrowedList> {
                                                         onPressed: () async {
                                                           //~ Obtain notification Id
                                                           int notifId = await searchNotification(
-                                                                  widget
+                                                                  userId: widget
                                                                       .borrowedList,
-                                                                  "NotificationAdditionalDetail",
-                                                                  snapshot
+                                                                  queryField:
+                                                                      "NotificationAdditionalDetail",
+                                                                  queryItem: snapshot
                                                                       .data[
                                                                           index]
-                                                                      .bookId)
+                                                                      .borrowedId)
                                                               .then((value) =>
                                                                   value[0]
                                                                       .id
@@ -104,16 +105,22 @@ class _BorrowedListState extends State<BorrowedList> {
                                                                   snapshot
                                                                       .data[
                                                                           index]
-                                                                      .borrowedId);
+                                                                      .borrowedId,
+                                                                  snapshot
+                                                                      .data[
+                                                                          index]
+                                                                      .returnedDate);
 
                                                               //~ Resets notifications for book return
                                                               await cancelNotification(
                                                                   notifId);
                                                               //~ Schedules a new notification
                                                               await bookReturnNotification(
-                                                                  returnDate:
-                                                                      parseDate(
-                                                                          calculateReturnDate()),
+                                                                  returnDate: parseDate(
+                                                                      calculateReturnDate(snapshot
+                                                                          .data[
+                                                                              index]
+                                                                          .returnedDate)),
                                                                   title: snapshot
                                                                       .data[
                                                                           index]
@@ -125,18 +132,26 @@ class _BorrowedListState extends State<BorrowedList> {
                                                               await updateBookReturnNotification(
                                                                   userId: widget
                                                                       .borrowedList,
-                                                                  newDate: parseDate(parseStringToDate(
-                                                                          parseDate(
-                                                                              calculateReturnDate()))
-                                                                      .subtract(
-                                                                          Duration(
-                                                                              days:
-                                                                                  3))
+                                                                  newDate: parseDate(parseStringToDate(parseDate(calculateReturnDate(snapshot
+                                                                          .data[
+                                                                              index]
+                                                                          .returnedDate)))
+                                                                      .subtract(Duration(
+                                                                          days:
+                                                                              3))
                                                                       .toString()),
-                                                                  bookId: snapshot
+                                                                  borrowedId: snapshot
                                                                       .data[
                                                                           index]
-                                                                      .bookId);
+                                                                      .borrowedId,
+                                                                  bookTitle: snapshot
+                                                                      .data[
+                                                                          index]
+                                                                      .bookTitle,
+                                                                  returnDate: parseDate(
+                                                                      calculateReturnDate(snapshot
+                                                                          .data[index]
+                                                                          .returnedDate)));
 
                                                               //~ Message
                                                               customAlertDialog(
@@ -144,16 +159,17 @@ class _BorrowedListState extends State<BorrowedList> {
                                                                   title:
                                                                       "Renew Borrowed Book",
                                                                   content:
-                                                                      "You have renewed your borrowed book period sucessfully");
-                                                            } else if (records
-                                                                    .length >=
+                                                                      "Borrowed book period successfully extended!");
+                                                            } else if (snapshot
+                                                                    .data[index]
+                                                                    .timesRenewed >
                                                                 2) {
                                                               customAlertDialog(
                                                                   context,
                                                                   title:
-                                                                      "Failed To Renew Borrowed Book",
+                                                                      "Failed to Renew Borrowed Book",
                                                                   content:
-                                                                      "You are not able to renew your borrowed book period because already over the renew times limit.");
+                                                                      "Renew limit reached! This book can no longer be renewed.");
                                                             }
                                                           } else {
                                                             showDialog(
@@ -168,7 +184,7 @@ class _BorrowedListState extends State<BorrowedList> {
                                                                       title: Text(
                                                                           "Warning!"),
                                                                       content: Text(
-                                                                          "You are not valid to renew this booking because it's over time"),
+                                                                          "This book cannot be renewed!"),
                                                                       actions: <
                                                                           Widget>[
                                                                         TextButton(
@@ -253,19 +269,19 @@ class _BorrowedListState extends State<BorrowedList> {
   }
 
   //?Update the BorrowReturnedDate
-  Future<void> updateBorrowedBookReturnedDate(String docId) async {
+  Future<void> updateBorrowedBookReturnedDate(String docId, String date) async {
     FirebaseFirestore.instance
         .collection("BorrowedBook")
         .doc(docId)
-        .update({"BorrowReturnedDate": parseDate(calculateReturnDate())})
+        .update({"BorrowReturnedDate": parseDate(calculateReturnDate(date))})
         .then((value) =>
             print("Borrowed book returned date has been renewed successfully!"))
         .catchError((onError) => print("An error has occurred: $onError"));
   }
 
   //?Calculate the return date
-  String calculateReturnDate() {
-    DateTime startDate = DateTime.now();
+  String calculateReturnDate(String date) {
+    DateTime startDate = parseStringToDate(date);
     DateTime returnDate = startDate.add(Duration(days: 6));
 
     //^ Checks if the returnDate lands on a weekend and extends it to Monday if so

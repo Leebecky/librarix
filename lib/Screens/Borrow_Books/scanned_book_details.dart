@@ -129,10 +129,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                         await saveNotification(
                             userId: widget.userId,
                             notificationInstance: createInstance(
-                                details: await getDocId(
-                                    collectionName: "BorrowedBook",
-                                    queryField: "BookId",
-                                    queryItem: bookId[i]),
+                                details: value,
                                 title: "Book Return - ${widget.userId}",
                                 content:
                                     "${booksFound[i].title} is due to be returned on ${parseDate(calculateReturnDate())}",
@@ -141,23 +138,15 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                                     .subtract(Duration(days: 3))
                                     .toString()),
                                 type: "Book Return"));
+
+                        if (await isStaff() == false) {
+                          //~ Schedule local Book Return Notification if not a staff member
+                          await bookReturnNotification(
+                              notificationId: value.hashCode,
+                              returnDate: parseDate(calculateReturnDate()),
+                              title: booksFound[i].title);
+                        }
                       });
-
-                      if (await isStaff() == false) {
-                        //~ Schedule local Book Return Notification if not a staff member
-                        await bookReturnNotification(
-                            notificationId: await searchNotification(
-                                    widget.userId,
-                                    "NotificationAdditionalDetail",
-                                    await getDocId(
-                                        collectionName: "BorrowedBook",
-                                        queryField: "BookId",
-                                        queryItem: bookId[i]))
-                                .then((value) => value.hashCode),
-                            returnDate: parseDate(calculateReturnDate()),
-                            title: booksFound[i].title);
-                      }
-
                       customAlertDialog(context,
                           title: "Request Approved",
                           content:
