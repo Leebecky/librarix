@@ -29,28 +29,28 @@ class _DetailBookViewState extends State<DetailBookView> {
                   background: Image.network(widget.book.image,
                       height: 300, fit: BoxFit.fill)),
             ),
-            SliverFixedExtentList(
-              itemExtent: 60.00,
+            SliverList(
               delegate: SliverChildListDelegate([
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(widget.book.title,
                       style: TextStyle(
-                          fontSize: 30.0, fontWeight: FontWeight.w500)),
+                          fontSize: 25.0, fontWeight: FontWeight.w500)),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 5.0, left: 8.0),
+                  padding:
+                      const EdgeInsets.only(top: 5.0, left: 8.0, bottom: 10.0),
                   child: Text(widget.book.author,
                       style: TextStyle(
                           fontSize: 20.0, fontStyle: FontStyle.italic)),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: AutoSizeText(
                     widget.book.description,
                     style: TextStyle(fontSize: 15.0),
                     maxLines: 20,
-                    textAlign: TextAlign.left,
+                    textAlign: TextAlign.justify,
                   ),
                 ),
                 Padding(
@@ -116,18 +116,16 @@ class _DetailBookViewState extends State<DetailBookView> {
 
   Widget verifyUser(ValueNotifier userId) {
     return FutureBuilder<bool>(
-      future: isStaff(),
-      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        //^ if User is Staff, create a textfield
-        if (snapshot.data == false) {
-          return CustomOutlineButton(
-            buttonText: "Reserve Book",
-            onClick: () => _showMyDialog());
-        }else
-          return SizedBox(height: 0.01);
-    });
-  }  
-
+        future: isStaff(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          //^ if User is Staff, create a textfield
+          if (snapshot.data == false) {
+            return CustomOutlineButton(
+                buttonText: "Reserve Book", onClick: () => _showMyDialog());
+          } else
+            return SizedBox(height: 0.01);
+        });
+  }
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
