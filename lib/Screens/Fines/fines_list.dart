@@ -51,7 +51,7 @@ class _FinesListState extends State<FinesList> {
                                               return customAlertDialog(context,
                                                   title: "Reminder",
                                                   content:
-                                                      "You need to settle your payment at the counter before the due date.");
+                                                      "You need to settle your payment at the counter.");
                                             } else if (snapshot
                                                     .data[index].status ==
                                                 "Paid") {

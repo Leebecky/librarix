@@ -74,14 +74,16 @@ Stream<List<Booking>> getAllBookings() async* {
 }
 
 //? Creates new record in database
-Future<void> createBooking(Booking bookingRecord) async {
+Future<String> createBooking(Booking bookingRecord) async {
+  String docId;
   await FirebaseFirestore.instance
       .collection("Booking")
       .add(_bookingToJson(bookingRecord))
       .then(
-        (value) => print("Booking has been successfully created!"),
+        (value) => docId = value.id,
       )
       .catchError((onError) => print("An error was encountered: $onError"));
+  return docId;
 }
 
 //? Returns all bookings of a given attribute

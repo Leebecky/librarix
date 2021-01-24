@@ -76,7 +76,9 @@ Future<void> updateNotification(
     {String docId,
     String userId,
     dynamic updateItem,
-    String updateAttribute}) async {
+    String updateAttribute,
+    String updateContent,
+    dynamic content}) async {
   (userId == null)
       ? userId = FirebaseAuth.instance.currentUser.uid
       : userId = await findUser("UserId", userId);
@@ -91,12 +93,14 @@ Future<void> updateNotification(
           .doc(userId)
           .collection("Notifications")
           .doc(docId)
-          .update({updateAttribute: updateItem});
+          .update((updateContent != null)
+              ? {updateAttribute: updateItem, updateContent: content}
+              : {updateAttribute: updateItem});
 }
 
 //? Searches for a notification
 Future<List<Notifications>> searchNotification(
-    String userId, String queryField, String queryItem) async {
+    {String userId, String queryField, String queryItem}) async {
   String uid = await findUser("UserId", userId);
   List<Notifications> allNotifications = [], notificationsList = [];
   List<String> notificationId = [];
@@ -126,19 +130,25 @@ Future<List<Notifications>> searchNotification(
 }
 
 //? Updates the noficiations for book return
-Future<void> updateBookReturnNotification({
-  String userId,
-  String bookId,
-  String newDate,
-}) async {
-  List<Notifications> notificationsList =
-      await searchNotification(userId, "NotificationAdditionalDetail", bookId);
-
-  await updateNotification(
-      docId: notificationsList[0].id,
+Future<void> updateBookReturnNotification(
+    {String userId,
+    String borrowedId,
+    String newDate,
+    String bookTitle,
+    String returnDate}) async {
+  List<Notifications> notificationsList = await searchNotification(
       userId: userId,
-      updateItem: newDate,
-      updateAttribute: "NotificationDisplayDate");
+      queryField: "NotificationAdditionalDetail",
+      queryItem: borrowedId);
+  if (notificationsList.isNotEmpty) {
+    await updateNotification(
+        docId: notificationsList[0].id,
+        userId: userId,
+        updateItem: newDate,
+        updateAttribute: "NotificationDisplayDate",
+        updateContent: "NotificationContent",
+        content: "$bookTitle is due to be returned on $returnDate");
+  }
 }
 
 //? For deleting notifications when requested by user/when bookings are cancelled/books are returned early
@@ -160,8 +170,14 @@ Future deleteNotification({
 //^ Looks for the notification docId if not provided
   if (hasId == false) {
     notifications = await searchNotification(
-        userId, "NotificationAdditionalDetail", queryItem);
-    docId = notifications[0].id;
+        userId: userId,
+        queryField: "NotificationAdditionalDetail",
+        queryItem: queryItem);
+    if (notifications.isNotEmpty) {
+      docId = notifications[0].id;
+    } else {
+      return;
+    }
   }
 
   //^ Checks user role for authorization of deleting notifications

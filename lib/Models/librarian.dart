@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../modules.dart';
 import './user.dart';
 
 class Librarian extends ActiveUser {
@@ -114,4 +115,26 @@ Future<List<Librarian>> getLibrarianData(List<String> docId) async {
     librarianList.add(Librarian.fromJson(map));
   }
   return librarianList;
+}
+
+Future<void> createLibrarian(String librarianid, String librarianhp) async {
+  String docid = await getDocId(
+      collectionName: "User", queryField: "UserId", queryItem: librarianid);
+  var addLibrarian = FirebaseFirestore.instance
+      .collection("User")
+      .doc(docid)
+      .collection("Librarian")
+      .doc("LibrarianDetails");
+      
+  await addLibrarian.set({
+    "LibrarianPhoneNumber": librarianhp,
+    "LibrarianStatus": "Trainee",
+  }).catchError((e) => print(e));
+}
+
+Future<void> updateLibrarianStatus(String docId) async {
+  FirebaseFirestore.instance
+      .collection("User")
+      .doc(docId)
+      .update({"UserRole": "Librarian"});
 }

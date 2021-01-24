@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Models/booking.dart';
 import '../../Models/notifications.dart';
 import '../Notifications/notifications_build.dart';
@@ -97,36 +98,33 @@ class _BookingListState extends State<BookingList> {
                                                               cancelNotification(
                                                                   4);
                                                             }
-
                                                             Navigator.of(
                                                                     context)
                                                                 .pop();
-                                                          } else {
-                                                            showDialog(
-                                                                context:
-                                                                    context,
-                                                                barrierDismissible:
-                                                                    false,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return AlertDialog(
-                                                                      title: Text(
-                                                                          "Warning!"),
-                                                                      content: Text(
-                                                                          "You are not valid to cancel this booking because it's over time"),
-                                                                      actions: <
-                                                                          Widget>[
-                                                                        TextButton(
-                                                                          child:
-                                                                              Text("OK"),
-                                                                          onPressed:
-                                                                              () {
-                                                                            Navigator.of(context).pop();
-                                                                          },
-                                                                        ),
-                                                                      ]);
-                                                                });
+                                                          } else if (snapshot
+                                                                  .data[index]
+                                                                  .bookingStatus ==
+                                                              "Completed") {
+                                                            customAlertDialog(
+                                                                context,
+                                                                title:
+                                                                    "Invalid Selection",
+                                                                content:
+                                                                    "This booking has already been completed!",
+                                                                navigateHome:
+                                                                    true);
+                                                          } else if (snapshot
+                                                                  .data[index]
+                                                                  .bookingStatus ==
+                                                              "Cancelled") {
+                                                            customAlertDialog(
+                                                                context,
+                                                                title:
+                                                                    "Invalid Selection",
+                                                                content:
+                                                                    "This booking has already been cancelled!",
+                                                                navigateHome:
+                                                                    true);
                                                           }
                                                         }),
                                                     TextButton(

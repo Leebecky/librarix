@@ -31,7 +31,7 @@ class Borrow {
         borrowedDate = snapshot["BorrowDate"],
         returnedDate = snapshot["BorrowReturnedDate"],
         status = snapshot["BorrowStatus"],
-        timesRenewed = snapshot["BorrowRenewedTime"],
+        timesRenewed = snapshot["BorrowRenewedTimes"],
         borrowedId = snapshot.id;
 }
 
@@ -42,7 +42,7 @@ Borrow borrowFromJson(Map<String, dynamic> json, [SetOptions options]) {
     json["BookId"] as String,
     json["BookTitle"] as String,
     json["BorrowDate"] as String,
-    json["BorrowRenewedTime"] as int,
+    json["BorrowRenewedTimes"] as int,
     json["BorrowReturnedDate"] as String,
     json["BorrowStatus"] as String,
   );
@@ -54,22 +54,24 @@ Map<String, dynamic> _borrowToJson(Borrow instance) => <String, dynamic>{
       "BookId": instance.bookId,
       "BookTitle": instance.bookTitle,
       "BorrowDate": instance.borrowedDate,
-      "BorrowRenewedTime": instance.timesRenewed,
+      "BorrowRenewedTimes": instance.timesRenewed,
       "BorrowReturnedDate": instance.returnedDate,
       "BorrowStatus": instance.status,
     };
 
 //? Creates a borrowed book record
-Future<void> createBorrowRecord(Borrow record) async {
+Future<String> createBorrowRecord(Borrow record) async {
   int stock;
+  String docId;
   (record.status == "Borrowed") ? stock = -1 : stock = 0;
   await FirebaseFirestore.instance
       .collection("BorrowedBook")
       .add(_borrowToJson(record))
       .then((value) {
-    print("Book has been successfully borrowed!");
+    docId = value.id;
     updateBookStock(record.bookId, stock);
   }).catchError((onError) => print("An error has occurred: $onError"));
+  return docId;
 }
 
 //? Retrieves all Borrow Records
@@ -120,8 +122,10 @@ Stream<List<Borrow>> getBorrowedOf(String queryField, String queryItem) async* {
 //?Retrieve data from Firestore
 Stream<List<Borrow>> getBorrowedWithDocIdOf(
     String queryField, String queryItem) async* {
-  List<Borrow> borrowedOf = [];
-  List<Borrow> finalBorrowed = [];
+  List<Borrow> borrowedOf = [],
+      finalBorrowed = [],
+      reservations = [],
+      borrowRecords = [];
   List<String> borowedId = [];
   QuerySnapshot borrowed = await FirebaseFirestore.instance
       .collection("BorrowedBook")
@@ -148,13 +152,26 @@ Stream<List<Borrow>> getBorrowedWithDocIdOf(
         borowedId[i]));
   }
 
+  // Separate Reserved Books from Borrowed Books
+  finalBorrowed.forEach((record) => reservations.add(record));
+  reservations.removeWhere((record) => record.status != "Reserved");
+  reservations.join(",");
+
+  finalBorrowed.removeWhere((record) => record.status == "Reserved");
+  finalBorrowed.join(",");
+
+  //Sort borrowed books by date
   finalBorrowed.sort((a, b) {
     DateTime aDate = parseStringToDate(a.returnedDate);
     DateTime bDate = parseStringToDate(b.returnedDate);
     return bDate.compareTo(aDate);
   });
 
-  yield finalBorrowed;
+  //Combine borrowed books and reserved books together. Reserved books at the bottom.
+  finalBorrowed.forEach((record) => borrowRecords.add(record));
+  reservations.forEach((record) => borrowRecords.add(record));
+
+  yield borrowRecords;
 }
 
 //update book reservation list --- reserve => borrow
@@ -212,7 +229,7 @@ Future createReservationRecord(String bookId, String bookTitle) async {
     'BookId': bookId,
     'BookTitle': bookTitle,
     'BorrowDate': "Not Available",
-    'BorrowRenewedTime': 0,
+    'BorrowRenewedTimes': 0,
     'BorrowReturnedDate': "Not Available",
     'BorrowStatus': 'Reserved',
     'UserId': myUser.userId,
