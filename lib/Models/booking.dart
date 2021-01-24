@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../modules.dart';
 
 //? Booking class
 class Booking {
@@ -130,6 +131,12 @@ Stream<List<Booking>> getBookingsWithDocIdOf(
         bookingsOf[i].userId,
         bookingId[i]));
   }
+
+  finalBooking.sort((a, b) {
+    DateTime aDate = parseStringToDate(a.bookingDate);
+    DateTime bDate = parseStringToDate(b.bookingDate);
+    return bDate.compareTo(aDate);
+  });
 
   yield finalBooking;
 }
