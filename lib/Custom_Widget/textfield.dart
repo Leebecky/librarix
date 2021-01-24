@@ -95,3 +95,52 @@ class CustomDisplayTextField extends StatelessWidget {
     );
   }
 }
+
+class CustomValidTextField extends StatelessWidget {
+  final String text;
+  final bool fixKeyboardToNum;
+  final Function onChange;
+  final Color borderColor;
+  final Function validate;
+
+  CustomValidTextField({
+    this.text,
+    this.onChange,
+    this.fixKeyboardToNum = false,
+    this.borderColor,
+    this.validate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    List<TextInputFormatter> formatList = [];
+    TextInputFormatter digits = FilteringTextInputFormatter.digitsOnly;
+    TextInputType keyboardType;
+    Color textFieldBorderColor;
+
+    (borderColor == null)
+        ? textFieldBorderColor = Theme.of(context).accentColor
+        : textFieldBorderColor = borderColor;
+
+    if (fixKeyboardToNum) {
+      keyboardType = TextInputType.number;
+      formatList.add(digits);
+    } else {
+      keyboardType = TextInputType.text;
+      digits = null;
+    }
+
+    return TextFormField(
+        //~ locks the keyboard to numerical only
+        keyboardType: keyboardType,
+        inputFormatters: formatList,
+        decoration: InputDecoration(
+            labelText: text,
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: textFieldBorderColor)),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: textFieldBorderColor))),
+        onChanged: (newText) => onChange(newText),
+        validator: (val) => validate(val));
+  }
+}
