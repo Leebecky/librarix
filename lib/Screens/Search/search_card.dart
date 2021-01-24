@@ -15,37 +15,26 @@ Widget buildSearchCard(BuildContext context, DocumentSnapshot document) {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top: 8.0, left: 100),
-                child: Row(children: <Widget>[
-                  Image.network(
-                    book.image,
-                    width: 150,
-                    fit: BoxFit.fitWidth,
-                  ),
-                  Spacer(),
-                ]),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Image.network(
+                  book.image,
+                  width: 150,
+                  fit: BoxFit.fitWidth,
+                ),
               ),
-              Padding(
+              Container(
                 padding: const EdgeInsets.only(top: 4.0),
-                child: Row(children: <Widget>[
-                  AutoSizeText(
-                    book.title, style: TextStyle(fontSize: 20.0),),
-                  Spacer(),
-                ]),
+                child: AutoSizeText(book.title,
+                    style: TextStyle(fontSize: 20.0),
+                    textAlign: TextAlign.center),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: Row(
-                  children: <Widget>[
-                    Text(
-                      book.author,
-                      style: TextStyle(
-                          fontSize: 15.0, fontStyle: FontStyle.italic),
-                    ),
-                    Spacer(),
-                  ],
+                child: Text(
+                  book.author,
+                  style: TextStyle(fontSize: 15.0, fontStyle: FontStyle.italic),
                 ),
-              )
+              ),
             ],
           ),
         ),

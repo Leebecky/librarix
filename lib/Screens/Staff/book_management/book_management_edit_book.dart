@@ -218,7 +218,7 @@ class _EditBookState extends State<EditBook> {
                     controller: _stockC,
                     text: 'Stock',
                     fixKeyboardToNum: true,
-                    onChange: (value) => stock = int.parse(value),
+                    onChange: (value) => stock = value,
                   ),
                 ),
                 Padding(
@@ -385,7 +385,7 @@ class _EditBookState extends State<EditBook> {
       'BookDescription': _descriptionC.text,
       'BookImage':
           "https://images-na.ssl-images-amazon.com/images/I/61bKTJvsWGL._SX334_BO1,204,203,200_.jpg",
-      'BookStock': _stockC.text,
+      'BookStock': int.parse(_stockC.text),
     });
   }
 }

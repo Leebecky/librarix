@@ -38,6 +38,11 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
   //? Screen
   @override
   Widget build(BuildContext context) {
+    String printCodeType;
+    (widget.bookCodeType == "BookISBNCode")
+        ? printCodeType = "Book ISBN Code"
+        : printCodeType = "Book Barcode";
+
     return Scaffold(
         appBar: AppBar(
           title: Text("Books"),
@@ -79,7 +84,7 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                       child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.0),
                     child: Text(
-                      "Sorry, no book matching the provided ${widget.bookCodeType} has been found. Please try again.",
+                      "Sorry, no book matching the provided $printCodeType has been found. Please try again.",
                       style: TextStyle(
                         fontSize: 18,
                       ),
