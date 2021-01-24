@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../Models/librarian.dart';
+import 'librarian_management_add.dart';
 import 'librarian_management_detail.dart';
 
 class LibrarianManagement extends StatefulWidget {
@@ -15,12 +16,13 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
   CollectionReference librarianDb =
       FirebaseFirestore.instance.collection("User");
 
-  navigateToLibrarianManagementDetail(DocumentSnapshot librarian) {
+  navigateToLibrarianManagementDetail(
+      String librarianId, Librarian librarianData) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                LibrarianManagementDetail(librarian: librarian)));
+            builder: (context) => LibrarianManagementDetail(
+                dlibrarian: librarianId, data: librarianData)));
   }
 
   @override
@@ -28,6 +30,17 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Librarian Management"),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return AddLibrarian();
+          }));
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
       ),
       body: Container(
         child: FutureBuilder<List<String>>(
@@ -42,9 +55,8 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                         return ListView.builder(
                           itemCount: snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: [
-                                Container(
+                            return Container(
+                              child: GestureDetector(
                                   child: Padding(
                                     padding: const EdgeInsets.all(5),
                                     child: Column(
@@ -77,8 +89,10 @@ class _LibrarianManagementState extends State<LibrarianManagement> {
                                       ],
                                     ),
                                   ),
-                                )
-                              ],
+                                  onTap: () =>
+                                      navigateToLibrarianManagementDetail(
+                                          docId.data[index],
+                                          snapshot.data[index])),
                             );
                           },
                         );
