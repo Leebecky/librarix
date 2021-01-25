@@ -153,7 +153,7 @@ class _BookReservationListState extends State<BookReservationList> {
                       TextButton(
                         child: Text("Yes"),
                         onPressed: () async {
-                          updateBorrowStatus(activeReserve[index].borrowedId);
+                          updateBorrowStatus(activeReserve[index].borrowedId,activeReserve[index].bookId);
                           Navigator.of(context).pop();
                         },
                       ),

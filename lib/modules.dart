@@ -62,3 +62,17 @@ Future<String> getDocId(
       .then((value) => docId = value.docs[0].id);
   return docId;
 }
+
+//? Retrieves the current date and returns the book returnDate
+String calculateReturnDate() {
+  DateTime startDate = DateTime.now();
+  DateTime returnDate = startDate.add(Duration(days: 6));
+
+  //^ Checks if the returnDate lands on a weekend and extends it to Monday if so
+  if (returnDate.weekday == DateTime.saturday) {
+    returnDate = returnDate.add(Duration(days: 2));
+  } else if (returnDate.weekday == DateTime.sunday) {
+    returnDate = returnDate.add(Duration(days: 1));
+  }
+  return returnDate.toString();
+}
