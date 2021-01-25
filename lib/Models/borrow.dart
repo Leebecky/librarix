@@ -175,13 +175,19 @@ Stream<List<Borrow>> getBorrowedWithDocIdOf(
 }
 
 //update book reservation list --- reserve => borrow
-Future<void> updateBorrowStatus(String docId) async {
+Future<void> updateBorrowStatus(String docId, String bookId) async {
   FirebaseFirestore.instance
       .collection("BorrowedBook")
       .doc(docId)
-      .update({"BorrowStatus": "Borrowed"})
-      .then((value) =>
-          print("Completed Status for Discussion Room update successfully!"))
+      .update({
+        "BorrowStatus": "Borrowed",
+        "BorrowDate": parseDate(DateTime.now().toString()),
+        "BorrowReturnedDate": parseDate(calculateReturnDate())
+      })
+      .then((value) => {
+            print("Reserved book has been borrowed!"),
+            updateBookStock(bookId, -1)
+          })
       .catchError((onError) => print("An error has occurred: $onError"));
 }
 

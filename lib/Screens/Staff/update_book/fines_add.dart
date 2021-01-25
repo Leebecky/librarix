@@ -14,6 +14,11 @@ class AddFines extends StatefulWidget {
 
 class _AddFinesState extends State<AddFines> {
   String userid, due, reason, total, date;
+  @override
+  void initState() {
+    total = "0.00";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +88,7 @@ class _AddFinesState extends State<AddFines> {
                           SizedBox(
                             width: 10,
                           ),
-                          Text("Fines Total : RM$total"),
+                          Text("Fines Total : RM $total"),
 
                           //calculate total fines
                         ],
