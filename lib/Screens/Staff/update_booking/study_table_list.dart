@@ -126,11 +126,11 @@ class _StudyTableListState extends State<StudyTableList> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text(
-                    'Complete Study Table',
+                    'Study Table Booking Completed',
                   ),
                   content: SingleChildScrollView(
                     child: ListBody(
-                      children: <Widget>[Text("Check-out for Study Table?")],
+                      children: <Widget>[Text("Close this booking?")],
                     ),
                   ),
                   actions: <Widget>[
@@ -168,13 +168,11 @@ class _StudyTableListState extends State<StudyTableList> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text(
-                          'Cancelled Study Table',
+                          'Cancel Study Table Booking',
                         ),
                         content: SingleChildScrollView(
                           child: ListBody(
-                            children: <Widget>[
-                              Text("Cancelled for Study Table?")
-                            ],
+                            children: <Widget>[Text("Cancel this booking?")],
                           ),
                         ),
                         actions: <Widget>[
@@ -211,7 +209,7 @@ class _StudyTableListState extends State<StudyTableList> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text(
-                          'Active Study Table',
+                          'Activate Study Table Booking',
                         ),
                         content: SingleChildScrollView(
                           child: ListBody(

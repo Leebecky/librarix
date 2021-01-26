@@ -126,13 +126,11 @@ class _DiscussionRoomListState extends State<DiscussionRoomList> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text(
-                    'Complete Discussion Room',
+                    'Close Discussion Room Booking',
                   ),
                   content: SingleChildScrollView(
                     child: ListBody(
-                      children: <Widget>[
-                        Text("Check-out for Discussion Room?")
-                      ],
+                      children: <Widget>[Text("Close this booking?")],
                     ),
                   ),
                   actions: <Widget>[
@@ -170,13 +168,11 @@ class _DiscussionRoomListState extends State<DiscussionRoomList> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text(
-                          'Cancelled Discussion Room',
+                          'Cancel Discussion Room Booking',
                         ),
                         content: SingleChildScrollView(
                           child: ListBody(
-                            children: <Widget>[
-                              Text("Cancelled for Discussion Room?")
-                            ],
+                            children: <Widget>[Text("Cancel this booking?")],
                           ),
                         ),
                         actions: <Widget>[
@@ -225,7 +221,7 @@ class _DiscussionRoomListState extends State<DiscussionRoomList> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text(
-                          'Active Discussion Room',
+                          'Activate Discussion Room Booking',
                         ),
                         content: SingleChildScrollView(
                           child: ListBody(

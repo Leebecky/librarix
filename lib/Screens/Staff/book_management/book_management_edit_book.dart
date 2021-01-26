@@ -243,13 +243,12 @@ class _EditBookState extends State<EditBook> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: Text(
-                                      'Update Book Catalogue',
+                                      'Update $title',
                                     ),
                                     content: SingleChildScrollView(
                                       child: ListBody(
                                         children: <Widget>[
-                                          Text(
-                                              "Do you sure wanted to update this book catalogue?")
+                                          Text("Update the details of $title?")
                                         ],
                                       ),
                                     ),
@@ -290,13 +289,13 @@ class _EditBookState extends State<EditBook> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: Text(
-                                      'Delete Book Catalogue',
+                                      'Delete $title',
                                     ),
                                     content: SingleChildScrollView(
                                       child: ListBody(
                                         children: <Widget>[
                                           Text(
-                                              "Do you sure wanted to delete this book catalogue?")
+                                              "Do you want to delete this book?")
                                         ],
                                       ),
                                     ),
@@ -310,14 +309,14 @@ class _EditBookState extends State<EditBook> {
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
                                                   title: Text(
-                                                    'Double Confirm',
+                                                    'Final Confirmation',
                                                   ),
                                                   content:
                                                       SingleChildScrollView(
                                                     child: ListBody(
                                                       children: <Widget>[
                                                         Text(
-                                                            "Confirm to delete this book catalogue?")
+                                                            "Please confirm the deletion of $title")
                                                       ],
                                                     ),
                                                   ),

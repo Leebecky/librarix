@@ -69,7 +69,7 @@ class _FinesManagementState extends State<FinesManagement> {
                                   child: Row(
                                     children: [
                                       Text(
-                                        "Due Date: " +
+                                        "Issue Date: " +
                                             activeFines[index].issueDate,
                                         style: TextStyle(fontSize: 16),
                                       ),

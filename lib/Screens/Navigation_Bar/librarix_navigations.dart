@@ -100,7 +100,7 @@ class _HomeState extends State<Home> {
                   }));
                 }),
             ListTile(
-                title: Text("Switch theme"),
+                title: Text("Switch Theme"),
                 trailing: Icon(Icons.toggle_off_rounded),
                 onTap: () {
                   currentTheme.switchTheme();
