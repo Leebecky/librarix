@@ -66,7 +66,6 @@ class _HomeState extends State<Home> {
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(user.data.avatar),
                         ),
-                        onTap: () => print("This is your current account."),
                       ),
                       decoration: BoxDecoration(
                           image: DecorationImage(

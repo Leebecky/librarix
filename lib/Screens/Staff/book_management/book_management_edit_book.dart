@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import '../../../Custom_Widget/textfield.dart';
 import '../../../Models/book.dart';
 
@@ -38,6 +39,7 @@ class _EditBookState extends State<EditBook> {
   // TextEditingController _imageC = TextEditingController();
   @override
   void initState() {
+    title = widget.bookCatalogue["BookTitle"];
     super.initState();
     getEditBook();
   }
@@ -53,7 +55,6 @@ class _EditBookState extends State<EditBook> {
         .get();
 
     genre = widget.bookCatalogue["BookGenre"];
-    title = widget.bookCatalogue["BookTitle"];
     _titleC.text = widget.bookCatalogue["BookTitle"];
     _isbnCodeC.text = widget.bookCatalogue["BookISBNCode"];
     _barcodeC.text = widget.bookCatalogue["BookBarcode"];
@@ -70,46 +71,51 @@ class _EditBookState extends State<EditBook> {
     });
   }
 
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            // widget.bookCatalogue.id + "\n" +
-            widget.bookCatalogue["BookTitle"]),
+        title: Text(widget.bookCatalogue["BookTitle"]),
       ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
           child: Form(
+            key: _formKey,
             child: Column(
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomDisplayTextField(
+                  child: CustomValidTextField(
                     controller: _titleC,
-                    // text: "Book Title",
-                    text: title,
+                    text: "Book Title",
                     fixKeyboardToNum: false,
                     onChange: (value) => title = value,
+                    validate: (title) =>
+                        title.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomDisplayTextField(
+                  child: CustomValidTextField(
                     controller: _isbnCodeC,
                     text: "Book ISBN Code",
                     fixKeyboardToNum: true,
                     onChange: (value) => isbnCode = value,
+                    validate: (isbnCode) =>
+                        isbnCode.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomDisplayTextField(
+                  child: CustomValidTextField(
                     controller: _barcodeC,
                     text: "Book Barcode",
                     fixKeyboardToNum: true,
                     onChange: (value) => barcode = value,
+                    validate: (barcode) =>
+                        barcode.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
@@ -164,25 +170,29 @@ class _EditBookState extends State<EditBook> {
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomDisplayTextField(
+                  child: CustomValidTextField(
                     controller: _authorC,
                     text: "Author",
                     fixKeyboardToNum: false,
                     onChange: (value) => author = value,
+                    validate: (author) =>
+                        author.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomDisplayTextField(
+                  child: CustomValidTextField(
                     controller: _publisherC,
                     text: "Publisher",
                     fixKeyboardToNum: false,
                     onChange: (value) => publisher = value,
+                    validate: (publisher) =>
+                        publisher.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: TextField(
+                  child: TextFormField(
                     controller: _publishedDateC,
                     keyboardType: TextInputType.datetime,
                     decoration: InputDecoration(
@@ -201,24 +211,30 @@ class _EditBookState extends State<EditBook> {
                       _DateFormatter(),
                     ],
                     onChanged: (value) => publishedDate = value,
+                    validator: (publishedDate) =>
+                        publishedDate.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomDisplayTextField(
+                  child: CustomValidTextField(
                     controller: _descriptionC,
                     text: "Book Description",
                     fixKeyboardToNum: false,
                     onChange: (value) => description = value,
+                    validate: (description) =>
+                        description.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.all(20),
-                  child: CustomDisplayTextField(
+                  child: CustomValidTextField(
                     controller: _stockC,
                     text: 'Stock',
                     fixKeyboardToNum: true,
                     onChange: (value) => stock = value,
+                    validate: (stock) =>
+                        stock.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
@@ -237,38 +253,47 @@ class _EditBookState extends State<EditBook> {
                             style: TextStyle(fontSize: 18.0),
                           ),
                           onPressed: () {
-                            return showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(
-                                      'Update $title',
-                                    ),
-                                    content: SingleChildScrollView(
-                                      child: ListBody(
-                                        children: <Widget>[
-                                          Text("Update the details of $title?")
-                                        ],
+                            if (_formKey.currentState.validate()) {
+                              return showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                        'Update $title',
                                       ),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                          child: Text("Yes"),
-                                          onPressed: () async {
-                                            updateBook();
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
-                                          }),
-                                      TextButton(
-                                        child: Text("No"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            Text(
+                                                "Update the details of $title?")
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                  );
-                                });
+                                      actions: <Widget>[
+                                        TextButton(
+                                            child: Text("Yes"),
+                                            onPressed: () async {
+                                              updateBook();
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop();
+                                            }),
+                                        TextButton(
+                                          child: Text("No"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            } else {
+                              customAlertDialog(
+                                context,
+                                title: "Empty textfield",
+                                content: "Please fill up any empty fields!",
+                              );
+                            }
                           })),
                 ),
                 Padding(

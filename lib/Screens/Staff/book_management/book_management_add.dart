@@ -154,7 +154,7 @@ class _AddNewBookState extends State<AddNewBook> {
                     fixKeyboardToNum: true,
                     onChange: (value) => barcode = value,
                     validate: (barcode) =>
-                        isbnCode.isEmpty ? "This Field is required" : null,
+                        barcode.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
