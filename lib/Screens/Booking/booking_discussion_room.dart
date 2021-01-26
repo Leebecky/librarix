@@ -196,9 +196,8 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
         builder: (BuildContext context) {
           return Container(
               height: MediaQuery.of(context).size.height / 2,
-              //A streamBuilder is used to keep in sync with real time updates
-              child: StreamBuilder<List<Text>>(
-                  stream: getRoomsAvailable(widget.date),
+              child: FutureBuilder(
+                  future: getRoomsAvailable(widget.date),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Text>> roomList) {
                     if (roomList.hasData) {
@@ -233,7 +232,8 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
   }
 
   //? Queries bookings, compares with rooms and returns list of available rooms
-  Stream<List<Text>> getRoomsAvailable(String date) async* {
+  // Stream<List<Text>> getRoomsAvailable(String date) async* {
+  Future<List<Text>> getRoomsAvailable(String date) async {
     //Removes the : from the string so that the time can be evaluated as an integer
     String startTime = (widget.startTime.split(":").join("")),
         endTime = (widget.endTime.split(":").join(""));
@@ -265,12 +265,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
     clashingBookings.join(",");
 
     //^ if clashingBookings is empty => no clashing bookings exist
-    if (clashingBookings.isEmpty) {
-      //~ return the list of available rooms
-      for (var room in roomsOfSize) {
-        rooms.add(Text(room.roomNum));
-      }
-    } else {
+    if (clashingBookings.isNotEmpty) {
       //^ process roomsOfSize and remove rooms that are booked
       //~ add to a list, the rooms that are in use
       for (var booking in clashingBookings) {
@@ -281,17 +276,16 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
         roomsOfSize.removeWhere((room) => room.roomNum == roomInUse.toString());
         roomsOfSize.join(",");
       }
-      //~ return list of available rooms
-      for (var room in roomsOfSize) {
-        rooms.add(Text(room.roomNum));
-      }
-
-      //~ if there are no rooms available at all
-      (rooms.length == 0)
-          ? rooms.add(Text("No rooms available"))
-          : rooms = rooms;
     }
-    yield rooms;
+
+    //~ return list of available rooms
+    for (var room in roomsOfSize) {
+      rooms.add(Text(room.roomNum));
+    }
+
+    //~ if there are no rooms available at all
+    (rooms.length == 0) ? rooms.add(Text("No rooms available")) : rooms = rooms;
+    return rooms;
   }
 
   //? Queries bookings if the user has any active bookings
