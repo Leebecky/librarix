@@ -114,7 +114,7 @@ class _BorrowReportState extends State<BorrowReport> {
 
     xAxisTime.forEach((element) {
       for (var item in record) {
-        if (item.status != "Reserved" &&
+        if ((item.status == "Borrowed" || item.status == "Returned") &&
             parseStringToDate(item.borrowedDate).year.toString() == element) {
           measure.add(item);
         }
