@@ -157,7 +157,8 @@ Stream<List<Borrow>> getBorrowedWithDocIdOf(
   reservations.removeWhere((record) => record.status != "Reserved");
   reservations.join(",");
 
-  finalBorrowed.removeWhere((record) => record.status == "Reserved");
+  finalBorrowed.removeWhere(
+      (record) => record.status == "Reserved" || record.status == "Cancelled");
   finalBorrowed.join(",");
 
   //Sort borrowed books by date
