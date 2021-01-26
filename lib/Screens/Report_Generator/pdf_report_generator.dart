@@ -246,7 +246,7 @@ List<List<Object>> generateBorrowBarChart(List<Borrow> borrowList) {
 
   xAxisTime.forEach((element) {
     for (var item in borrowList) {
-      if (item.status != "Reserved" &&
+      if ((item.status == "Borrowed" || item.status == "Returned") &&
           parseStringToDate(item.borrowedDate).year.toString() == element) {
         yAxis.add(item);
       }
