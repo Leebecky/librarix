@@ -61,8 +61,8 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
                         buttonText: "Study Table: ${selectedStudyTable.value}",
                         onClick: () => Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              return StreamBuilder<List<String>>(
-                                  stream: getBookedTables(widget.date),
+                              return FutureBuilder<List<String>>(
+                                  future: getBookedTables(widget.date),
                                   builder: (BuildContext context,
                                       AsyncSnapshot<List<String>> snapshot) {
                                     if (snapshot.hasData) {
@@ -177,7 +177,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
   }
 
 //? Queries bookings, compares with rooms and returns list of available rooms
-  Stream<List<String>> getBookedTables(String date) async* {
+  Future<List<String>> getBookedTables(String date) async {
     String startTime = (widget.startTime.split(":").join("")),
         endTime = (widget.endTime.split(":").join(""));
     List<String> listOfBookedTables = [];
@@ -209,7 +209,7 @@ class _BookingStudyTableState extends State<BookingStudyTable> {
         listOfBookedTables.add(booking.roomOrTableNum);
       }
     }
-    yield listOfBookedTables;
+    return listOfBookedTables;
   }
 
 //? Creates the Booking object for study table bookings

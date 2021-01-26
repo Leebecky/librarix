@@ -8,7 +8,6 @@ import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Custom_Widget/buttons.dart';
 import '../../Models/study_table.dart';
 
-// !  indicate selected table number
 class FloorPlan extends StatefulWidget {
   final List<String> bookedTables;
   final ValueNotifier<String> selectedStudyTable;
