@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 import 'package:librarix/Models/user.dart';
 
 customAlertDialog(BuildContext context,
@@ -26,7 +27,7 @@ customAlertDialog(BuildContext context,
                                 context, "/librarianHome")
                             : Navigator.popAndPushNamed(context, "/home");
                   } else {
-                    Navigator.pop(context);
+                    Get.back();
                   }
                 },
                 child: Text("Close"))

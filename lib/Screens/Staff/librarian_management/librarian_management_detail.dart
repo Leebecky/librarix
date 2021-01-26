@@ -3,6 +3,7 @@ import '../../../Models/librarian.dart';
 import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Custom_Widget/textfield.dart';
 
+//! Edit/Delete doesnt work yet
 class LibrarianManagementDetail extends StatefulWidget {
   final String dlibrarian;
   final Librarian data;
@@ -199,13 +200,13 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: Text(
-                                      'Resign Librarian Position',
+                                      'Remove Librarian Account',
                                     ),
                                     content: SingleChildScrollView(
                                       child: ListBody(
                                         children: <Widget>[
                                           Text(
-                                              "Sure to Resign Librarian Position?")
+                                              "Do you wish to remove this librarian's account?")
                                         ],
                                       ),
                                     ),
@@ -219,14 +220,14 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
                                                   title: Text(
-                                                    'Double Confirm',
+                                                    'Final Confirmation',
                                                   ),
                                                   content:
                                                       SingleChildScrollView(
                                                     child: ListBody(
                                                       children: <Widget>[
                                                         Text(
-                                                            "Confirm to resign this librarian?")
+                                                            "Please confirm the removal of this librarian")
                                                       ],
                                                     ),
                                                   ),
@@ -245,9 +246,9 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
                                                         customAlertDialog(
                                                             context,
                                                             title:
-                                                                "Resign Librarian",
+                                                                "Librarian Removed",
                                                             content:
-                                                                "Resign librarian sucessfully");
+                                                                "Librarian account deleted");
                                                       },
                                                     ),
                                                     TextButton(

@@ -108,7 +108,6 @@ class _AdminHomeState extends State<AdminHome> {
                 title: Text("Fines Management"),
                 trailing: Icon(Icons.attach_money),
                 onTap: () {
-                  //Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return FinesManagement();
                   }));
@@ -128,7 +127,7 @@ class _AdminHomeState extends State<AdminHome> {
                   }));
                 }),
             ListTile(
-                title: Text("Switch theme"),
+                title: Text("Switch Theme"),
                 trailing: Icon(Icons.toggle_off_rounded),
                 onTap: () {
                   currentTheme.switchTheme();
@@ -210,7 +209,7 @@ class _AdminHomeState extends State<AdminHome> {
               padding = 2;
               fontSize = 10;
             }
-            
+
             //^ Display Notification icon + badge
             if (notificationsList.length > 0) {
               return SizedBox(

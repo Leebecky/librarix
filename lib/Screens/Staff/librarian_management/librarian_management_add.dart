@@ -5,6 +5,7 @@ import 'package:librarix/Custom_Widget/textfield.dart';
 import 'package:librarix/Models/librarian.dart';
 import '../../../modules.dart';
 
+//! You can enter the id of an existing librarian
 class AddLibrarian extends StatefulWidget {
   @override
   _AddLibrarianState createState() => _AddLibrarianState();
@@ -15,6 +16,7 @@ class _AddLibrarianState extends State<AddLibrarian> {
   @override
   void initState() {
     phoneNo = "";
+    userID = "";
     super.initState();
   }
 
@@ -52,28 +54,27 @@ class _AddLibrarianState extends State<AddLibrarian> {
                     roundBorder: true,
                     buttonText: "Add",
                     onClick: () async {
-                      if (phoneNo.isEmpty) {
+                      if (phoneNo.isEmpty || userID.isEmpty) {
                         customAlertDialog(
                           context,
-                          title: "Empty textfied",
-                          content: "Please fill up the empty field !",
+                          title: "Empty Textfield",
+                          content: "Please fill in the empty textfields!",
                         );
                       } else {
                         if (await validUser(userID)) {
                           await createLibrarian(userID, phoneNo);
                           // updateLibrarianStatus();
+                          Navigator.of(context).pop();
                           customAlertDialog(
                             context,
-                            title: "Successful",
-                            content: "Trainee added !",
+                            title: "Librarian Registered",
+                            content: "New Librarian Trainee added!",
                           );
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
                         } else {
                           customAlertDialog(
                             context,
-                            title: "Invalid User ID !",
-                            content: "Invalid UserID. Please check !",
+                            title: "Invalid User ID",
+                            content: "Invalid UserID entered. Please recheck!",
                           );
                         }
                       }

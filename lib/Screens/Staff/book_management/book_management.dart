@@ -6,7 +6,6 @@ import 'book_management_detail_page.dart';
 import 'book_management_add.dart';
 import 'book_management_edit_book.dart';
 
-
 class BookManagementListView extends StatefulWidget {
   @override
   _BookManagementListViewState createState() => _BookManagementListViewState();
@@ -50,7 +49,7 @@ class _BookManagementListViewState extends State<BookManagementListView> {
       ),
       body: Container(
         child: StreamBuilder<QuerySnapshot>(
-            stream: bookDb.snapshots(),
+            stream: bookDb.orderBy("BookTitle").snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasData) {

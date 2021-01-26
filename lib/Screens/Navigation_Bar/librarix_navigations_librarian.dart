@@ -118,7 +118,7 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                   Navigator.pushNamed(context, "/reports");
                 }),
             ListTile(
-                title: Text("Switch theme"),
+                title: Text("Switch Theme"),
                 trailing: Icon(Icons.toggle_off_rounded),
                 onTap: () {
                   currentTheme.switchTheme();
