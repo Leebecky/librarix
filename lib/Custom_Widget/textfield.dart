@@ -103,11 +103,13 @@ class CustomValidTextField extends StatelessWidget {
   final Function onChange;
   final Color borderColor;
   final Function validate;
+  final TextEditingController controller;
 
   CustomValidTextField({
     this.text,
     this.onChange,
     this.fixKeyboardToNum = false,
+    this.controller,
     this.borderColor,
     this.validate,
   });
@@ -134,6 +136,7 @@ class CustomValidTextField extends StatelessWidget {
     return TextFormField(
         //~ locks the keyboard to numerical only
         keyboardType: keyboardType,
+        controller: controller,
         inputFormatters: formatList,
         decoration: InputDecoration(
             labelText: text,

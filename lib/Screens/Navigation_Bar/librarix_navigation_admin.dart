@@ -71,7 +71,6 @@ class _AdminHomeState extends State<AdminHome> {
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(user.data.avatar),
                         ),
-                        onTap: () => print("This is your current account."),
                       ),
                       decoration: BoxDecoration(
                           image: DecorationImage(

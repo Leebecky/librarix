@@ -58,7 +58,6 @@ class _BookManagementListViewState extends State<BookManagementListView> {
                 // });
                 return ListView(
                   children: snapshot.data.docs.map((DocumentSnapshot document) {
-                    print(document.data()["BookImage"]);
                     return Container(
                       child: GestureDetector(
                         child: Card(

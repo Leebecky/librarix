@@ -69,7 +69,6 @@ class _LibrarianHomeState extends State<LibrarianHome> {
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(user.data.avatar),
                         ),
-                        onTap: () => print("This is your current account."),
                       ),
                       decoration: BoxDecoration(
                           image: DecorationImage(
