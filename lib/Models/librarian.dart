@@ -140,3 +140,33 @@ Future<void> updateLibrarianStatus(String librarianid) async {
       .doc(docid)
       .update({"UserRole": "Librarian"});
 }
+
+Future<void> deleteLibrarian(String librarianid) async {
+  String docid = await getDocId(
+      collectionName: "User", queryField: "UserId", queryItem: librarianid);
+  FirebaseFirestore.instance
+      .collection("User")
+      .doc(docid)
+      .update({"UserRole": "Student"});
+}
+
+Future<void> deleteLibrarianSubCollection(String librarianid) async {
+  String docid = await getDocId(
+      collectionName: "User", queryField: "UserId", queryItem: librarianid);
+  FirebaseFirestore.instance
+      .collection("User")
+      .doc(docid)
+      .collection("Librarian")
+      .doc("LibrarianDetails")
+      .delete();
+}
+
+// Future<void> deleteBook(String docId) async {
+//   FirebaseFirestore.instance
+//       .collection("BookCatalogue")
+//       .doc(docId)
+//       .delete()
+//       .then((value) =>
+//           print("Active Status for Discussion Room update successfully!"))
+//       .catchError((onError) => print("An error has occurred: $onError"));
+// }

@@ -162,7 +162,7 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
                                       TextButton(
                                           child: Text("Yes"),
                                           onPressed: () async {
-                                            // updateBook(); update function
+                                            // updateBook(); //update function
                                             Navigator.of(context).pop();
                                             Navigator.of(context).pop();
                                             // customAlertDialog(context,
@@ -235,8 +235,11 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
                                                     TextButton(
                                                       child: Text("Yes"),
                                                       onPressed: () async {
-                                                        // deleteBook(widget
-                                                        //     .bookCatalogue.id); delete function
+                                                        deleteLibrarian(widget
+                                                            .data
+                                                            .userId); //change status
+                                                        deleteLibrarianSubCollection(
+                                                            widget.data.userId);
                                                         Navigator.of(context)
                                                             .pop();
                                                         Navigator.of(context)
