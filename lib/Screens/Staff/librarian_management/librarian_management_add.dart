@@ -63,7 +63,7 @@ class _AddLibrarianState extends State<AddLibrarian> {
                       } else {
                         if (await validUser(userID)) {
                           await createLibrarian(userID, phoneNo);
-                          // updateLibrarianStatus();
+                          updateLibrarianStatus(userID);
                           Navigator.of(context).pop();
                           customAlertDialog(
                             context,

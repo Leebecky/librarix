@@ -125,16 +125,18 @@ Future<void> createLibrarian(String librarianid, String librarianhp) async {
       .doc(docid)
       .collection("Librarian")
       .doc("LibrarianDetails");
-      
+
   await addLibrarian.set({
     "LibrarianPhoneNumber": librarianhp,
     "LibrarianStatus": "Trainee",
   }).catchError((e) => print(e));
 }
 
-Future<void> updateLibrarianStatus(String docId) async {
+Future<void> updateLibrarianStatus(String librarianid) async {
+  String docid = await getDocId(
+      collectionName: "User", queryField: "UserId", queryItem: librarianid);
   FirebaseFirestore.instance
       .collection("User")
-      .doc(docId)
+      .doc(docid)
       .update({"UserRole": "Librarian"});
 }
