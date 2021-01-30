@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../../Models/librarian.dart';
 import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Custom_Widget/textfield.dart';
+
+import '../../../modules.dart';
 
 //! Edit/Delete doesnt work yet
 class LibrarianManagementDetail extends StatefulWidget {
@@ -90,11 +93,13 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
                 ),
                 Padding(
                   padding: EdgeInsets.all(15),
-                  child: CustomDisplayTextField(
+                  child: CustomValidTextField(
                     controller: _phoneno,
                     text: "Phone Number",
                     fixKeyboardToNum: false,
                     onChange: (value) => phoneNo = value,
+                    validate: (phoneNo) =>
+                        phoneNo.isEmpty ? "This Field is required" : null,
                   ),
                 ),
                 Padding(
@@ -162,7 +167,8 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
                                       TextButton(
                                           child: Text("Yes"),
                                           onPressed: () async {
-                                            // updateBook(); update function
+                                            updateLibrarianDetail(widget
+                                                .data.userId); //update function
                                             Navigator.of(context).pop();
                                             Navigator.of(context).pop();
                                             // customAlertDialog(context,
@@ -235,8 +241,12 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
                                                     TextButton(
                                                       child: Text("Yes"),
                                                       onPressed: () async {
-                                                        // deleteBook(widget
-                                                        //     .bookCatalogue.id); delete function
+                                                        deleteLibrarian(widget
+                                                            .data
+                                                            .userId); //change status
+                                                        deleteLibrarianSubCollection(
+                                                            widget.data
+                                                                .userId); //delete subcollection
                                                         Navigator.of(context)
                                                             .pop();
                                                         Navigator.of(context)
@@ -280,5 +290,19 @@ class _LibrarianManagementDetailState extends State<LibrarianManagementDetail> {
             ),
           ),
         )));
+  }
+
+  Future<void> updateLibrarianDetail(String librarianid) async {
+    String docid = await getDocId(
+        collectionName: "User", queryField: "UserId", queryItem: librarianid);
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(docid)
+        .collection("Librarian")
+        .doc("LibrarianDetails")
+        .set({
+      'LibrarianPhoneNumber': _phoneno.text,
+      'LibrarianStatus': status,
+    });
   }
 }
