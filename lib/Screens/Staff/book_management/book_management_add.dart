@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../Custom_Widget/buttons.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 import '../../../Custom_Widget/custom_alert_dialog.dart';
 import 'dart:async';
 import 'dart:io';
 import '../../../Custom_Widget/textfield.dart';
-// import 'dart:math';
-// import 'book_management_select_image.dart';
 
 class AddNewBook extends StatefulWidget {
   @override
@@ -25,8 +24,9 @@ class _AddNewBookState extends State<AddNewBook> {
       publisher,
       publishedDate,
       description,
-      image;
+      imgURL;
   int stock;
+  File image;
 
   @override
   void initState() {
@@ -280,6 +280,7 @@ class _AddNewBookState extends State<AddNewBook> {
                   onClick: () async {
                     if (_formKey.currentState.validate()) {
                       createBookCatalogue();
+                      uploadImgToStorage(context);
                       Navigator.of(context).pop();
                       customAlertDialog(
                         context,
@@ -304,10 +305,21 @@ class _AddNewBookState extends State<AddNewBook> {
     );
   }
 
+  Future uploadImgToStorage(BuildContext context) async {
+    String fileName = basename(bookImage.path);
+    Reference storageRef =
+        FirebaseStorage.instance.ref().child('BookCatalogue/$fileName');
+    UploadTask uploadTask = storageRef.putFile(bookImage);
+    uploadTask.whenComplete(() async {
+      imgURL = await storageRef.getDownloadURL();
+    }).catchError((onError) {
+      print(onError);
+    });
+  }
+
   //add bookImage and bookStock
   Future createBookCatalogue() async {
     try {
-      // DocumentReference ref =
       await FirebaseFirestore.instance.collection("BookCatalogue").add({
         'BookTitle': title,
         'BookISBNCode': isbnCode,
@@ -318,7 +330,7 @@ class _AddNewBookState extends State<AddNewBook> {
         'BookPublishDate': publishedDate,
         'BookDescription': description,
         'BookImage':
-            "https://images-na.ssl-images-amazon.com/images/I/61bKTJvsWGL._SX334_BO1,204,203,200_.jpg", //temp
+            "https://firebasestorage.googleapis.com/v0/b/librarix.appspot.com/o/BookCatalogue%2Fimage_picker1243998155796938203.jpg?alt=media&token=c4e102f0-ab00-40bf-a50d-aac16fd97971", //temp
         'BookStock': stock,
       });
     } catch (e) {
