@@ -279,8 +279,7 @@ class _AddNewBookState extends State<AddNewBook> {
                   buttonText: "Add",
                   onClick: () async {
                     if (_formKey.currentState.validate()) {
-                      createBookCatalogue();
-                      uploadImgToStorage(context);
+                      createBookCatalogue(context);
                       Navigator.of(context).pop();
                       customAlertDialog(
                         context,
@@ -305,21 +304,14 @@ class _AddNewBookState extends State<AddNewBook> {
     );
   }
 
-  Future uploadImgToStorage(BuildContext context) async {
+//add new book into firebase and store book image into firebase storage
+  Future createBookCatalogue(BuildContext context) async {
     String fileName = basename(bookImage.path);
     Reference storageRef =
         FirebaseStorage.instance.ref().child('BookCatalogue/$fileName');
     UploadTask uploadTask = storageRef.putFile(bookImage);
     uploadTask.whenComplete(() async {
       imgURL = await storageRef.getDownloadURL();
-    }).catchError((onError) {
-      print(onError);
-    });
-  }
-
-  //add bookImage and bookStock
-  Future createBookCatalogue() async {
-    try {
       await FirebaseFirestore.instance.collection("BookCatalogue").add({
         'BookTitle': title,
         'BookISBNCode': isbnCode,
@@ -329,13 +321,12 @@ class _AddNewBookState extends State<AddNewBook> {
         'BookPublisher': publisher,
         'BookPublishDate': publishedDate,
         'BookDescription': description,
-        'BookImage':
-            "https://firebasestorage.googleapis.com/v0/b/librarix.appspot.com/o/BookCatalogue%2Fimage_picker1243998155796938203.jpg?alt=media&token=c4e102f0-ab00-40bf-a50d-aac16fd97971", //temp
+        'BookImage': imgURL,
         'BookStock': stock,
       });
-    } catch (e) {
-      print(e.message);
-    }
+    }).catchError((onError) {
+      print(onError);
+    });
   }
 }
 
