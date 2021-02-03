@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:librarix/Screens/Search/search_view.dart';
 import 'package:librarix/config.dart';
 import '../Staff/book_management/book_management.dart';
 import '../Staff/librarian_management/librarian_management.dart';
@@ -46,7 +47,10 @@ class _AdminHomeState extends State<AdminHome> {
         actions: [
           IconButton(
               icon: Icon(Icons.search),
-              onPressed: () => Navigator.pushNamed(context, "/search"),
+              onPressed: () =>
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return SearchFunction(index: _currentIndex);
+                  })),
               iconSize: 35.0),
           IconButton(
             icon: Icon(Icons.auto_stories),
