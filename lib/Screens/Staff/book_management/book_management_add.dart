@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../Custom_Widget/buttons.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 import '../../../Custom_Widget/custom_alert_dialog.dart';
 import 'dart:async';
 import 'dart:io';
 import '../../../Custom_Widget/textfield.dart';
-// import 'dart:math';
-// import 'book_management_select_image.dart';
 
 class AddNewBook extends StatefulWidget {
   @override
@@ -25,8 +24,9 @@ class _AddNewBookState extends State<AddNewBook> {
       publisher,
       publishedDate,
       description,
-      image;
+      imgURL;
   int stock;
+  File image;
 
   @override
   void initState() {
@@ -279,7 +279,7 @@ class _AddNewBookState extends State<AddNewBook> {
                   buttonText: "Add",
                   onClick: () async {
                     if (_formKey.currentState.validate()) {
-                      createBookCatalogue();
+                      createBookCatalogue(context);
                       Navigator.of(context).pop();
                       customAlertDialog(
                         context,
@@ -304,10 +304,14 @@ class _AddNewBookState extends State<AddNewBook> {
     );
   }
 
-  //add bookImage and bookStock
-  Future createBookCatalogue() async {
-    try {
-      // DocumentReference ref =
+//add new book into firebase and store book image into firebase storage
+  Future createBookCatalogue(BuildContext context) async {
+    String fileName = basename(bookImage.path);
+    Reference storageRef =
+        FirebaseStorage.instance.ref().child('BookCatalogue/$fileName');
+    UploadTask uploadTask = storageRef.putFile(bookImage);
+    uploadTask.whenComplete(() async {
+      imgURL = await storageRef.getDownloadURL();
       await FirebaseFirestore.instance.collection("BookCatalogue").add({
         'BookTitle': title,
         'BookISBNCode': isbnCode,
@@ -317,13 +321,12 @@ class _AddNewBookState extends State<AddNewBook> {
         'BookPublisher': publisher,
         'BookPublishDate': publishedDate,
         'BookDescription': description,
-        'BookImage':
-            "https://images-na.ssl-images-amazon.com/images/I/61bKTJvsWGL._SX334_BO1,204,203,200_.jpg", //temp
+        'BookImage': imgURL,
         'BookStock': stock,
       });
-    } catch (e) {
-      print(e.message);
-    }
+    }).catchError((onError) {
+      print(onError);
+    });
   }
 }
 
