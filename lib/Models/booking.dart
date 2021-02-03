@@ -144,32 +144,10 @@ Stream<List<Booking>> getBookingsWithDocIdOf(
   yield finalBooking;
 }
 
-Future<void> updateBookingCompletedStatus(String docId) async {
+Future<void> updateBookingStatus(String docId, String status) async {
   await FirebaseFirestore.instance
       .collection("Booking")
       .doc(docId)
-      .update({"BookingStatus": "Completed"})
-      .then((value) =>
-          print("Completed Status for Discussion Room update successfully!"))
-      .catchError((onError) => print("An error has occurred: $onError"));
-}
-
-Future<void> updateBookingCancelledStatus(String docId) async {
-  await FirebaseFirestore.instance
-      .collection("Booking")
-      .doc(docId)
-      .update({"BookingStatus": "Cancelled"})
-      .then((value) =>
-          print("Cancelled Status for Discussion Room update successfully!"))
-      .catchError((onError) => print("An error has occurred: $onError"));
-}
-
-Future<void> updateBookingActiveStatus(String docId) async {
-  await FirebaseFirestore.instance
-      .collection("Booking")
-      .doc(docId)
-      .update({"BookingStatus": "Active"})
-      .then((value) =>
-          print("Active Status for Discussion Room update successfully!"))
-      .catchError((onError) => print("An error has occurred: $onError"));
+      .update({"BookingStatus": status}).catchError(
+          (onError) => print("An error has occurred: $onError"));
 }

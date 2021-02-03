@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
@@ -26,164 +25,107 @@ class _BookingListState extends State<BookingList> {
                 itemBuilder: (_, index) {
                   return Column(
                       children: [
-                    Container(
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 8.0, bottom: 4.0),
-                                child: Row(children: <Widget>[
-                                  Text(
-                                    snapshot.data[index].roomOrTableNum,
-                                    style: TextStyle(fontSize: 35.0),
-                                  ),
-                                  Spacer(),
-                                  Column(
-                                    children: [
-                                      IconButton(
-                                          icon: Icon(Icons.delete),
-                                          iconSize: 35.0,
-                                          onPressed: () {
-                                            return showDialog(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: Text('Cancel Booking'),
-                                                  content:
-                                                      SingleChildScrollView(
-                                                    child: ListBody(
-                                                      children: <Widget>[
-                                                        Text(
-                                                            "Do you want to cancel this booking?"),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                        child: Text("Yes"),
-                                                        onPressed: () async {
-                                                          if (snapshot
-                                                                  .data[index]
-                                                                  .bookingStatus ==
-                                                              "Booked") {
-                                                            updateBookingCancelledStatus(
-                                                                snapshot
-                                                                    .data[index]
-                                                                    .bookingId);
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                              child: Row(children: <Widget>[
+                                Text(
+                                  snapshot.data[index].roomOrTableNum,
+                                  style: TextStyle(fontSize: 35.0),
+                                ),
+                                Spacer(),
+                                Column(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      iconSize: 35.0,
+                                      onPressed: () {
+                                        return actionAlertDialog(
+                                          context,
+                                          title: "Cancel Booking",
+                                          content:
+                                              "Do you want to cancel this booking?",
+                                          onPressed: () async {
+                                            if (snapshot.data[index]
+                                                    .bookingStatus ==
+                                                "Booked") {
+                                              updateBookingStatus(
+                                                  snapshot
+                                                      .data[index].bookingId,
+                                                  "Cancelled");
 
-                                                            //~ Delete the notification
-                                                            await deleteNotification(
-                                                                userId: widget
-                                                                    .bList,
-                                                                hasId: false,
-                                                                queryItem: snapshot
-                                                                    .data[index]
-                                                                    .bookingId);
-                                                            //~ Cancel any pending notifications
-                                                            if (snapshot
-                                                                    .data[index]
-                                                                    .bookingType ==
-                                                                "Discussion Room") {
-                                                              await cancelNotification(
-                                                                  1);
-                                                              cancelNotification(
-                                                                  2);
-                                                            } else {
-                                                              await cancelNotification(
-                                                                  3);
-                                                              cancelNotification(
-                                                                  4);
-                                                            }
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          } else if (snapshot
-                                                                  .data[index]
-                                                                  .bookingStatus ==
-                                                              "Completed") {
-                                                            customAlertDialog(
-                                                                context,
-                                                                title:
-                                                                    "Invalid Selection",
-                                                                content:
-                                                                    "This booking has already been completed!",
-                                                                navigateHome:
-                                                                    true);
-                                                          } else if (snapshot
-                                                                  .data[index]
-                                                                  .bookingStatus ==
-                                                              "Cancelled") {
-                                                            customAlertDialog(
-                                                                context,
-                                                                title:
-                                                                    "Invalid Selection",
-                                                                content:
-                                                                    "This booking has already been cancelled!",
-                                                                navigateHome:
-                                                                    true);
-                                                          }
-                                                        }),
-                                                    TextButton(
-                                                        child: Text("Cancel"),
-                                                        onPressed: () =>
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop())
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          }),
-                                    ],
-                                  )
-                                ]),
+                                              //~ Delete the notification
+                                              await deleteNotification(
+                                                  userId: widget.bList,
+                                                  hasId: false,
+                                                  queryItem: snapshot
+                                                      .data[index].bookingId);
+                                              //~ Cancel any pending notifications
+                                              if (snapshot.data[index]
+                                                      .bookingType ==
+                                                  "Discussion Room") {
+                                                await cancelNotification(1);
+                                                cancelNotification(2);
+                                              } else {
+                                                await cancelNotification(3);
+                                                cancelNotification(4);
+                                              }
+                                              Navigator.of(context).pop();
+                                            } else if (snapshot.data[index]
+                                                    .bookingStatus ==
+                                                "Completed") {
+                                              customAlertDialog(context,
+                                                  title: "Invalid Selection",
+                                                  content:
+                                                      "This booking has already been completed!",
+                                                  navigateHome: true);
+                                            } else if (snapshot.data[index]
+                                                    .bookingStatus ==
+                                                "Cancelled") {
+                                              customAlertDialog(context,
+                                                  title: "Invalid Selection",
+                                                  content:
+                                                      "This booking has already been cancelled!",
+                                                  navigateHome: true);
+                                            }
+                                          },
+                                        );
+                                      },
+                                    )
+                                  ],
+                                )
+                              ]),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                              child: Text(
+                                snapshot.data[index].bookingDate,
+                                style: TextStyle(fontSize: 25.0),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 4.0, bottom: 4.0),
-                                child: Row(children: <Widget>[
-                                  Text(
-                                    snapshot.data[index].bookingDate,
-                                    style: TextStyle(fontSize: 25.0),
-                                  ),
-                                  Spacer(),
-                                ]),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 4.0, bottom: 30.0),
+                              child: Text(
+                                snapshot.data[index].bookingStatus,
+                                style: TextStyle(fontSize: 18.0),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 4.0, bottom: 30.0),
-                                child: Row(children: <Widget>[
-                                  Text(
-                                    snapshot.data[index].bookingStatus,
-                                    style: TextStyle(fontSize: 18.0),
-                                  ),
-                                  Spacer(),
-                                ]),
-                              ),
-                              Padding(
+                            ),
+                            Padding(
                                 padding: const EdgeInsets.only(
                                     top: 8.0, bottom: 8.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      snapshot.data[index].bookingStartTime,
-                                      style: TextStyle(fontSize: 30.0),
-                                    ),
-                                    Text(" - "),
-                                    Text(
-                                      snapshot.data[index].bookingEndTime,
-                                      style: TextStyle(fontSize: 30.0),
-                                    ),
-                                    Spacer(),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                                child: Text(
+                                  "${snapshot.data[index].bookingStartTime} - ${snapshot.data[index].bookingEndTime}",
+                                  style: TextStyle(fontSize: 30.0),
+                                )),
+                          ],
                         ),
                       ),
                     )
@@ -194,14 +136,5 @@ class _BookingListState extends State<BookingList> {
             color: Theme.of(context).accentColor,
           );
         });
-  }
-
-  Future<void> updateBookingStatus(String docId) async {
-    FirebaseFirestore.instance
-        .collection("Booking")
-        .doc(docId)
-        .update({"BookingStatus": "Cancelled"})
-        .then((value) => print("Booking has been cancelled successfully!"))
-        .catchError((onError) => print("An error has occurred: $onError"));
   }
 }

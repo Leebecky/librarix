@@ -94,8 +94,7 @@ bookReturnNotification({
   String title,
   int notificationId,
 }) async {
-  DateTime scheduledDate;
-  scheduledDate = parseStringToDate(returnDate);
+  DateTime scheduledDate = parseStringToDate(returnDate);
 
   await flutterLocalNotificationsPlugin.zonedSchedule(
       notificationId,

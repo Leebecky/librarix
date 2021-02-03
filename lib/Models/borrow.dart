@@ -29,9 +29,9 @@ class Borrow {
         bookId = snapshot["BookId"],
         bookTitle = snapshot["BookTitle"],
         borrowedDate = snapshot["BorrowDate"],
+        timesRenewed = snapshot["BorrowRenewedTimes"],
         returnedDate = snapshot["BorrowReturnedDate"],
         status = snapshot["BorrowStatus"],
-        timesRenewed = snapshot["BorrowRenewedTimes"],
         borrowedId = snapshot.id;
 }
 
@@ -56,7 +56,7 @@ Map<String, dynamic> _borrowToJson(Borrow instance) => <String, dynamic>{
       "BorrowDate": instance.borrowedDate,
       "BorrowRenewedTimes": instance.timesRenewed,
       "BorrowReturnedDate": instance.returnedDate,
-      "BorrowStatus": instance.status,
+      "BorrowStatus": instance.status
     };
 
 //? Creates a borrowed book record
@@ -216,17 +216,6 @@ Future<void> updateReturnStatus(String docId, String bookId) async {
       .catchError((onError) => print("An error has occurred: $onError"));
 }
 
-/* Future<void> returnBook(Borrow record) async {
-  int stock;
-  (record.status == "Returned") ? stock = 1 : stock = 0;
-  FirebaseFirestore.instance
-      .collection("BorrowedBook")
-      .add(_borrowToJson(record))
-      .then((value) {
-    print("Book has been successfully returned!");
-    updateBookStock(record.bookId, stock);
-  }).catchError((onError) => print("An error has occurred: $onError")); 
-}*/
 //? Creates book reservation record
 Future createReservationRecord(String bookId, String bookTitle) async {
   ActiveUser myUser = await myActiveUser();
@@ -253,4 +242,27 @@ Future createReservationRecord(String bookId, String bookTitle) async {
           content: "$bookTitle has been reserved by ${myUser.userId}",
           displayDate: parseDate(DateTime.now().toString()),
           type: "Book Reservation"));
+}
+
+//? Update the BorrowRenewTimes
+Future<void> updateBookRenewedTimes(String docId) async {
+  FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .doc(docId)
+      .update({"BorrowRenewedTimes": FieldValue.increment(1)})
+      .then((value) =>
+          print("Borrowed book renew times has been updated successfully!"))
+      .catchError((onError) => print("An error has occurred: $onError"));
+}
+
+//?Update the BorrowReturnedDate
+Future<void> updateBorrowedBookReturnedDate(String docId, String date) async {
+  FirebaseFirestore.instance
+      .collection("BorrowedBook")
+      .doc(docId)
+      .update(
+          {"BorrowReturnedDate": parseDate(calculateRenewedReturnDate(date))})
+      .then((value) =>
+          print("Borrowed book returned date has been renewed successfully!"))
+      .catchError((onError) => print("An error has occurred: $onError"));
 }
