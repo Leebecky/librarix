@@ -9,7 +9,6 @@ class FirstView extends StatelessWidget {
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: Container(
         width: _width,
@@ -46,7 +45,7 @@ class FirstView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Get.offAllNamed("/login");
+                    Get.offNamed("/login");
                   }),
             ],
           ),

@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 //? Takes the dateTime string and extracts only the day/month/year
 String parseDate(String date) {
-  var dateParse = DateTime.parse(date);
-  var dateString = "${dateParse.day}/${dateParse.month}/${dateParse.year}";
-  return dateString.toString();
+  DateTime dateParse = DateTime.parse(date);
+  String dateString = "${dateParse.day}/${dateParse.month}/${dateParse.year}";
+  return dateString;
 }
 
 //? Takes the date String and converts it to DateTime

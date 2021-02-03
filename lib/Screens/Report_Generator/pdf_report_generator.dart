@@ -236,7 +236,7 @@ List<int> generateYAxisHeaders(List<List<Object>> dataSet) {
 List<List<Object>> generateBorrowBarChart(List<Borrow> borrowList) {
   List<List<Object>> data = [];
   Set xAxisTime = Set();
-  List<Borrow> yAxis = [];
+  List<Borrow> recordTotal = [];
 
   for (var item in borrowList) {
     if (item.borrowedDate != "Not Available") {
@@ -248,11 +248,11 @@ List<List<Object>> generateBorrowBarChart(List<Borrow> borrowList) {
     for (var item in borrowList) {
       if ((item.status == "Borrowed" || item.status == "Returned") &&
           parseStringToDate(item.borrowedDate).year.toString() == element) {
-        yAxis.add(item);
+        recordTotal.add(item);
       }
     }
-    data.add([element, yAxis.length]);
-    yAxis = [];
+    data.add([element, recordTotal.length]);
+    recordTotal = [];
   });
   return data;
 }
@@ -261,7 +261,7 @@ List<List<Object>> generateBorrowBarChart(List<Borrow> borrowList) {
 List<List<Object>> generateFinesChart(List<Fines> finesList) {
   List<List<Object>> data = [];
   Set xAxisTime = Set();
-  List<Fines> yAxis = [];
+  List<Fines> recordTotal = [];
 
   for (var item in finesList) {
     xAxisTime.add(parseStringToDate(item.issueDate).year.toString());
@@ -273,12 +273,12 @@ List<List<Object>> generateFinesChart(List<Fines> finesList) {
   sortedXAxis.forEach((element) {
     for (var item in finesList) {
       if (parseStringToDate(item.issueDate).year.toString() == element) {
-        yAxis.add(item);
+        recordTotal.add(item);
       }
     }
 
-    data.add([element, yAxis.length]);
-    yAxis = [];
+    data.add([element, recordTotal.length]);
+    recordTotal = [];
   });
   return data;
 }
@@ -286,7 +286,7 @@ List<List<Object>> generateFinesChart(List<Fines> finesList) {
 //? Generate Booking bar chart
 List<List<Object>> generateBookingChart(List<Booking> bookingList) {
   Set xAxisTime = Set();
-  List<Booking> yAxis = [];
+  List<Booking> recordTotal = [];
   List<List<Object>> data = [];
 
   for (var item in bookingList) {
@@ -299,12 +299,12 @@ List<List<Object>> generateBookingChart(List<Booking> bookingList) {
   sortedXAxis.forEach((element) {
     for (var item in bookingList) {
       if (parseStringToDate(item.bookingDate).year.toString() == element) {
-        yAxis.add(item);
+        recordTotal.add(item);
       }
     }
 
-    data.add([element, yAxis.length]);
-    yAxis = [];
+    data.add([element, recordTotal.length]);
+    recordTotal = [];
   });
   return data;
 }

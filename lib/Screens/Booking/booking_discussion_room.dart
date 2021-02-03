@@ -264,7 +264,7 @@ class _BookingDiscussionRoomState extends State<BookingDiscussionRoom> {
             int.parse(booking.bookingStartTime.split(":").join("")));
     clashingBookings.join(",");
 
-    //^ if clashingBookings is empty => no clashing bookings exist
+    //^ if clashingBookings is not empty => clashing bookings exist
     if (clashingBookings.isNotEmpty) {
       //^ process roomsOfSize and remove rooms that are booked
       //~ add to a list, the rooms that are in use

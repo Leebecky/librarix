@@ -133,10 +133,10 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                                 title: "Book Return - ${widget.userId}",
                                 content:
                                     "${booksFound[i].title} is due to be returned on ${parseDate(calculateReturnDate())}",
-                                displayDate: parseDate(parseStringToDate(
-                                        parseDate(calculateReturnDate()))
-                                    .subtract(Duration(days: 3))
-                                    .toString()),
+                                displayDate: parseDate(
+                                    parseStringToDate(calculateReturnDate())
+                                        .subtract(Duration(days: 3))
+                                        .toString()),
                                 type: "Book Return"));
 
                         if (await isStaff() == false) {
@@ -210,20 +210,6 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
     }
     return booksFound;
   }
-
-  // //? Retrieves the current date and returns the book returnDate
-  // String calculateReturnDate() {
-  //   DateTime startDate = DateTime.now();
-  //   DateTime returnDate = startDate.add(Duration(days: 6));
-
-  //   //^ Checks if the returnDate lands on a weekend and extends it to Monday if so
-  //   if (returnDate.weekday == DateTime.saturday) {
-  //     returnDate = returnDate.add(Duration(days: 2));
-  //   } else if (returnDate.weekday == DateTime.sunday) {
-  //     returnDate = returnDate.add(Duration(days: 1));
-  //   }
-  //   return returnDate.toString();
-  // }
 
 //? Creates the new borrow record
   Borrow createRecord(

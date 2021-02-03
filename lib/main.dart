@@ -25,6 +25,7 @@ main() async {
   //~  Initializing stuff for notifications
   initializePlatformSpecifics();
   initialiseTimeZones();
+
   //~ Run application
   runApp(MyApp(myRoute));
 }
