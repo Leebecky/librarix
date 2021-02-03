@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:librarix/Models/user.dart';
 import 'package:librarix/modules.dart';
 import '../../../Custom_Widget/buttons.dart';
-import '../fines_management.dart';
 import '../../../modules.dart';
 
 class AddFines extends StatefulWidget {
@@ -34,11 +35,6 @@ class _AddFinesState extends State<AddFines> {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.all(20),
-                  // child: CustomDisplayTextField(
-                  //   controller: _userId,
-                  //   fixKeyboardToNum: false,
-                  //   onChange: (value) => userid = widget.userId,
-                  // ),
                   child: Text(
                     widget.userId,
                     style: TextStyle(fontSize: 25),
@@ -99,14 +95,14 @@ class _AddFinesState extends State<AddFines> {
                   buttonText: "Add",
                   onClick: () async {
                     createFines();
-
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return FinesManagement();
-                    }));
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
+                    ActiveUser myUser = await myActiveUser(
+                        docId: FirebaseAuth.instance.currentUser.uid);
+                    (myUser.role == "Admin")
+                        ? Navigator.popAndPushNamed(context, "/adminHome")
+                        : (myUser.role == "Librarian")
+                            ? Navigator.popAndPushNamed(
+                                context, "/librarianHome")
+                            : Navigator.popAndPushNamed(context, "/home");
                   },
                 ),
               ],

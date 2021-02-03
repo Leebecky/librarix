@@ -137,8 +137,8 @@ class _DiscussionRoomListState extends State<DiscussionRoomList> {
                     TextButton(
                       child: Text("Yes"),
                       onPressed: () async {
-                        updateBookingCompletedStatus(
-                            activeBookings[index].bookingId);
+                        updateBookingStatus(
+                            activeBookings[index].bookingId, "Completed");
                         Navigator.of(context).pop();
                       },
                     ),
@@ -179,21 +179,8 @@ class _DiscussionRoomListState extends State<DiscussionRoomList> {
                           TextButton(
                             child: Text("Yes"),
                             onPressed: () async {
-                              updateBookingActiveStatus(
-                                  activeBookings[index].bookingId);
-                              // return AlertDialog(
-                              //   title: Text("Cancelled Succuessfully"),
-                              //   content: const Text(
-                              //       "Cancelled Discussion Room Successfully"),
-                              //   actions: [
-                              //     TextButton(
-                              //       child: Text("OK"),
-                              //       onPressed: () {
-                              //         Navigator.of(context).pop();
-                              //       },
-                              //     )
-                              //   ],
-                              // );
+                              updateBookingStatus(
+                                  activeBookings[index].bookingId, "Cancelled");
                               Navigator.of(context).pop();
                             },
                           ),
@@ -234,8 +221,8 @@ class _DiscussionRoomListState extends State<DiscussionRoomList> {
                           TextButton(
                             child: Text("Yes"),
                             onPressed: () async {
-                              updateBookingActiveStatus(
-                                  activeBookings[index].bookingId);
+                              updateBookingStatus(
+                                  activeBookings[index].bookingId, "Active");
                               Navigator.of(context).pop();
                             },
                           ),

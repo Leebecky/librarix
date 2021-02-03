@@ -137,8 +137,8 @@ class _StudyTableListState extends State<StudyTableList> {
                     TextButton(
                       child: Text("Yes"),
                       onPressed: () async {
-                        updateBookingCompletedStatus(
-                            activeBookings[index].bookingId);
+                        updateBookingStatus(
+                            activeBookings[index].bookingId, "Completed");
                         Navigator.of(context).pop();
                       },
                     ),
@@ -179,8 +179,8 @@ class _StudyTableListState extends State<StudyTableList> {
                           TextButton(
                             child: Text("Yes"),
                             onPressed: () async {
-                              updateBookingActiveStatus(
-                                  activeBookings[index].bookingId);
+                              updateBookingStatus(
+                                  activeBookings[index].bookingId, "Cancelled");
 
                               Navigator.of(context).pop();
                             },
@@ -222,8 +222,8 @@ class _StudyTableListState extends State<StudyTableList> {
                           TextButton(
                             child: Text("Yes"),
                             onPressed: () async {
-                              updateBookingActiveStatus(
-                                  activeBookings[index].bookingId);
+                              updateBookingStatus(
+                                  activeBookings[index].bookingId, "Active");
                               Navigator.of(context).pop();
                             },
                           ),
