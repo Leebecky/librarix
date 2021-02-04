@@ -1,5 +1,7 @@
 # librarix
  SDP Assignment: LibrariX - A Library Management App
+ 
+Please Note: Upon opening the file for the first time in Visual Studio Code, packages used in the development of LibrariX must be obtained by going to pubspec.yaml and pressing Ctrl+S or go to terminal and run the pub get command.
 
 _Accounts_
 
@@ -21,3 +23,5 @@ _Emulator Setup_
     3. Select Time zone.
     4. Select Region and search for Malaysia
     5. The time zone should now be set to Kuala Lumpur (GMT+08:00)
+    
+
