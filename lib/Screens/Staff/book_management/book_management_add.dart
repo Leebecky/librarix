@@ -121,10 +121,6 @@ class _AddNewBookState extends State<AddNewBook> {
                     buttonText: "Select Book Image",
                     roundBorder: false,
                     onClick: () => _showImagePicker(context),
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) {
-                    //   return AddBookImage();
-                    // }));
                   ),
                 ),
                 Padding(
@@ -285,7 +281,7 @@ class _AddNewBookState extends State<AddNewBook> {
                         context,
                         title: "Book Management",
                         content:
-                            "New book successfully added to the Catalogue!",
+                            "New book successfully added to the Catalogue! Please wait for awhile for the database to sync.",
                       );
                     } else {
                       customAlertDialog(
