@@ -25,13 +25,13 @@ class Borrow {
   Map<String, String> toJson() => _borrowToJson(this);
 
   Borrow.fromSnapshot(DocumentSnapshot snapshot)
-      : userId = snapshot["UserId"],
-        bookId = snapshot["BookId"],
+      : bookId = snapshot["BookId"],
         bookTitle = snapshot["BookTitle"],
         borrowedDate = snapshot["BorrowDate"],
         timesRenewed = snapshot["BorrowRenewedTimes"],
         returnedDate = snapshot["BorrowReturnedDate"],
         status = snapshot["BorrowStatus"],
+        userId = snapshot["UserId"],
         borrowedId = snapshot.id;
 }
 
@@ -163,8 +163,8 @@ Stream<List<Borrow>> getBorrowedWithDocIdOf(
 
   //Sort borrowed books by date
   finalBorrowed.sort((a, b) {
-    DateTime aDate = parseStringToDate(a.returnedDate);
-    DateTime bDate = parseStringToDate(b.returnedDate);
+    DateTime aDate = parseStringToDate(a.borrowedDate);
+    DateTime bDate = parseStringToDate(b.borrowedDate);
     return bDate.compareTo(aDate);
   });
 

@@ -216,6 +216,7 @@ List<Widget> borrowActionButtons(BuildContext context, Borrow borrowRecord) {
             title: "Return Book",
             content: "Book Returned?", onPressed: () async {
           updateReturnStatus(borrowRecord.borrowedId, borrowRecord.bookId);
+          Get.back();
           return actionAlertDialog(context,
               title: "Fines",
               content: "Does the user need to be fined?", onPressed: () {

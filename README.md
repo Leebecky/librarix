@@ -12,3 +12,11 @@ _Accounts_
  
 Admin Accounts
 - lc077774@mail.staff.apu.edu.my (password: adminTest)
+
+_Emulator Setup_
+- Please ensure that the time zone location in your emulator has been set to GMT+8 (Kuala Lumpur)
+    1. Settings > System > Date & Time
+    2. Switch off "Use network-provided time zone"
+    3. Select Time zone.
+    4. Select Region and search for Malaysia
+    5. The time zone should now be set to Kuala Lumpur (GMT+08:00)

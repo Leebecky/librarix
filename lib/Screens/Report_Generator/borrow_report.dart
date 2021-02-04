@@ -106,13 +106,17 @@ class _BorrowReportState extends State<BorrowReport> {
   void generateChartData(List<Borrow> record) {
     Set xAxisTime = Set();
     List<Borrow> measure = [];
+
     for (var item in record) {
       if (item.borrowedDate != "Not Available") {
         xAxisTime.add(parseStringToDate(item.borrowedDate).year.toString());
       }
     }
 
-    xAxisTime.forEach((element) {
+    var sortedXAxis = xAxisTime.toList();
+    sortedXAxis.sort();
+
+    sortedXAxis.forEach((element) {
       for (var item in record) {
         if ((item.status == "Borrowed" || item.status == "Returned") &&
             parseStringToDate(item.borrowedDate).year.toString() == element) {

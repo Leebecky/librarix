@@ -133,10 +133,10 @@ class _ScannedBookDetailsState extends State<ScannedBookDetails> {
                                 title: "Book Return - ${widget.userId}",
                                 content:
                                     "${booksFound[i].title} is due to be returned on ${parseDate(calculateReturnDate())}",
-                                displayDate: parseDate(
-                                    parseStringToDate(calculateReturnDate())
-                                        .subtract(Duration(days: 3))
-                                        .toString()),
+                                displayDate: parseDate(parseStringToDate(
+                                        parseDate(calculateReturnDate()))
+                                    .subtract(Duration(days: 3))
+                                    .toString()),
                                 type: "Book Return"));
 
                         if (await isStaff() == false) {

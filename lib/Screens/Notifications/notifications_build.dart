@@ -8,7 +8,7 @@ import 'package:timezone/timezone.dart' as tz;
 //~ Notification id : 2 - Booking 15 minutes - Discussion Room
 //~ Notification id : 3 - Booking on Day - Study Table
 //~ Notification id : 4 - Booking 15 minutes - Study Table
-//~ Notification id : (bookingId) - Book Return on day
+//~ Notification id : (Borrow Id) - Book Return on day
 
 //? Schedule Notification for bookings (on day of booking)
 bookingNotificationOnDay({
@@ -103,12 +103,11 @@ bookReturnNotification({
       tz.TZDateTime.local(
           scheduledDate.year, scheduledDate.month, scheduledDate.day, 9),
       const NotificationDetails(
-          android: AndroidNotificationDetails('Booking Channel Id',
-              'Booking Channel', 'Booking Channel Notifications')),
+          android: AndroidNotificationDetails('Book Return Channel Id',
+              'Book Return Channel', 'Book Return Notifications')),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time);
+          UILocalNotificationDateInterpretation.absoluteTime);
 }
 
 //?Cancel selected notification

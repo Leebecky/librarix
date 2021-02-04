@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:librarix/Custom_Widget/custom_alert_dialog.dart';
 import 'package:librarix/Models/notifications.dart';
 import 'package:librarix/Screens/Notifications/notifications_build.dart';
@@ -56,21 +57,27 @@ class _BorrowedListState extends State<BorrowedList> {
                                               content:
                                                   "Do you wish to extend the borrow period?",
                                               onPressed: () async {
-                                            //~ Obtain notification Id
-                                            int notifId = await searchNotification(
-                                                    userId: widget.borrowedList,
-                                                    queryField:
-                                                        "NotificationAdditionalDetail",
-                                                    queryItem: snapshot
-                                                        .data[index].borrowedId)
-                                                .then((value) =>
-                                                    value[0].id.hashCode);
                                             //~ Renew Book
                                             if (snapshot.data[index].status ==
                                                 "Borrowed") {
                                               if (snapshot.data[index]
                                                       .timesRenewed <
                                                   2) {
+                                                //~ Obtain notification Id
+                                                int notifId =
+                                                    await searchNotification(
+                                                            userId: widget
+                                                                .borrowedList,
+                                                            queryField:
+                                                                "NotificationAdditionalDetail",
+                                                            queryItem: snapshot
+                                                                .data[index]
+                                                                .borrowedId)
+                                                        .then((value) =>
+                                                            value[0]
+                                                                .id
+                                                                .hashCode);
+
                                                 updateBookRenewedTimes(snapshot
                                                     .data[index].borrowedId);
                                                 updateBorrowedBookReturnedDate(
@@ -95,14 +102,16 @@ class _BorrowedListState extends State<BorrowedList> {
                                                 //~ Updates the notification record
                                                 await updateBookReturnNotification(
                                                     userId: widget.borrowedList,
-                                                    newDate: parseDate(parseStringToDate(
-                                                            calculateRenewedReturnDate(
-                                                                snapshot
-                                                                    .data[index]
-                                                                    .returnedDate))
-                                                        .subtract(
-                                                            Duration(days: 3))
-                                                        .toString()),
+                                                    newDate: parseDate(
+                                                        parseStringToDate(parseDate(
+                                                                calculateRenewedReturnDate(
+                                                                    snapshot
+                                                                        .data[
+                                                                            index]
+                                                                        .returnedDate)))
+                                                            .subtract(Duration(
+                                                                days: 3))
+                                                            .toString()),
                                                     borrowedId: snapshot
                                                         .data[index].borrowedId,
                                                     bookTitle: snapshot
@@ -111,7 +120,7 @@ class _BorrowedListState extends State<BorrowedList> {
                                                         calculateRenewedReturnDate(
                                                             snapshot.data[index]
                                                                 .returnedDate)));
-
+                                                Get.back();
                                                 //~ Message
                                                 customAlertDialog(context,
                                                     title:
@@ -119,15 +128,18 @@ class _BorrowedListState extends State<BorrowedList> {
                                                     content:
                                                         "Borrowed book period successfully extended!");
                                               } else if (snapshot.data[index]
-                                                      .timesRenewed >
+                                                      .timesRenewed >=
                                                   2) {
-                                                customAlertDialog(context,
+                                                Get.back();
+                                                return customAlertDialog(
+                                                    context,
                                                     title:
                                                         "Failed to Renew Borrowed Book",
                                                     content:
                                                         "Renew limit reached! This book can no longer be renewed.");
                                               }
                                             } else {
+                                              Get.back();
                                               return customAlertDialog(context,
                                                   title: "Warning!",
                                                   content:
