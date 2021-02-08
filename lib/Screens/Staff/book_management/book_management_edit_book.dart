@@ -36,7 +36,7 @@ class _EditBookState extends State<EditBook> {
   TextEditingController _publishedDateC = TextEditingController();
   TextEditingController _descriptionC = TextEditingController();
   TextEditingController _stockC = TextEditingController();
-  // TextEditingController _imageC = TextEditingController();
+  TextEditingController _imageC = TextEditingController();
   @override
   void initState() {
     title = widget.bookCatalogue["BookTitle"];
@@ -64,7 +64,7 @@ class _EditBookState extends State<EditBook> {
     _publishedDateC.text = widget.bookCatalogue["BookPublishDate"];
     _descriptionC.text = widget.bookCatalogue["BookDescription"];
     _stockC.text = widget.bookCatalogue["BookStock"].toString();
-    // _imageC.text = widget.bookCatalogue["BookImage"];
+    _imageC.text = widget.bookCatalogue["BookImage"];
 
     setState(() {
       isLoading = false;
@@ -407,8 +407,8 @@ class _EditBookState extends State<EditBook> {
       'BookPublisher': _publisherC.text,
       'BookPublishDate': _publishedDateC.text,
       'BookDescription': _descriptionC.text,
-      'BookImage':
-          "https://images-na.ssl-images-amazon.com/images/I/61bKTJvsWGL._SX334_BO1,204,203,200_.jpg",
+      'BookImage': _imageC.text,
+      // "https://images-na.ssl-images-amazon.com/images/I/61bKTJvsWGL._SX334_BO1,204,203,200_.jpg",
       'BookStock': int.parse(_stockC.text),
     });
   }
