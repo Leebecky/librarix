@@ -10,28 +10,30 @@ customAlertDialog(BuildContext context,
     navigateHome = false}) {
   return showDialog(
       context: context,
-      child: AlertDialog(
-          title: Text(title),
-          content: (imageContent == null) ? Text(content) : imageContent,
-          actions: [
-            FlatButton(
-                onPressed: () async {
-                  if (navigateHome) {
-                    //^ When true, returns to the Book Catalogue page
-                    ActiveUser myUser = await myActiveUser(
-                        docId: FirebaseAuth.instance.currentUser.uid);
-                    (myUser.role == "Admin")
-                        ? Navigator.popAndPushNamed(context, "/adminHome")
-                        : (myUser.role == "Librarian")
-                            ? Navigator.popAndPushNamed(
-                                context, "/librarianHome")
-                            : Navigator.popAndPushNamed(context, "/home");
-                  } else {
-                    Get.back();
-                  }
-                },
-                child: Text("Close"))
-          ]));
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text(title),
+            content: (imageContent == null) ? Text(content) : imageContent,
+            actions: [
+              ElevatedButton(
+                  onPressed: () async {
+                    if (navigateHome) {
+                      //^ When true, returns to the Book Catalogue page
+                      ActiveUser myUser = await myActiveUser(
+                          docId: FirebaseAuth.instance.currentUser.uid);
+                      (myUser.role == "Admin")
+                          ? Navigator.popAndPushNamed(context, "/adminHome")
+                          : (myUser.role == "Librarian")
+                              ? Navigator.popAndPushNamed(
+                                  context, "/librarianHome")
+                              : Navigator.popAndPushNamed(context, "/home");
+                    } else {
+                      Get.back();
+                    }
+                  },
+                  child: Text("Close"))
+            ]);
+      });
 }
 
 actionAlertDialog(BuildContext context,
@@ -41,26 +43,32 @@ actionAlertDialog(BuildContext context,
     Function onPressed}) {
   return showDialog(
       context: context,
-      child: AlertDialog(title: Text(title), content: Text(content), actions: [
-        FlatButton(
-          onPressed: onPressed,
-          child: Text("Yes"),
-        ),
-        FlatButton(
-            onPressed: () async {
-              if (navigateHome) {
-                //^ When true, returns to the Book Catalogue page
-                ActiveUser myUser = await myActiveUser(
-                    docId: FirebaseAuth.instance.currentUser.uid);
-                (myUser.role == "Admin")
-                    ? Navigator.popAndPushNamed(context, "/adminHome")
-                    : (myUser.role == "Librarian")
-                        ? Navigator.popAndPushNamed(context, "/librarianHome")
-                        : Navigator.popAndPushNamed(context, "/home");
-              } else {
-                Get.back();
-              }
-            },
-            child: Text("No"))
-      ]));
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: [
+              ElevatedButton(
+                onPressed: onPressed,
+                child: Text("Yes"),
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    if (navigateHome) {
+                      //^ When true, returns to the Book Catalogue page
+                      ActiveUser myUser = await myActiveUser(
+                          docId: FirebaseAuth.instance.currentUser.uid);
+                      (myUser.role == "Admin")
+                          ? Navigator.popAndPushNamed(context, "/adminHome")
+                          : (myUser.role == "Librarian")
+                              ? Navigator.popAndPushNamed(
+                                  context, "/librarianHome")
+                              : Navigator.popAndPushNamed(context, "/home");
+                    } else {
+                      Get.back();
+                    }
+                  },
+                  child: Text("No"))
+            ]);
+      });
 }
