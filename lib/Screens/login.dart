@@ -105,6 +105,7 @@ class _LoginState extends State<Login> {
                       ),
                     )),
               ),
+
               //~ Role Selection
               SizedBox(height: 20.0),
               FutureBuilder<List<String>>(
